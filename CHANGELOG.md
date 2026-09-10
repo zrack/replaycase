@@ -8,6 +8,10 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 - Added task-based documentation navigation, a linked source and test map, and design and architecture indexes. Contributor guidance now separates generated Graphify output from source and requires explicit source identity and extraction scope when refreshing maps.
 
+### Fixed
+
+- Synchronized the storage-cleanup browser regression with the save operation's focus handoff and verified the operator note before removal, so interrupted text entry cannot masquerade as a note-retention failure.
+
 ## [0.4.0] - 2026-09-10
 
 ### Changed
