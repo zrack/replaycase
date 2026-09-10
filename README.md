@@ -16,7 +16,8 @@ The application is local-first. The packaged distribution starts the production 
 - Review the [field-proof procedure](docs/field-proofs/README.md), current [readiness record](docs/field-proofs/2026-09-10-readiness.md), and [pilot plan](docs/field-proofs/pilot-plan.md) before claiming an independent real-world handoff.
 - Use the [decoder-pack guide](DECODER_PACKS.md) to load, author, seal, validate, and hand off a protocol definition.
 - Use [SUPPORT.md](SUPPORT.md) to prepare a reproducible support request without disclosing sensitive telemetry.
-- Contributors should start with [CONTRIBUTING.md](CONTRIBUTING.md).
+- Contributors should start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [repository map](docs/repository-map.md).
+- Browse the [documentation index](docs/README.md) to find guides by task.
 
 ## Quick start
 
@@ -252,51 +253,23 @@ The semantic validator rejects altered hashes and internally contradictory range
 
 ## Architecture
 
-| Area | Responsibility |
+| Folder | Responsibility |
 | --- | --- |
-| `src/App.tsx` | Application state and mission-timeline workspace UI |
-| `src/capture/CaptureDialog.tsx` | Live-source configuration, capture lifecycle, integrity status, save, and replay handoff |
-| `src/capture/capture-profile.ts` | Bounded local profile validation, persistence, and exact decoder-pack recall |
-| `src/capture/capture-preflight.ts` | Bounded payload-free source observations and decoder-fit assessment before recording |
-| `src/capture/recorder.ts` | Bounded immutable source-record collection and versioned session finalization |
-| `src/capture/web-serial.ts` | Permission-aware Web Serial lifecycle and byte-stream reads |
-| `src/capture/nsl01-serial-assembler.ts` | NSL-01 framing, noise retention, and bounded resynchronization |
-| `src/capture/nmea0183-serial-assembler.ts` | Bounded line assembly and partial-tail retention for NMEA 0183 |
-| `src/capture/serial-assembler.ts` | Runtime-selected serial framing |
-| `src/capture/udp-bridge.ts` | Typed, authenticated browser client for the local UDP bridge |
-| `src/data/load-session.ts` | Bundled and user-file worker processing, progress, cancellation, size limits, and surfaced load errors |
-| `src/data/session-file.ts` | Canonical compact `.nlsession` serializer and shared 64 MiB replay-file budget |
-| `src/domain/limits.ts` | Central 64 MiB, 200,000-record, 24-hour replay support envelope and measurable responsiveness budgets |
-| `src/domain/types.ts` | Versioned session schema and core telemetry types |
-| `src/domain/decoder-pack.ts` | Bounded pack contract, canonical identity, sealing, and descriptor binding |
-| `src/domain/decoder-conformance.ts` | Production-path fixture execution and expected-result verification |
-| `src/domain/decoder.ts` | Runtime registry, NSL-01 and NMEA decoding, and malformed-record retention |
-| `src/domain/session.ts` | Validation, metric derivation, diagnostics, incident projection, and range helpers |
-| `src/replay/` | Pure monotonic replay clock and its React subscription hook |
-| `src/processing/` | Worker contracts and implementations for session ingestion, deterministic chunk transfer, comparison construction, bundle generation, progress, and cancellation |
-| `src/storage/session-library.ts` | Versioned canonical-byte session persistence, backward-compatible reopen, metadata, validation, and removal in IndexedDB |
-| `src/storage/session-storage.ts` | Versioned per-session operator-range, marker, and note persistence in local storage |
-| `src/domain/evidence-contract.ts` | Strict version 3 and 4 evidence manifest, artifact, transport-document, path, media-type, and resource-limit contract |
-| `src/domain/bundle.ts` | Range-filtered, checksummed `.nlb` evidence generation and browser download |
-| `src/receiver/` | Worker-isolated bundle loading, immutable bounded receiver document, receiver workspace, and bundle-keyed local findings |
-| `src/domain/comparison.ts` | Immutable comparison inputs, explicit alignment, comparability rules, bounded metrics, assessments, and checksummed finding validation |
-| `src/comparison/` | Comparison setup, aligned evidence workspace, trace inspector, authored conclusion, and local finding export |
-| `verifier/` | Bounded ZIP intake and production receiver verification of archive structure, artifact content, and cross-document semantics |
-| `scripts/replaycase.ts` | Managed `serve`, bundle `verify`, decoder-pack `seal` and `validate`, and exact build-identity commands |
-| `scripts/operator-runtime.ts` | Secure static application server and coordinated bridge lifecycle for the installed release |
-| `src/lib/telemetry.ts` | Timeline sampling, value lookup, and source-aligned incident view ranges |
-| `src/lib/time.ts` | Time-zone-aware presentation and byte-size helpers |
-| `scripts/capture-bridge.mjs` | Authenticated loopback control plane, UDP socket, multicast membership, and SSE delivery |
-| `scripts/udp-kernel-drop-counter.mjs` | Capture-scoped Linux UDP socket-drop adapter with explicit unavailable states on unsupported or ambiguous hosts |
-| `scripts/release/` | Whitelist-only deterministic package, manifest, SBOM, checksum, and reproducibility tooling |
-| `scripts/send-demo-udp.mjs` | Replays checked-in fixture records as real UDP datagrams for acceptance testing |
-| `scripts/send-demo-nmea.mjs` | Sends repeatable checksummed NMEA 0183 UDP datagrams |
-| `scripts/generate-demo-session.mjs` | Deterministic synthetic fixture generator |
-| `scripts/large-session-corpus.mjs` | Streamed deterministic 200,000-record acceptance-corpus generator |
-| `tests/e2e/` | Cross-browser capture-to-evidence, maximum-record processing, archive-verification, persistence, failure-recovery, accessibility, and responsive release gates |
-| `tests/release/` | Unpacked-distribution UDP capture-to-evidence, maximum-record processing, artifact-local verification, and upgrade persistence gate |
+| [src/](src/) | Browser workspace, capture, pure telemetry domain, replay, workers, and local persistence |
+| [verifier/](verifier/) | Production evidence verification shared by the browser and CLI |
+| [scripts/](scripts/) | CLI, managed server, UDP bridge, and fixture tools |
+| [scripts/release/](scripts/release/) | Deterministic packaging and release evidence |
+| [tests/e2e/](tests/e2e/) and [tests/release/](tests/release/) | Source-browser and unpacked-distribution acceptance gates |
+| [public/](public/) | Shipped assets and deterministic demo fixture |
+| [docs/](docs/README.md) | Architecture, design evidence, field proofs, releases, and guide navigation |
 
-Raw source records remain immutable. Frames, fields, metrics, diagnostics, incidents, and bundle artifacts are derived from those records, and the same path is used for the bundled fixture and imported files.
+Use the [repository map](docs/repository-map.md) for clickable source entry
+points, execution paths, test routing, and Graphify refresh boundaries. Detailed
+contracts live in the [architecture index](docs/architecture/README.md).
+
+Raw source records remain immutable. Frames, fields, metrics, diagnostics,
+incidents, and bundle artifacts are derived through the same pipeline for the
+bundled fixture, imported files, and finalized captures.
 
 ## Privacy and data handling
 
@@ -327,6 +300,8 @@ Local does not automatically mean safe to share. A saved replay or evidence bund
 
 | Document | Purpose |
 | --- | --- |
+| [Documentation index](docs/README.md) | Task-based entry point to operator, contributor, design, proof, and release documentation |
+| [Repository map](docs/repository-map.md) | Folder boundaries, linked implementation entry points, execution paths, tests, and generated-map policy |
 | [USER_GUIDE.md](USER_GUIDE.md) | Step-by-step installation, capture, replay, incident, evidence handoff, upgrade, removal, and troubleshooting |
 | [USE_CASES.md](USE_CASES.md) | Stable catalog of supported operator outcomes, constraints, and implementation evidence |
 | [CHANGELOG.md](CHANGELOG.md) | Canonical record of notable completed changes and tagged releases |

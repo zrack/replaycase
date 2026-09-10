@@ -84,7 +84,10 @@ test("warns when workspace cleanup fails and keeps the in-memory investigation",
   await page.goto("/");
   await page.getByRole("button", { name: /Save current replay/ }).click();
   await expect(page.locator(".saved-session-entry")).toHaveCount(1);
+  // Saving schedules a focus handoff after the library row renders.
+  await expect(page.getByRole("button", { name: /Reopen current saved session Harbor relay downlink/ })).toBeFocused();
   await page.getByLabel("Session-wide operator note").fill("Residual cleanup warning proof");
+  await expect(page.getByLabel("Session-wide operator note")).toHaveValue("Residual cleanup warning proof");
 
   await page.evaluate(() => {
     Storage.prototype.removeItem = function (): never {
