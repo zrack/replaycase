@@ -26,10 +26,11 @@ const OPERATOR_README_TEMPLATE = join(
   "templates",
   "README.md",
 );
-const RELEASE_MANIFEST_FORMAT = "narrowslink/release-manifest";
+const RELEASE_MANIFEST_FORMAT = "replaycase/release-manifest";
 const RELEASE_MANIFEST_VERSION = 1;
-const SOURCE_REPOSITORY = "https://github.com/zrack/narrowslink";
+const SOURCE_REPOSITORY = "https://github.com/zrack/replaycase";
 const MANIFEST_SELF_PATH = "release-manifest.json";
+const CLI_PATHS = new Set(["bin/replaycase.mjs", "bin/narrowslink.mjs"]);
 
 function fail(message) {
   throw new Error(message);
@@ -170,21 +171,21 @@ export function normalizeCycloneDx(raw, identity) {
   }
 
   const originalRootReference = raw.metadata.component["bom-ref"];
-  const purl = `pkg:npm/narrowslink@${identity.version}`;
+  const purl = `pkg:npm/replaycase@${identity.version}`;
   const component = {
     ...(raw.metadata.component ?? {}),
     "bom-ref": purl,
     type: "application",
-    name: "narrowslink",
+    name: "replaycase",
     version: identity.version,
     purl,
     properties: sortProperties([
       ...((raw.metadata.component?.properties ?? []).filter(
-        (property) => property?.name !== "narrowslink:distribution"
-          && property?.name !== "narrowslink:source-commit",
+        (property) => property?.name !== "replaycase:distribution"
+          && property?.name !== "replaycase:source-commit",
       )),
-      { name: "narrowslink:distribution", value: "bundled" },
-      { name: "narrowslink:source-commit", value: identity.commit },
+      { name: "replaycase:distribution", value: "bundled" },
+      { name: "replaycase:source-commit", value: identity.commit },
     ]),
   };
 
@@ -218,7 +219,7 @@ export function normalizeCycloneDx(raw, identity) {
 
   const normalized = {
     ...raw,
-    serialNumber: `urn:uuid:${uuidV5(`narrowslink:${identity.version}:${identity.commit}`)}`,
+    serialNumber: `urn:uuid:${uuidV5(`replaycase:${identity.version}:${identity.commit}`)}`,
     version: 1,
     metadata: {
       ...raw.metadata,
@@ -304,7 +305,7 @@ async function normalizeFilesystem(root, sourceDateEpoch) {
       for (const name of names) await visit(join(path, name));
       await chmod(path, 0o755);
     } else {
-      await chmod(path, portablePath(root, path) === "bin/narrowslink.mjs" ? 0o755 : 0o644);
+      await chmod(path, CLI_PATHS.has(portablePath(root, path)) ? 0o755 : 0o644);
     }
     await utimes(path, timestamp, timestamp);
   };
@@ -320,7 +321,7 @@ async function payloadFiles(stagingRoot) {
     entries.push({
       path: relativePath,
       bytes: pathStat.size,
-      mode: relativePath === "bin/narrowslink.mjs" ? "0755" : "0644",
+      mode: CLI_PATHS.has(relativePath) ? "0755" : "0644",
       sha256: await sha256File(path),
     });
   }
@@ -407,8 +408,8 @@ function releaseManifest(identity, files) {
   return {
     format: RELEASE_MANIFEST_FORMAT,
     formatVersion: RELEASE_MANIFEST_VERSION,
-    product: "NarrowsLink",
-    packageName: "narrowslink",
+    product: "ReplayCase",
+    packageName: "replaycase",
     version: identity.version,
     tag: identity.tag,
     commit: identity.commit,
@@ -459,13 +460,14 @@ async function renderOperatorReadme(identity) {
 
 function minimalPackageJson(identity) {
   return {
-    name: "narrowslink",
+    name: "replaycase",
     version: identity.version,
     private: true,
     description: "Local-first telemetry capture, replay, incident investigation, and evidence verification.",
     license: "MIT",
     type: "module",
     bin: {
+      replaycase: "bin/replaycase.mjs",
       narrowslink: "bin/narrowslink.mjs",
     },
     engines: {
@@ -473,6 +475,7 @@ function minimalPackageJson(identity) {
     },
     files: [
       "app",
+      "bin/replaycase.mjs",
       "bin/narrowslink.mjs",
       "LICENSE",
       "README.md",
@@ -490,6 +493,7 @@ function validatePackedFiles(packResult) {
     "LICENSE",
     "README.md",
     "SBOM.cdx.json",
+    "bin/replaycase.mjs",
     "bin/narrowslink.mjs",
     "package.json",
     "release-manifest.json",
@@ -511,7 +515,7 @@ async function buildReleaseOnce(identity, outputRoot, stagingRoot) {
   const buildRoot = join(dirname(stagingRoot), "compiled");
   const appBuild = join(buildRoot, "app");
   const cliOutput = join(buildRoot, "cli");
-  const cliBuild = join(cliOutput, "narrowslink.mjs");
+  const cliBuild = join(cliOutput, "replaycase.mjs");
   await rm(buildRoot, { recursive: true, force: true });
   await mkdir(buildRoot, { recursive: true });
   npmCommand(
@@ -522,10 +526,10 @@ async function buildReleaseOnce(identity, outputRoot, stagingRoot) {
         ...process.env,
         LANG: "C",
         LC_ALL: "C",
-        NARROWSLINK_APP_OUT_DIR: appBuild,
-        NARROWSLINK_BUILD_COMMIT: identity.commit,
-        NARROWSLINK_BUILD_VERSION: identity.version,
-        NARROWSLINK_CLI_OUT_DIR: cliOutput,
+        REPLAYCASE_APP_OUT_DIR: appBuild,
+        REPLAYCASE_BUILD_COMMIT: identity.commit,
+        REPLAYCASE_BUILD_VERSION: identity.version,
+        REPLAYCASE_CLI_OUT_DIR: cliOutput,
         SOURCE_DATE_EPOCH: String(identity.sourceDateEpoch),
         TZ: "UTC",
       },
@@ -553,7 +557,8 @@ async function buildReleaseOnce(identity, outputRoot, stagingRoot) {
     force: false,
     errorOnExist: true,
   });
-  await copyFile(cliBuild, join(stagingRoot, "bin", "narrowslink.mjs"));
+  await copyFile(cliBuild, join(stagingRoot, "bin", "replaycase.mjs"));
+  await copyFile(join(cliOutput, "narrowslink.mjs"), join(stagingRoot, "bin", "narrowslink.mjs"));
   await copyFile(join(REPOSITORY_ROOT, "LICENSE"), join(stagingRoot, "LICENSE"));
   await writeFile(join(stagingRoot, "README.md"), await renderOperatorReadme(identity), "utf8");
   await writeFile(join(stagingRoot, "package.json"), stableJson(minimalPackageJson(identity)), "utf8");
@@ -588,13 +593,13 @@ async function buildReleaseOnce(identity, outputRoot, stagingRoot) {
   );
   const [packResult] = JSON.parse(packOutput);
   validatePackedFiles(packResult);
-  const archiveName = `narrowslink-${identity.version}.tgz`;
+  const archiveName = `replaycase-${identity.version}.tgz`;
   if (packResult.filename !== archiveName) {
     fail(`npm pack produced ${String(packResult.filename)} instead of ${archiveName}.`);
   }
   const archivePath = join(outputRoot, archiveName);
-  const externalManifestName = `narrowslink-${identity.version}.release.json`;
-  const externalSbomName = `narrowslink-${identity.version}.cdx.json`;
+  const externalManifestName = `replaycase-${identity.version}.release.json`;
+  const externalSbomName = `replaycase-${identity.version}.cdx.json`;
   await copyFile(join(stagingRoot, MANIFEST_SELF_PATH), join(outputRoot, externalManifestName));
   await copyFile(join(stagingRoot, "SBOM.cdx.json"), join(outputRoot, externalSbomName));
 
@@ -633,7 +638,7 @@ export async function buildReproducibleRelease({
 } = {}) {
   const resolvedOutputRoot = resolve(REPOSITORY_ROOT, outputRoot);
   const identity = await inspectReleaseIdentity({ strict });
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "narrowslink-release-"));
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "replaycase-release-"));
   try {
     const firstOutput = join(temporaryRoot, "build-a", "output");
     const secondOutput = join(temporaryRoot, "build-b", "output");
@@ -663,7 +668,7 @@ export async function buildReproducibleRelease({
     }
 
     return {
-      format: "narrowslink/release-build-result",
+      format: "replaycase/release-build-result",
       formatVersion: 1,
       outputRoot: resolvedOutputRoot,
       archive: join(resolvedOutputRoot, first.archiveName),
@@ -715,7 +720,7 @@ export function buildUsage() {
   return [
     "Usage: node scripts/release/build-release.mjs [--strict] [--output <directory>]",
     "",
-    "Builds the NarrowsLink operator package twice from distinct staging paths,",
+    "Builds the ReplayCase operator package twice from distinct staging paths,",
     "requires byte-identical release assets, and copies the verified assets to",
     "the output directory. --strict additionally requires a clean worktree and",
     "an exact v<package-version> Git tag at HEAD.",

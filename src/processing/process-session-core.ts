@@ -175,7 +175,7 @@ export async function processSessionBlobCore(
     }
     throw new SessionProcessingCoreError(
       "PROCESSING_FAILED",
-      "NarrowsLink could not decode this replay.",
+      "ReplayCase could not decode this replay.",
       [error instanceof Error ? error.message : "Unknown decoder error."],
       error,
     );

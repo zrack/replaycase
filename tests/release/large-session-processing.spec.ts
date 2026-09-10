@@ -44,7 +44,7 @@ test.beforeAll(async () => {
 async function armHeartbeatForReplayImport(page: Page): Promise<void> {
   await page.evaluate((heartbeatIntervalMs) => {
     const input = document.querySelector<HTMLInputElement>(
-      "input[aria-label='Choose a local NarrowsLink replay']",
+      "input[aria-label='Choose a local ReplayCase replay']",
     );
     if (!input) throw new Error("The packaged replay input is unavailable.");
     input.addEventListener("change", () => {
@@ -141,7 +141,7 @@ test("unpacked release processes and persists the maximum replay tier", async ({
       .toBeVisible();
 
     await armHeartbeatForReplayImport(page);
-    await page.getByLabel("Choose a local NarrowsLink replay")
+    await page.getByLabel("Choose a local ReplayCase replay")
       .setInputFiles(LARGE_SESSION_PATH);
     await expect(page.getByRole("heading", { name: LARGE_SESSION_TITLE, level: 1 }))
       .toBeVisible({ timeout: 240_000 });

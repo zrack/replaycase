@@ -238,7 +238,7 @@ export function validateDecoderPack(input: unknown): DecoderPackDocument {
   const result = decoderPackDocumentSchema.safeParse(input);
   if (!result.success) {
     throw new DecoderPackValidationError(
-      "The file is not a supported NarrowsLink decoder pack.",
+      "The file is not a supported ReplayCase decoder pack.",
       result.error.issues.slice(0, 8).map((issue) => `${issue.path.join(".") || "pack"}: ${issue.message}`),
     );
   }

@@ -37,7 +37,7 @@ type WorkerFactory = () => Worker;
 function defaultWorkerFactory(): Worker {
   return new Worker(
     new URL("./evidence-bundle.worker.ts", import.meta.url),
-    { type: "module", name: "narrowslink-evidence-builder" },
+    { type: "module", name: "replaycase-evidence-builder" },
   );
 }
 

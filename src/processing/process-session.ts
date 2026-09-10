@@ -53,7 +53,7 @@ type WorkerFactory = () => Worker;
 function defaultWorkerFactory(): Worker {
   return new Worker(
     new URL("./session-processor.worker.ts", import.meta.url),
-    { type: "module", name: "narrowslink-session-processor" },
+    { type: "module", name: "replaycase-session-processor" },
   );
 }
 
@@ -207,7 +207,7 @@ export function processSessionBlob(
     } catch (error) {
       reject(new SessionProcessingError(
         "WORKER_FAILURE",
-        "NarrowsLink could not start the replay processing worker.",
+        "ReplayCase could not start the replay processing worker.",
         [error instanceof Error ? error.message : "Worker construction failed."],
         error,
       ));

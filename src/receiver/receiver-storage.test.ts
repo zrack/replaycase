@@ -19,6 +19,16 @@ function memoryStorage(): ReceiverStorageLike {
 const bundleHash = "a".repeat(64);
 
 describe("receiver workspace notes", () => {
+  it("reopens findings under the pre-rename storage key without copying or rewriting them", () => {
+    const key = `narrowslink:receiver-workspace:v1:${bundleHash}`;
+    const raw = JSON.stringify({ version: 1, text: "Legacy receiver finding", updatedAt: "2026-07-25T12:00:00.000Z" });
+    const storage = memoryStorage();
+    storage.setItem(key, raw);
+    expect(loadReceiverNotes(bundleHash, storage).text).toBe("Legacy receiver finding");
+    expect(storage.getItem(key)).toBe(raw);
+    expect(storage.getItem(`replaycase:receiver-workspace:v1:${bundleHash}`)).toBeNull();
+  });
+
   it("persists findings by immutable bundle identity, separate from bundle bytes", () => {
     const storage = memoryStorage();
 

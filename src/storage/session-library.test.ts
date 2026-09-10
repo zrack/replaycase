@@ -479,7 +479,7 @@ describe("durable local session library", () => {
     await expect(library.list()).rejects.toMatchObject({
       name: "SessionLibraryError",
       code: "open-failed",
-      message: "The local session library is blocked by another NarrowsLink window.",
+      message: "The local session library is blocked by another ReplayCase window.",
     });
   });
 

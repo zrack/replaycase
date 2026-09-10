@@ -151,8 +151,8 @@ function ReceiverRail({
   return (
     <aside className="left-rail receiver-rail" aria-label="Received evidence navigation">
       <div className="brand-lockup">
-        <img src="/narrowslink-mark.svg" alt="NarrowsLink" />
-        <div><strong>NarrowsLink</strong><span>Evidence receiver</span></div>
+        <img src="/replaycase-mark.svg" alt="ReplayCase" />
+        <div><strong>ReplayCase</strong><span>Evidence receiver</span></div>
       </div>
       <div className="rail-scroll">
         <section className="rail-section">

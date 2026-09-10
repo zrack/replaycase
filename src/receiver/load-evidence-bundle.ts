@@ -34,7 +34,7 @@ export function verifyEvidenceBytesInWorker(bytes: ArrayBuffer): Promise<Verifie
   return new Promise((resolve, reject) => {
     const worker = new Worker(
       new URL("./evidence-verifier.worker.ts", import.meta.url),
-      { type: "module", name: "narrowslink-evidence-verifier" },
+      { type: "module", name: "replaycase-evidence-verifier" },
     );
     const finish = () => worker.terminate();
     worker.addEventListener("message", (event: MessageEvent<ReceiverVerificationWorkerResponse>) => {
@@ -106,7 +106,7 @@ export async function loadEvidenceBundleFile(
     if (error instanceof EvidenceBundleLoadError) throw error;
     throw new EvidenceBundleLoadError(
       "WORKER_FAILURE",
-      "NarrowsLink could not verify the selected evidence bundle.",
+      "ReplayCase could not verify the selected evidence bundle.",
       file.name,
       [error instanceof Error ? error.message : "Unknown evidence verification error."],
     );

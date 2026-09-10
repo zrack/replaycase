@@ -1,8 +1,8 @@
-# NarrowsLink user guide
+# ReplayCase user guide
 
-This guide covers NarrowsLink v0.3.0 operation from installation through local capture, replay, incident authoring, evidence export, receiver verification, and comparative replay. Source contributors should use [CONTRIBUTING.md](CONTRIBUTING.md).
+This guide covers ReplayCase v0.4.0 operation from installation through local capture, replay, incident authoring, evidence export, receiver verification, and comparative replay. Source contributors should use [CONTRIBUTING.md](CONTRIBUTING.md).
 
-NarrowsLink keeps telemetry, saved sessions, operator annotations, and evidence generation on the local machine. It does not provide accounts, cloud storage, hosted ingestion, or telemetry upload.
+ReplayCase keeps telemetry, saved sessions, operator annotations, and evidence generation on the local machine. It does not provide accounts, cloud storage, hosted ingestion, or telemetry upload.
 
 ## Requirements
 
@@ -12,17 +12,17 @@ You need:
 - A local browser.
 - A supported Chromium browser for physical Web Serial capture.
 - Enough browser memory and storage for the sessions you plan to process and retain.
-- The four files from the [NarrowsLink v0.3.0 release](https://github.com/zrack/narrowslink/releases/tag/v0.3.0).
+- The four files from the [ReplayCase v0.4.0 release](https://github.com/zrack/replaycase/releases/tag/v0.4.0).
 
 The release package contains the production application, authenticated UDP bridge, bundled Harbor relay replay, decoder-pack tools, application and CLI evidence receivers, and comparison workflow. A source checkout, Vite, and project dependencies are not required.
 
-## Install and verify v0.3.0
+## Install and verify v0.4.0
 
 Download these four release assets into one directory:
 
-- `narrowslink-0.3.0.tgz`
-- `narrowslink-0.3.0.release.json`
-- `narrowslink-0.3.0.cdx.json`
+- `replaycase-0.4.0.tgz`
+- `replaycase-0.4.0.release.json`
+- `replaycase-0.4.0.cdx.json`
 - `SHA256SUMS`
 
 On macOS, verify the published checksum set:
@@ -42,23 +42,23 @@ All three listed assets must report `OK`. The checksum file is delivered through
 Install the package without running lifecycle scripts:
 
 ```bash
-npm install --global ./narrowslink-0.3.0.tgz --ignore-scripts
+npm install --global ./replaycase-0.4.0.tgz --ignore-scripts
 ```
 
 Confirm the installed identity:
 
 ```bash
-narrowslink version --json
+replaycase version --json
 ```
 
-The output must identify version `0.3.0`. Compare its full commit and version with `narrowslink-0.3.0.release.json`. If either differs, stop and resolve the package mismatch before collecting evidence.
+The output must identify version `0.4.0`. Compare its full commit and version with `replaycase-0.4.0.release.json`. If either differs, stop and resolve the package mismatch before collecting evidence.
 
-## Start and stop NarrowsLink
+## Start and stop ReplayCase
 
 Start the application:
 
 ```bash
-narrowslink serve
+replaycase serve
 ```
 
 The command starts the production UI and authenticated bridge in one process, then opens:
@@ -70,20 +70,20 @@ http://127.0.0.1:47890/
 If the browser does not open, leave the command running and open the printed URL yourself. To prevent automatic browser launch:
 
 ```bash
-narrowslink serve --no-open
+replaycase serve --no-open
 ```
 
 Press `Ctrl+C` in the serving terminal to stop the application server and bridge cleanly.
 
 Keep the default application port when you want access to an existing local session library. Browser storage belongs to the exact origin `http://127.0.0.1:47890`; another application port or browser profile selects different storage.
 
-Use `narrowslink serve --help` to inspect bind and launch options. UDP-related command-line flags populate the capture dialog defaults. They do not start a UDP socket until you select **Run UDP preflight**.
+Use `replaycase serve --help` to inspect bind and launch options. UDP-related command-line flags populate the capture dialog defaults. They do not start a UDP socket until you select **Run UDP preflight**.
 
 ## First run with the bundled replay
 
-NarrowsLink validates and opens **Harbor relay downlink** automatically at startup. This synthetic session is the safest way to learn the workspace.
+ReplayCase validates and opens **Harbor relay downlink** automatically at startup. This synthetic session is the safest way to learn the workspace.
 
-![NarrowsLink mission-timeline session review workspace](docs/assets/narrowslink-dashboard.png)
+![ReplayCase mission-timeline session review workspace](docs/assets/replaycase-dashboard.png)
 
 1. Select **Play replay**.
 2. Move **Replay position** or choose a point on the mission timeline.
@@ -111,14 +111,14 @@ On narrow screens, use **Saved (n)** to open the same session library in a dialo
 
 ## Open a local replay
 
-NarrowsLink accepts `.json` and `.nlsession` files using session format v1 or v2.
+ReplayCase accepts `.json` and `.nlsession` files using session format v1 or v2.
 
 1. Select **Open replay**, **Open local replay**, or **Replace session**.
 2. Choose the local file.
-3. Follow the processing phase and completion percentage while NarrowsLink reads, parses, validates, decodes, aggregates, canonicalizes, and transfers the replay.
+3. Follow the processing phase and completion percentage while ReplayCase reads, parses, validates, decodes, aggregates, canonicalizes, and transfers the replay.
 4. Confirm the expected title, source, decoder pack and runtime identity, duration, and integrity state.
 
-A valid imported file becomes the active replay and NarrowsLink attempts to save its canonical bytes in the local library. Select **Cancel** to stop an in-progress import; cancellation terminates the worker, leaves the active replay unchanged, and does not save partial content. A failed, cancelled, or oversized file does not replace a valid replay.
+A valid imported file becomes the active replay and ReplayCase attempts to save its canonical bytes in the local library. Select **Cancel** to stop an in-progress import; cancellation terminates the worker, leaves the active replay unchanged, and does not save partial content. A failed, cancelled, or oversized file does not replace a valid replay.
 
 Imported and saved replay documents are limited to 64 MiB of canonical UTF-8 JSON, 200,000 records, and 24 hours. The cross-browser acceptance corpus reaches the record ceiling at 52,378,445 bytes; the exact time and memory required still depend on the browser and machine.
 
@@ -134,7 +134,7 @@ Every new capture uses one decoder pack. The default is **NSL-01 v1.3.7**.
 4. Wait for the loaded-pack notice. Do not begin a test if identity, compatibility, or fixture validation fails.
 5. Confirm the displayed runtime revision and first 12 characters of the pack SHA-256 against the expected pack identity.
 
-Pack selection is locked once preflight begins. The resulting `.nlsession` embeds the exact pack, schema, runtime, and revision identities. NarrowsLink accepts only bounded declarative packs for its supported runtime allowlist and does not run pack-supplied JavaScript.
+Pack selection is locked once preflight begins. The resulting `.nlsession` embeds the exact pack, schema, runtime, and revision identities. ReplayCase accepts only bounded declarative packs for its supported runtime allowlist and does not run pack-supplied JavaScript.
 
 For pack authoring, offline validation, NMEA record boundaries, and the trust model, use [DECODER_PACKS.md](DECODER_PACKS.md).
 
@@ -144,19 +144,19 @@ A capture profile is local setup state, not capture evidence. It stores the exac
 
 1. Configure the decoder and transport in **Live capture**.
 2. Select **Save setup**, enter a profile name, and confirm the save.
-3. On a later run, choose the profile under **Capture profile**. NarrowsLink applies its exact decoder pack and transport settings.
+3. On a later run, choose the profile under **Capture profile**. ReplayCase applies its exact decoder pack and transport settings.
 4. If you deliberately change that setup, the profile is marked **modified**. Select **Update setup** to replace the stored settings or leave the profile unchanged.
 5. Use the trash button to remove the selected profile.
 
-Profiles are stored in browser local storage at the current NarrowsLink origin. They are limited to 16 profiles and 2 MiB of canonical content. A serial profile can restore settings but cannot bypass the browser's native device-selection and permission prompt.
+Profiles are stored in browser local storage at the current ReplayCase origin. They are limited to 16 profiles and 2 MiB of canonical content. A serial profile can restore settings but cannot bypass the browser's native device-selection and permission prompt.
 
 ## Record live UDP
 
 The installed release manages the authenticated bridge. The operator never copies a bearer token.
 
-![NarrowsLink confirming UDP traffic and decoder fit before recording](docs/design/capture-preflight-ready.png)
+![ReplayCase confirming UDP traffic and decoder fit before recording](docs/design/replaycase-preflight.png)
 
-1. Start NarrowsLink with `narrowslink serve`.
+1. Start ReplayCase with `replaycase serve`.
 2. Select **Live capture** or **Capture**.
 3. In **Record live telemetry**, leave **UDP bridge** selected.
 4. Confirm **Managed local bridge · authenticated**. The installed release should not show manual **Bridge URL** or **Bridge token** fields.
@@ -175,7 +175,7 @@ The installed release manages the authenticated bridge. The operator never copie
 
 Using UDP port `0` lets the bridge choose an available port. Read the actual bound port under **Source** before starting the sender.
 
-UDP preflight uses a temporary bridge capture identity. Starting recording first requires that probe to stop cleanly, discards its sampled traffic, and opens a new capture identity. If NarrowsLink cannot confirm the stop, it refuses to record because the evidence boundary is not proven. The resulting `.nlsession` begins only with traffic received after **Start recording**.
+UDP preflight uses a temporary bridge capture identity. Starting recording first requires that probe to stop cleanly, discards its sampled traffic, and opens a new capture identity. If ReplayCase cannot confirm the stop, it refuses to record because the evidence boundary is not proven. The resulting `.nlsession` begins only with traffic received after **Start recording**.
 
 For NMEA 0183, send one complete `$...*HH` sentence per UDP datagram. Concatenating multiple sentences into one datagram is not split automatically.
 
@@ -184,15 +184,13 @@ For traffic from another machine, bind the receiving computer's interface addres
 This example supplies unicast or multicast defaults before startup:
 
 ```bash
-narrowslink serve \
+replaycase serve \
   --udp-host 0.0.0.0 \
   --udp-port 9104 \
   --multicast-group 239.42.91.4
 ```
 
 The dialog remains the final per-capture configuration. Selecting **Stop, save & replay** downloads a version 2 `.nlsession`, opens the validated finalized capture, and attempts to retain it in the local library.
-
-![NarrowsLink replaying and investigating a captured UDP burst](docs/design/live-capture-replay.jpg)
 
 ## Record live serial telemetry
 
@@ -210,7 +208,7 @@ Physical serial capture requires a browser with Web Serial support, normally a C
 10. Send the telemetry that belongs in evidence and watch the serial reads, input bytes, retained records, and retained bytes.
 11. Select **Stop, save & replay**.
 
-Device selection and port setup happen before the capture clock starts. When recording begins, NarrowsLink keeps the selected port open but resets serial framing and counters; only subsequent reads enter the immutable session. NarrowsLink retains undecodable and partial input received after that boundary as evidence. A disconnect or read failure produces an incomplete receipt and a capture-path diagnostic rather than silently claiming a clean capture.
+Device selection and port setup happen before the capture clock starts. When recording begins, ReplayCase keeps the selected port open but resets serial framing and counters; only subsequent reads enter the immutable session. ReplayCase retains undecodable and partial input received after that boundary as evidence. A disconnect or read failure produces an incomplete receipt and a capture-path diagnostic rather than silently claiming a clean capture.
 
 Both preflight paths analyze at most 256 input units, 512 KiB of input, and 16 UDP endpoints. The dialog retains aggregate observations, not sampled payloads. **Stop preflight** closes the temporary source without creating, saving, or downloading a session.
 
@@ -231,7 +229,7 @@ The automated release gate exercises the serial application path with an injecte
 
 Capture-path diagnostics describe local collection failures. Keep them distinct from source-link and decoder failures when writing an incident conclusion.
 
-For UDP, **Payload** is an exact bridge observation. **UDP** adds the fixed eight-byte datagram header, and **IP minimum** adds the fixed IPv4 or IPv6 header under stated no-fragmentation and no-options assumptions. **Link** and **Radio** remain unavailable because a UDP socket does not observe those layers. On Linux, NarrowsLink can report a capture-scoped socket-drop delta when procfs exposes one unique socket. Other platforms and ambiguous or unreadable sockets remain explicitly unavailable; that state is not zero.
+For UDP, **Payload** is an exact bridge observation. **UDP** adds the fixed eight-byte datagram header, and **IP minimum** adds the fixed IPv4 or IPv6 header under stated no-fragmentation and no-options assumptions. **Link** and **Radio** remain unavailable because a UDP socket does not observe those layers. On Linux, ReplayCase can report a capture-scoped socket-drop delta when procfs exposes one unique socket. Other platforms and ambiguous or unreadable sockets remain explicitly unavailable; that state is not zero.
 
 ## Create an exact incident range
 
@@ -244,7 +242,7 @@ Use a local range when a replay preset is too broad or the session has no preset
 5. Choose **Info**, **Warning**, or **Critical** severity.
 6. Select **Create range**.
 
-Incident ranges use half-open semantics: `[start, end)`. The start instant is included; the end instant is excluded. NarrowsLink stores the offsets as integer microseconds.
+Incident ranges use half-open semantics: `[start, end)`. The start instant is included; the end instant is excluded. ReplayCase stores the offsets as integer microseconds.
 
 Use the amber timeline handles for rapid adjustment, then use **Edit operator range** for exact boundaries. Replay presets remain immutable. Select **Refine replay preset as a local range** to create an editable copy.
 
@@ -287,34 +285,34 @@ The preview size is an estimate. The archive manifest contains the actual artifa
 
 Every bundle includes range-filtered transport events and whole-session provenance, bridge-journal, and integrity-receipt artifacts. Optional source, decoded, diagnostic, schema, marker, and note artifacts follow the selected incident and inclusion controls.
 
-Version 3 and 4 raw and decoded artifacts are each limited to 100,000 rows. NarrowsLink v0.3.0 creates version 4 bundles; v0.2.0 creates version 3. When investigating a larger replay, select a narrower incident before including those groups. The maximum-record release case uses an exact 10,000-record incident rather than exporting the full 200,000-record session.
+Version 3 and 4 raw and decoded artifacts are each limited to 100,000 rows. ReplayCase v0.4.0 creates version 4 bundles; v0.2.0 creates version 3. When investigating a larger replay, select a narrower incident before including those groups. The maximum-record release case uses an exact 10,000-record incident rather than exporting the full 200,000-record session.
 
 ## Verify a received bundle
 
 Treat received `.nlb` bytes as untrusted.
 
-The v0.3.0 application and CLI verify versions 3 and 4. Upgrade a v0.2.0 receiver before opening a version 4 bundle; changing a manifest or file extension is not a conversion. Open the incident directly:
+The v0.4.0 application and CLI verify versions 3 and 4. Upgrade a v0.2.0 receiver before opening a version 4 bundle; changing a manifest or file extension is not a conversion. Open the incident directly:
 
-1. Start NarrowsLink on the receiving machine.
+1. Start ReplayCase on the receiving machine.
 2. Select **Open evidence** in the Sessions rail or top bar.
-3. Choose the received `.nlb` and wait while NarrowsLink preflights ZIP structure, bounds decompression, validates every artifact, checks identities and checksums, and reconciles the exact incident.
+3. Choose the received `.nlb` and wait while ReplayCase preflights ZIP structure, bounds decompression, validates every artifact, checks identities and checksums, and reconciles the exact incident.
 4. Confirm the three claims separately: **Internal consistency**, **Evidence completeness**, and **Source authenticity**. A green internal-consistency result does not turn incomplete capture evidence or unsigned authenticity into a verified claim.
 5. Review **Artifact groups** before interpreting the timeline. **Not included** means the archive did not carry that evidence; the receiver does not infer or reconstruct it from other artifacts.
 6. Inspect the exact half-open range through the received timeline, packet or raw-record table, and **Evidence** and **Provenance** tabs.
-7. Use the **Notes** tab for a receiver-owned finding. NarrowsLink stores it separately under the exact whole-bundle SHA-256; it never changes the `.nlb` or presents the finding as source evidence.
+7. Use the **Notes** tab for a receiver-owned finding. ReplayCase stores it separately under the exact whole-bundle SHA-256; it never changes the `.nlb` or presents the finding as source evidence.
 
-If verification fails, NarrowsLink keeps the previously open replay or receiver workspace unchanged and identifies the failure class and artifact. Do not extract or inspect the rejected archive manually.
+If verification fails, ReplayCase keeps the previously open replay or receiver workspace unchanged and identifies the failure class and artifact. Do not extract or inspect the rejected archive manually.
 
-The CLI uses the same production verifier and remains the path for terminal-only use or a stable machine-readable report. Install a verified NarrowsLink package, then run:
+The CLI uses the same production verifier and remains the path for terminal-only use or a stable machine-readable report. Install a verified ReplayCase package, then run:
 
 ```bash
-narrowslink verify path/to/incident.nlb
+replaycase verify path/to/incident.nlb
 ```
 
 For a stable machine-readable report:
 
 ```bash
-narrowslink verify path/to/incident.nlb --json
+replaycase verify path/to/incident.nlb --json
 ```
 
 A passing human-readable report identifies:
@@ -345,15 +343,15 @@ For a real-world handoff claim, follow the [independent field-proof procedure](d
 
 ## Compare two bounded inputs
 
-NarrowsLink v0.3.0 can compare an exact incident from the active replay or the fixed range from a verified receiver bundle with one candidate session or bundle.
+ReplayCase v0.4.0 can compare an exact incident from the active replay or the fixed range from a verified receiver bundle with one candidate session or bundle.
 
 1. In the replay workspace, select the baseline incident and choose **Compare**. In the receiver workspace, choose **Compare** to use the bundle's exact included range.
-2. Under **Candidate**, choose a `.nlsession`, `.json`, or `.nlb`. NarrowsLink validates a session through the normal decoder pipeline and verifies a bundle through the production receiver before continuing. Session processing shows the same phase progress as replay import and can be cancelled without replacing either source workspace.
+2. Under **Candidate**, choose a `.nlsession`, `.json`, or `.nlb`. ReplayCase validates a session through the normal decoder pipeline and verifies a bundle through the production receiver before continuing. Session processing shows the same phase progress as replay import and can be cancelled without replacing either source workspace.
 3. If the candidate is a session, choose its **Candidate incident**.
 4. Choose an alignment:
    - **Align range starts** treats each selected range start as relative zero.
    - **Shared event anchors** requires a short event label and exact microsecond offsets inside both half-open ranges.
-5. Select **Open comparison**. NarrowsLink computes only the intersection after alignment in a worker, reports progress, and reports every unmatched leading or trailing interval. Cancelling construction returns to setup without creating a partial comparison.
+5. Select **Open comparison**. ReplayCase computes only the intersection after alignment in a worker, reports progress, and reports every unmatched leading or trailing interval. Cancelling construction returns to setup without creating a partial comparison.
 6. Review **Comparison eligibility** before interpreting a delta. Packet, diagnostic, and decoded-field comparisons require exact decoder, schema, pack, and runtime identity plus selected raw support in both inputs. RSSI requires one matching observation basis; decoded-packet RSSI also requires the same decoder identity. Capture evidence retains its own basis and may remain review-required or unavailable.
 7. Select a metric row to inspect its reason, baseline and candidate supporting counts, up to the first 64 evidence IDs, and limitations. Higher packet traffic and arbitrary decoded values are directional observations, not automatic improvements.
 8. Enter an **Operator conclusion**, then select **Export finding** to download the `.nlcompare.json`.
@@ -368,39 +366,60 @@ The Sessions rail contains validated canonical sessions stored in IndexedDB.
 
 - Select **Save current replay** to retain the active bundled replay when it is not already saved.
 - Imported files and finalized captures automatically attempt a library save.
-- Select a saved row to reopen it. NarrowsLink reports processing progress while it re-hashes, parses, validates, decodes, aggregates, and transfers the stored bytes before replacing the active replay.
+- Select a saved row to reopen it. ReplayCase reports processing progress while it re-hashes, parses, validates, decodes, aggregates, and transfers the stored bytes before replacing the active replay.
 - Select **Cancel** during reopen to keep both the current replay and saved library entry unchanged.
 - Saving exact duplicate canonical content is idempotent; it remains one entry.
 - Select the remove control, then **Remove**, to delete a saved replay.
 - Use **Retry local library** after a temporary storage failure.
 
-Removing a saved replay also attempts to clear its markers, note, and authored ranges. The active in-memory replay stays open, and exported files are not deleted. If workspace cleanup fails, NarrowsLink leaves a persistent residual-data warning.
+Removing a saved replay also attempts to clear its markers, note, and authored ranges. The active in-memory replay stays open, and exported files are not deleted. If workspace cleanup fails, ReplayCase leaves a persistent residual-data warning.
 
-New saves retain exact canonical bytes in version 3 IndexedDB records. NarrowsLink continues to read its earlier version 1 text and version 2 Blob records, but every reopen must still pass identity, canonical-byte, metadata, schema, and decoder checks.
+New saves retain exact canonical bytes in version 3 IndexedDB records. ReplayCase continues to read its earlier version 1 text and version 2 Blob records, but every reopen must still pass identity, canonical-byte, metadata, schema, and decoder checks.
 
 A storage error does not mean a session was saved. Keep the downloaded `.nlsession` when the browser reports that IndexedDB, Web Crypto, quota, or the transaction prevented persistence.
 
-## Upgrade NarrowsLink
+<a id="upgrade-narrowslink"></a>
+
+## Upgrade from NarrowsLink
+
+ReplayCase is the same application under a new name. Version `0.4.0` uses the `replaycase` package and command; it also provides `narrowslink` as a compatibility alias. Do not install both npm packages together: they would compete for the legacy command.
+
+1. Download and verify the four ReplayCase release assets as described above.
+2. Stop the running NarrowsLink process with `Ctrl+C`. Keep any downloaded sessions or bundles you need.
+3. Remove the old application package, then install ReplayCase without lifecycle scripts:
+
+```bash
+npm uninstall --global narrowslink
+npm install --global ./replaycase-0.4.0.tgz --ignore-scripts
+replaycase version --json
+replaycase serve
+```
+
+Package removal does not delete browser storage. Use the same browser profile and `http://127.0.0.1:47890` origin to see your sessions, capture profiles, markers, notes, ranges, and receiver findings. No data conversion or storage clearing is required. Both command names invoke the same ReplayCase build; automation that checks the version JSON `name` must now expect `replaycase`.
+
+The `.nlsession`, `.nlb`, `.nldecoder`, and `.nlcompare.json` extensions and their `narrowslink/...` format identifiers remain unchanged. Built-in pack descriptions may retain the old name because changing content-addressed metadata changes decoder identity. See the [branding compatibility contract](docs/architecture/branding-compatibility.md) for machine-facing aliases and retained identifiers.
+
+## Upgrade ReplayCase
 
 1. Download the newer package, release manifest, SBOM, and `SHA256SUMS`.
 2. Verify the new checksum set.
-3. Stop the running `narrowslink serve` process with `Ctrl+C`.
+3. Stop the running `replaycase serve` process with `Ctrl+C`.
 4. Install the new package:
 
 ```bash
-npm install --global ./narrowslink-<version>.tgz --ignore-scripts
+npm install --global ./replaycase-<version>.tgz --ignore-scripts
 ```
 
 5. Confirm the new identity:
 
 ```bash
-narrowslink version --json
+replaycase version --json
 ```
 
-6. Start NarrowsLink on the same `127.0.0.1` application port with the same browser profile:
+6. Start ReplayCase on the same `127.0.0.1` application port with the same browser profile:
 
 ```bash
-narrowslink serve
+replaycase serve
 ```
 
 The installed package and browser-held library are separate. Replacing package files does not remove sessions or operator workspace data.
@@ -409,17 +428,18 @@ The installed package and browser-held library are separate. Replacing package f
 
 | Application | Bundle writer | Bundle receiver |
 | --- | --- | --- |
-| v0.2.0 | Version 3 | Version 3 only |
-| v0.3.0 | Version 4 | Versions 3 and 4 |
+| NarrowsLink v0.2.0 | Version 3 | Version 3 only |
+| NarrowsLink v0.3.0 | Version 4 | Versions 3 and 4 |
+| ReplayCase v0.4.0 | Version 4 | Versions 3 and 4 |
 
-Upgrade both the recording and receiving installations to v0.3.0 for a new handoff. Existing version 1 and 2 session documents remain supported without rewriting their evidence. Existing version 3 bundles remain inspectable. New version 4 bundles require the newer receiver; NarrowsLink does not provide a downgrade export. Keep original artifacts rather than editing manifests or removing provenance to make an older verifier accept them.
+Upgrade both the recording and receiving installations to v0.4.0 for a new handoff. Existing version 1 and 2 session documents remain supported without rewriting their evidence. Existing version 3 bundles remain inspectable. New version 4 bundles require the newer receiver; ReplayCase does not provide a downgrade export. Keep original artifacts rather than editing manifests or removing provenance to make an older verifier accept them.
 
-## Remove NarrowsLink
+## Remove ReplayCase
 
 Stop the running process, then uninstall the package:
 
 ```bash
-npm uninstall --global narrowslink
+npm uninstall --global replaycase
 ```
 
 Uninstalling does not delete:
@@ -435,16 +455,16 @@ To intentionally purge the browser-held library and workspace, preserve any requ
 
 | Symptom | What to do |
 | --- | --- |
-| `narrowslink` is not found | Confirm the global npm binary directory is on `PATH`, then rerun `narrowslink version --json`. Do not substitute an unverified package. |
-| The browser did not open | Keep `narrowslink serve` running and open the printed loopback URL. |
+| `replaycase` is not found | Confirm the global npm binary directory is on `PATH`, then rerun `replaycase version --json`. Do not substitute an unverified package. |
+| The browser did not open | Keep `replaycase serve` running and open the printed loopback URL. |
 | Port `47890` is occupied | Stop the existing process when possible. An alternate `--app-port` works, but it selects a different browser-storage origin. |
-| The managed capture status is missing or invalid | Start the installed package with `narrowslink serve`; do not serve the application directory as static files. |
+| The managed capture status is missing or invalid | Start the installed package with `replaycase serve`; do not serve the application directory as static files. |
 | UDP preflight will not start | Confirm the bind address exists locally, the port is free, and multicast group and interface values use the same IP family. |
 | UDP preflight sees no traffic | Send to the exact address under **Source**, then check firewall, routing, and sender configuration. Port `0` changes to the actual assigned port after preflight opens. |
 | Preflight reports a decoder mismatch | Confirm the sender's framing and protocol, then select or load the matching pack. Record with the warning only when preserving intentionally mismatched raw evidence is the test objective. |
-| Recording cannot follow UDP preflight | NarrowsLink could not prove the temporary probe stopped. Select **Stop preflight**, resolve the bridge problem, and run a new preflight; do not treat probe traffic as recorded evidence. |
+| Recording cannot follow UDP preflight | ReplayCase could not prove the temporary probe stopped. Select **Stop preflight**, resolve the bridge problem, and run a new preflight; do not treat probe traffic as recorded evidence. |
 | A capture profile will not save | Confirm browser local storage is available and the profile set remains within 16 profiles and 2 MiB. Credentials, device permission, titles, and telemetry must be configured separately. |
-| A decoder pack will not load | Confirm the file is at most 512 KiB, was sealed with `narrowslink decoder seal`, uses a supported runtime, and passes its bundled fixtures. |
+| A decoder pack will not load | Confirm the file is at most 512 KiB, was sealed with `replaycase decoder seal`, uses a supported runtime, and passes its bundled fixtures. |
 | NMEA records are partial or unknown | Send one sentence per UDP datagram, or terminate each serial sentence with LF; confirm `$` prefix and `*HH` checksum. |
 | Web Serial is unavailable | Use a supported Chromium browser at the loopback application URL, or use UDP capture. |
 | Status says **Recording with attention required** | Stop and preserve the retained records. Expect incomplete capture evidence and review its issue codes. |
@@ -459,7 +479,7 @@ To intentionally purge the browser-held library and workspace, preserve any requ
 
 ## Privacy, security, and authenticity
 
-NarrowsLink does not upload telemetry, but local evidence can still be sensitive. Sessions and bundles may contain:
+ReplayCase does not upload telemetry, but local evidence can still be sensitive. Sessions and bundles may contain:
 
 - Raw telemetry bytes
 - Device identifiers
@@ -472,7 +492,7 @@ Review and sanitize evidence before committing it to a repository, attaching it 
 
 The managed bridge control plane is loopback-only and uses an internal short-lived credential. The UDP listener still binds the interface chosen by the operator and can receive traffic from that interface.
 
-Release checksums and bundle verification establish internal consistency. The v0.3 release, checksum file, decoder packs, comparison findings, and version 3 or 4 evidence bundles are unsigned. They do not establish publisher, author, source-channel, or build-environment authenticity.
+Release checksums and bundle verification establish internal consistency. The v0.4 release, checksum file, decoder packs, comparison findings, and version 3 or 4 evidence bundles are unsigned. They do not establish publisher, author, source-channel, or build-environment authenticity.
 
 ## Current operating limits
 
@@ -495,15 +515,15 @@ Release checksums and bundle verification establish internal consistency. The v0
 
 | Command | Purpose |
 | --- | --- |
-| `narrowslink --help` | Show available commands |
-| `narrowslink version --json` | Print the installed version and commit |
-| `narrowslink serve` | Start the production UI and authenticated bridge |
-| `narrowslink serve --help` | Show application, bridge, UDP, multicast, and launch options |
-| `narrowslink serve --no-open` | Start without opening a browser |
-| `narrowslink verify incident.nlb` | Verify a received evidence bundle locally |
-| `narrowslink verify incident.nlb --json` | Emit the stable machine-readable verification report |
-| `narrowslink decoder seal draft.json --out pack.nldecoder` | Seal and conformance-test a decoder-pack draft without overwriting output |
-| `narrowslink decoder validate pack.nldecoder` | Validate pack identity, runtime compatibility, and fixtures offline |
+| `replaycase --help` | Show available commands |
+| `replaycase version --json` | Print the installed version and commit |
+| `replaycase serve` | Start the production UI and authenticated bridge |
+| `replaycase serve --help` | Show application, bridge, UDP, multicast, and launch options |
+| `replaycase serve --no-open` | Start without opening a browser |
+| `replaycase verify incident.nlb` | Verify a received evidence bundle locally |
+| `replaycase verify incident.nlb --json` | Emit the stable machine-readable verification report |
+| `replaycase decoder seal draft.json --out pack.nldecoder` | Seal and conformance-test a decoder-pack draft without overwriting output |
+| `replaycase decoder validate pack.nldecoder` | Validate pack identity, runtime compatibility, and fixtures offline |
 
 ## Get help
 

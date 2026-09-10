@@ -65,7 +65,7 @@ function validateToken(value) {
 }
 
 function usage() {
-  return `NarrowsLink local UDP capture bridge
+  return `ReplayCase local UDP capture bridge
 
 Usage: node scripts/capture-bridge.mjs [options]
 
@@ -76,7 +76,7 @@ Options:
   --multicast-group <ip> Default IPv4 or IPv6 multicast group
   --multicast-interface <ip>
                          Default local interface address for group membership
-  --token <token>        Browser authentication token (or set NARROWSLINK_BRIDGE_TOKEN)
+  --token <token>        Browser authentication token (or set REPLAYCASE_BRIDGE_TOKEN)
   --help                 Show this message
 `;
 }
@@ -88,7 +88,7 @@ export function parseArguments(argv) {
     udpPort: DEFAULT_UDP_PORT,
     multicastGroup: undefined,
     multicastInterface: undefined,
-    token: process.env.NARROWSLINK_BRIDGE_TOKEN,
+    token: process.env.REPLAYCASE_BRIDGE_TOKEN || process.env.NARROWSLINK_BRIDGE_TOKEN,
     tokenWasGenerated: false,
   };
   for (let index = 0; index < argv.length; index += 1) {
@@ -790,7 +790,7 @@ export function createCaptureBridge(options) {
       const eventToken = url.pathname === "/v1/events" ? url.searchParams.get("token") : null;
       const receivedToken = eventToken ?? bearerToken(request);
       if (!tokenMatches(config.token, receivedToken)) {
-        throw new BridgeRequestError(401, "unauthorized", "A valid NarrowsLink bridge token is required.");
+        throw new BridgeRequestError(401, "unauthorized", "A valid ReplayCase bridge token is required.");
       }
 
       if (request.method === "GET" && url.pathname === "/v1/status") {
@@ -813,7 +813,7 @@ export function createCaptureBridge(options) {
         subscribers.add(subscriber);
         response.on("drain", () => flushSubscriber(subscriber));
         response.on("close", () => closeSubscriber(subscriber));
-        response.write(": NarrowsLink local capture stream\n\n");
+        response.write(": ReplayCase local capture stream\n\n");
         writeSubscriber(subscriber, formatSse("hello", statusDocument()));
         return;
       }

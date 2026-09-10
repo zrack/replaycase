@@ -143,7 +143,7 @@ function factoryFrom(options: SessionLibraryOptions): IDBFactory {
 
 async function contentIdentity(bytes: Uint8Array): Promise<string> {
   if (!globalThis.crypto?.subtle) {
-    throw unavailable("Web Crypto SHA-256 is unavailable; NarrowsLink cannot identify session content safely.");
+    throw unavailable("Web Crypto SHA-256 is unavailable; ReplayCase cannot identify session content safely.");
   }
 
   try {
@@ -172,7 +172,7 @@ function openDatabase(factory: IDBFactory, databaseName: string): Promise<IDBDat
       request = factory.open(databaseName, SESSION_LIBRARY_DB_VERSION);
     } catch (error) {
       const code = errorName(error) === "SecurityError" ? "unavailable" : "open-failed";
-      reject(new SessionLibraryError(code, "NarrowsLink could not open the local session library.", error));
+      reject(new SessionLibraryError(code, "ReplayCase could not open the local session library.", error));
       return;
     }
 
@@ -200,14 +200,14 @@ function openDatabase(factory: IDBFactory, databaseName: string): Promise<IDBDat
     request.onerror = () => {
       fail(new SessionLibraryError(
         "open-failed",
-        "NarrowsLink could not open the local session library.",
+        "ReplayCase could not open the local session library.",
         upgradeError ?? request.error,
       ));
     };
     request.onblocked = () => {
       fail(new SessionLibraryError(
         "open-failed",
-        "The local session library is blocked by another NarrowsLink window.",
+        "The local session library is blocked by another ReplayCase window.",
       ));
     };
     request.onsuccess = () => {
@@ -463,7 +463,7 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
       if (canonicalBytes.byteLength !== canonical.byteLength) {
         throw new SessionLibraryError(
           "write-failed",
-          "NarrowsLink could not prepare the complete canonical session bytes for storage.",
+          "ReplayCase could not prepare the complete canonical session bytes for storage.",
         );
       }
       const newRecord: StoredSessionRecordV3 = {
@@ -477,12 +477,12 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
         try {
           transaction = database.transaction(SESSION_LIBRARY_STORE_NAME, "readwrite");
         } catch (error) {
-          throw storageFailure("transaction-failed", "NarrowsLink could not start a library write transaction.", error);
+          throw storageFailure("transaction-failed", "ReplayCase could not start a library write transaction.", error);
         }
         const completed = transactionDone(
           transaction,
           "write-failed",
-          "NarrowsLink could not commit the session to the local library.",
+          "ReplayCase could not commit the session to the local library.",
         );
         const store = transaction.objectStore(SESSION_LIBRARY_STORE_NAME);
 
@@ -491,7 +491,7 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
           existingValue = await startRequest(
             () => store.get(identity),
             "transaction-failed",
-            "NarrowsLink could not inspect the local session library.",
+            "ReplayCase could not inspect the local session library.",
           );
         } catch (error) {
           await completed.catch(() => undefined);
@@ -529,7 +529,7 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
           startRequest(
             () => store.add(newRecord),
             "write-failed",
-            "NarrowsLink could not write the session to the local library.",
+            "ReplayCase could not write the session to the local library.",
           ),
           completed,
         ]);
@@ -543,19 +543,19 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
         try {
           transaction = database.transaction(SESSION_LIBRARY_STORE_NAME, "readonly");
         } catch (error) {
-          throw storageFailure("transaction-failed", "NarrowsLink could not start a library read transaction.", error);
+          throw storageFailure("transaction-failed", "ReplayCase could not start a library read transaction.", error);
         }
         const store = transaction.objectStore(SESSION_LIBRARY_STORE_NAME);
         const [values] = await Promise.all([
           startRequest(
             () => store.getAll(),
             "transaction-failed",
-            "NarrowsLink could not list the local session library.",
+            "ReplayCase could not list the local session library.",
           ),
           transactionDone(
             transaction,
             "transaction-failed",
-            "NarrowsLink could not finish listing the local session library.",
+            "ReplayCase could not finish listing the local session library.",
           ),
         ]);
         return values
@@ -573,19 +573,19 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
         try {
           transaction = database.transaction(SESSION_LIBRARY_STORE_NAME, "readonly");
         } catch (error) {
-          throw storageFailure("transaction-failed", "NarrowsLink could not start a library read transaction.", error);
+          throw storageFailure("transaction-failed", "ReplayCase could not start a library read transaction.", error);
         }
         const store = transaction.objectStore(SESSION_LIBRARY_STORE_NAME);
         const [value] = await Promise.all([
           startRequest(
             () => store.get(identity),
             "transaction-failed",
-            "NarrowsLink could not read the requested stored session.",
+            "ReplayCase could not read the requested stored session.",
           ),
           transactionDone(
             transaction,
             "transaction-failed",
-            "NarrowsLink could not finish reading the requested stored session.",
+            "ReplayCase could not finish reading the requested stored session.",
           ),
         ]);
         if (value === undefined) {
@@ -603,7 +603,7 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
         });
       } catch (error) {
         if (error instanceof SessionProcessingCancelledError) throw error;
-        throw corruptRecord("The stored session no longer passes NarrowsLink validation and decoding.", error);
+        throw corruptRecord("The stored session no longer passes ReplayCase validation and decoding.", error);
       }
 
       const expected = entryFromDocument(
@@ -628,12 +628,12 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
         try {
           transaction = database.transaction(SESSION_LIBRARY_STORE_NAME, "readwrite");
         } catch (error) {
-          throw storageFailure("transaction-failed", "NarrowsLink could not start a library delete transaction.", error);
+          throw storageFailure("transaction-failed", "ReplayCase could not start a library delete transaction.", error);
         }
         const completed = transactionDone(
           transaction,
           "write-failed",
-          "NarrowsLink could not commit the session deletion.",
+          "ReplayCase could not commit the session deletion.",
         );
         const store = transaction.objectStore(SESSION_LIBRARY_STORE_NAME);
         let existing: unknown;
@@ -641,7 +641,7 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
           existing = await startRequest(
             () => store.get(identity),
             "transaction-failed",
-            "NarrowsLink could not inspect the requested stored session.",
+            "ReplayCase could not inspect the requested stored session.",
           );
         } catch (error) {
           await completed.catch(() => undefined);
@@ -655,7 +655,7 @@ export function createSessionLibrary(options: SessionLibraryOptions = {}): Sessi
           startRequest(
             () => store.delete(identity),
             "write-failed",
-            "NarrowsLink could not delete the requested stored session.",
+            "ReplayCase could not delete the requested stored session.",
           ),
           completed,
         ]);

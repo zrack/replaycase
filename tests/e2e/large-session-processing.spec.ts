@@ -147,7 +147,7 @@ async function startHeartbeat(
     };
     if (onNextReplayFileChange) {
       const input = document.querySelector<HTMLInputElement>(
-        "input[aria-label='Choose a local NarrowsLink replay']",
+        "input[aria-label='Choose a local ReplayCase replay']",
       );
       if (!input) throw new Error("The replay file input is unavailable.");
       input.addEventListener("change", begin, { capture: true, once: true });
@@ -276,7 +276,7 @@ test("canceling a maximum-tier import preserves the open replay and persists not
   await expect(page.getByRole("heading", { name: "Harbor relay downlink", level: 1 }))
     .toBeVisible();
 
-  await page.getByLabel("Choose a local NarrowsLink replay")
+  await page.getByLabel("Choose a local ReplayCase replay")
     .setInputFiles(LARGE_SESSION_PATH);
   const processingDialog = page.getByRole("dialog", {
     name: /Processing scale-acceptance-200k\.nlsession/,
@@ -309,7 +309,7 @@ test("processes, reopens, compares, and exports the 200,000-record support tier"
 
   const importHeapStart = await chromiumHeapBytes(page, testInfo);
   await startHeartbeat(page, { onNextReplayFileChange: true });
-  await page.getByLabel("Choose a local NarrowsLink replay")
+  await page.getByLabel("Choose a local ReplayCase replay")
     .setInputFiles(LARGE_SESSION_PATH);
   await expect(page.getByRole("dialog", {
     name: /Processing scale-acceptance-200k\.nlsession/,

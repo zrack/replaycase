@@ -114,7 +114,7 @@ test("unpacked release records UDP and preserves verifiable evidence across repl
     const originalPort = Number(new URL(appUrl).port);
     const releaseIdentity = { ...installation.identity };
     expect(originalPort).toBeGreaterThan(0);
-    expect(releaseIdentity.version).toBe("0.3.0");
+    expect(releaseIdentity.version).toBe("0.4.0");
     expect(releaseIdentity.commit).toMatch(/^[0-9a-f]{40}$/);
     expect(server.ready).toMatchObject(releaseIdentity);
     expect(new URL(server.ready.bridgeUrl).hostname).toBe("127.0.0.1");
@@ -265,7 +265,7 @@ test("unpacked release records UDP and preserves verifiable evidence across repl
     await page.getByRole("dialog", { name: "Handoff archive is ready" })
       .getByRole("button", { name: "Return to session" })
       .click();
-    await page.getByLabel("Choose a NarrowsLink evidence bundle").setInputFiles(bundlePath);
+    await page.getByLabel("Choose a ReplayCase evidence bundle").setInputFiles(bundlePath);
     const receiver = page.getByRole("main", { name: "Received incident evidence workspace" });
     await expect(receiver).toBeVisible({ timeout: 30_000 });
     await expect(receiver.getByRole("heading", { name: RANGE_TITLE, level: 1 })).toBeVisible();
@@ -346,7 +346,7 @@ test("unpacked release records UDP and preserves verifiable evidence across repl
     await expect(page.getByLabel("Session-wide operator note")).toHaveValue(OPERATOR_NOTE);
     await expect(page.getByRole("region", { name: "Session overview" })).toContainText("1 operator marker");
 
-    await page.getByLabel("Choose a NarrowsLink evidence bundle").setInputFiles(bundlePath);
+    await page.getByLabel("Choose a ReplayCase evidence bundle").setInputFiles(bundlePath);
     const replacementReceiver = page.getByRole("main", { name: "Received incident evidence workspace" });
     await expect(replacementReceiver).toBeVisible({ timeout: 30_000 });
     await replacementReceiver.getByRole("tab", { name: "notes" }).click();

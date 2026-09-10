@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { strFromU8, unzipSync, zipSync, type Zippable } from "fflate";
 import { describe, expect, it } from "vitest";
 
-import { isCliEntry, renderVerificationReport, runCli } from "../scripts/narrowslink";
+import { isCliEntry, renderVerificationReport, runCli } from "../scripts/replaycase";
 import { buildEvidenceBundle, type EvidenceBundleManifest } from "../src/domain/bundle";
 import {
   bytesToHex,
@@ -988,7 +988,7 @@ describe("production evidence receiver verifier", () => {
   });
 
   it("offers deterministic human and JSON CLI receiver output and exit codes", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "narrowslink-verifier-"));
+    const directory = await mkdtemp(join(tmpdir(), "replaycase-verifier-"));
     const bundlePath = join(directory, "receiver.nlb");
     try {
       await writeFile(bundlePath, await bundleFor());
@@ -998,7 +998,7 @@ describe("production evidence receiver verifier", () => {
         stderr: (text) => { human.stderr += text; },
       });
       expect(humanCode).toBe(0);
-      expect(human.stdout).toContain("NarrowsLink evidence verification: PASS");
+      expect(human.stdout).toContain("ReplayCase evidence verification: PASS");
       expect(human.stdout).toContain("Authenticity: not-established");
       expect(human.stderr).toBe("");
 
@@ -1034,8 +1034,8 @@ describe("production evidence receiver verifier", () => {
       expect(JSON.parse(usageJson.stdout)).toMatchObject({ integrity: "failed", error: { code: "USAGE_ERROR" } });
       expect(usageJson.stderr).toBe("");
 
-      const sourcePath = fileURLToPath(new URL("../scripts/narrowslink.ts", import.meta.url));
-      const symlinkPath = join(directory, "narrowslink-link.ts");
+      const sourcePath = fileURLToPath(new URL("../scripts/replaycase.ts", import.meta.url));
+      const symlinkPath = join(directory, "replaycase-link.ts");
       await symlink(sourcePath, symlinkPath);
       expect(isCliEntry(pathToFileURL(sourcePath).href, symlinkPath)).toBe(true);
 
@@ -1099,7 +1099,7 @@ describe("production evidence receiver verifier", () => {
   });
 
   it("rejects an oversized file input before reading its contents", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "narrowslink-verifier-limit-"));
+    const directory = await mkdtemp(join(tmpdir(), "replaycase-verifier-limit-"));
     const bundlePath = join(directory, "oversized.nlb");
     try {
       await writeFile(bundlePath, new Uint8Array());

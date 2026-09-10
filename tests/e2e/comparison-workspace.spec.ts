@@ -146,7 +146,7 @@ test("compares controlled real captures and exports a verified regression findin
   await candidateCapture.bridge.close();
   activeBridge = undefined;
 
-  await page.getByLabel("Choose a local NarrowsLink replay").setInputFiles(baselineCapture.path);
+  await page.getByLabel("Choose a local ReplayCase replay").setInputFiles(baselineCapture.path);
   await expect(page.getByRole("heading", { name: BASELINE_TITLE, level: 1 })).toBeVisible();
   await page.getByRole("button", { name: "Compare", exact: true }).click();
   const setup = page.getByRole("dialog", { name: "Define two bounded inputs" });
@@ -227,7 +227,7 @@ test("compares controlled real captures and exports a verified regression findin
     }),
   );
   expect(finding.limitations).toContain(
-    "Alignment is operator-declared; NarrowsLink does not infer synchronized source clocks.",
+    "Alignment is operator-declared; ReplayCase does not infer synchronized source clocks.",
   );
 
   await workspace.locator(".comparison-topbar").getByRole("button", { name: "New comparison" }).click();

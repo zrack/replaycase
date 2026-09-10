@@ -1,6 +1,6 @@
-# NarrowsLink accessibility
+# ReplayCase accessibility
 
-NarrowsLink treats keyboard access, durable focus, non-color evidence cues, and responsive reflow as release requirements for the local capture-to-evidence and comparative-replay workflows. This document records the current support evidence and its limits; it is not a certification of complete WCAG conformance or every browser, operating system, device, and assistive-technology combination.
+ReplayCase treats keyboard access, durable focus, non-color evidence cues, and responsive reflow as release requirements for the local capture-to-evidence and comparative-replay workflows. This document records the current support evidence and its limits; it is not a certification of complete WCAG conformance or every browser, operating system, device, and assistive-technology combination.
 
 ## Automated release matrix
 

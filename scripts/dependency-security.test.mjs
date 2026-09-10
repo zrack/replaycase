@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe("build dependency security boundaries", () => {
   it("does not read an untrusted external source map without a source path", () => {
-    const directory = mkdtempSync(join(tmpdir(), "narrowslink-map-"));
+    const directory = mkdtempSync(join(tmpdir(), "replaycase-map-"));
     directories.push(directory);
     const mapPath = join(directory, "private.map");
     writeFileSync(mapPath, JSON.stringify({ version: 3, sources: ["private.css"], names: [], mappings: "" }));
@@ -46,7 +46,7 @@ describe("build dependency security boundaries", () => {
   });
 
   it("survives poisoned auto-discovered stats for a query that does not use them", () => {
-    const directory = mkdtempSync(join(tmpdir(), "narrowslink-stats-"));
+    const directory = mkdtempSync(join(tmpdir(), "replaycase-stats-"));
     directories.push(directory);
     writeFileSync(join(directory, "browserslist-stats.json"), '{"toString":{"onekey":5},"chrome":{"100":50}}');
     expect(browserslist("chrome 100", { path: directory })).toEqual(["chrome 100"]);

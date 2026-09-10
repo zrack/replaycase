@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { NMEA0183_DECODER_PACK } from "../src/domain/decoder";
-import { runCli } from "./narrowslink";
+import { runCli } from "./replaycase";
 
 function ioCapture() {
   let stdout = "";
@@ -21,7 +21,7 @@ function ioCapture() {
 
 describe("decoder pack CLI", () => {
   it("seals a draft and validates the resulting portable pack", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "narrowslink-decoder-cli-"));
+    const directory = await mkdtemp(join(tmpdir(), "replaycase-decoder-cli-"));
     try {
       const draftPath = join(directory, "nmea-draft.json");
       const packPath = join(directory, "nmea.nldecoder");
@@ -46,7 +46,7 @@ describe("decoder pack CLI", () => {
 
       const validate = ioCapture();
       expect(await runCli(["decoder", "validate", packPath], validate.io)).toBe(0);
-      expect(validate.output().stdout).toContain("NarrowsLink decoder pack: PASS (validated)");
+      expect(validate.output().stdout).toContain("ReplayCase decoder pack: PASS (validated)");
       expect(validate.output().stderr).toBe("");
     } finally {
       await rm(directory, { recursive: true, force: true });
@@ -54,7 +54,7 @@ describe("decoder pack CLI", () => {
   });
 
   it("returns a validation failure for altered pack content", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "narrowslink-decoder-cli-invalid-"));
+    const directory = await mkdtemp(join(tmpdir(), "replaycase-decoder-cli-invalid-"));
     try {
       const packPath = join(directory, "altered.nldecoder");
       const altered = structuredClone(NMEA0183_DECODER_PACK);

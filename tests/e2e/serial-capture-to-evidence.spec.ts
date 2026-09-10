@@ -157,7 +157,7 @@ test("records fragmented serial input and carries it through durable verified ev
   const sessionDownloadPromise = page.waitForEvent("download");
   await captureDialog.getByRole("button", { name: "Stop, save & replay" }).click();
   const sessionDownload = await sessionDownloadPromise;
-  expect(sessionDownload.suggestedFilename()).toMatch(/^narrowslink-release-gate-serial-capture-.*\.nlsession$/);
+  expect(sessionDownload.suggestedFilename()).toMatch(/^replaycase-release-gate-serial-capture-.*\.nlsession$/);
   const sessionPath = testInfo.outputPath("captured-serial-session.nlsession");
   await sessionDownload.saveAs(sessionPath);
 
@@ -229,7 +229,7 @@ test("records fragmented serial input and carries it through durable verified ev
   });
   await expect(savedSessionButton).toHaveCount(1);
   await expect(savedSessionButton).toContainText("Verified");
-  await page.getByLabel("Choose a local NarrowsLink replay").setInputFiles(sessionPath);
+  await page.getByLabel("Choose a local ReplayCase replay").setInputFiles(sessionPath);
   await expect(page.getByText(
     "captured-serial-session.nlsession saved to the local session library",
     { exact: true },

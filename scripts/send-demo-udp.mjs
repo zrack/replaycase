@@ -45,7 +45,7 @@ export function parseDemoArguments(argv) {
 }
 
 function usage() {
-  return `Replay the checked-in NarrowsLink fixture as UDP datagrams
+  return `Replay the checked-in ReplayCase fixture as UDP datagrams
 
 Usage: node scripts/send-demo-udp.mjs [options]
 

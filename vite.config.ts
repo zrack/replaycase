@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-const appOutDir = process.env.NARROWSLINK_APP_OUT_DIR?.trim() || "dist";
+const appOutDir = process.env.REPLAYCASE_APP_OUT_DIR?.trim() || process.env.NARROWSLINK_APP_OUT_DIR?.trim() || "dist";
 
 export default defineConfig({
   optimizeDeps: {

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const REPOSITORY_ROOT = fileURLToPath(new URL("../../..", import.meta.url));
 const BRIDGE_SCRIPT = join(REPOSITORY_ROOT, "scripts", "capture-bridge.mjs");
 const FIXTURE_PATH = join(REPOSITORY_ROOT, "public", "fixtures", "harbor-relay-session.json");
-const DEFAULT_TOKEN = "narrowslink-playwright-loopback-token";
+const DEFAULT_TOKEN = "replaycase-playwright-loopback-token";
 
 interface BridgeReadyMessage {
   type: "narrowslink-bridge-ready";

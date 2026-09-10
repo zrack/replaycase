@@ -1,6 +1,6 @@
-# Contributing to NarrowsLink
+# Contributing to ReplayCase
 
-NarrowsLink is a local-first telemetry capture, replay, incident-analysis, and evidence-export application. Contributions should preserve timing semantics, source provenance, visible failure states, deterministic derivation, and the ability to reproduce an incident from exported evidence. Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md); use the [support guide](SUPPORT.md) for usage questions and the [security policy](SECURITY.md) for private vulnerability reporting.
+ReplayCase is a local-first telemetry capture, replay, incident-analysis, and evidence-export application. Contributions should preserve timing semantics, source provenance, visible failure states, deterministic derivation, and the ability to reproduce an incident from exported evidence. Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md); use the [support guide](SUPPORT.md) for usage questions and the [security policy](SECURITY.md) for private vulnerability reporting.
 
 ## Documentation ownership
 
@@ -60,14 +60,14 @@ Available commands:
 | `npm test` | Run the Vitest suite once |
 | `npm run test:watch` | Run Vitest in watch mode |
 | `npm run build` | Typecheck and create the production browser application and receiver CLI |
-| `npm run build:cli` | Build the bundled `narrowslink serve`, `verify`, and `version` CLI |
+| `npm run build:cli` | Build the bundled `replaycase serve`, `verify`, and `version` CLI |
 | `npm run test:cli` | Smoke-test the built receiver entry directly and through a package-style symlink |
 | `npm run preview` | Serve the production bundle locally |
 | `npm run test:e2e` | Build and run the Playwright release suite in Chromium, Firefox, and WebKit |
 | `npm run test:e2e:run` | Serve the current production build on an isolated loopback port and run Playwright |
 | `npm run test:e2e:headed` | Build and run the browser suite with visible browser windows |
 | `npm run release:build` | Independently compile and package the release twice, requiring byte-identical assets |
-| `npm run test:release` | Test the archive named by `NARROWSLINK_RELEASE_ARCHIVE` outside the repository in all three browser engines |
+| `npm run test:release` | Test the archive named by `REPLAYCASE_RELEASE_ARCHIVE` outside the repository in all three browser engines |
 | `npm run release:check` | Build the reproducible preview distribution and run its complete unpacked acceptance gate |
 | `npm run check` | Run typecheck, Vitest, production build, source browser matrix, and unpacked release gate |
 | `npm run capture:bridge` | Start the manual bearer-token UDP bridge used for source development |
@@ -79,7 +79,7 @@ Available commands:
 
 ## Maintainer release process
 
-Only a maintainer may publish a NarrowsLink release. Release publication is tag-driven, but the tag is created only after the candidate bytes pass locally and the release change has merged through the protected `main` branch.
+Only a maintainer may publish a ReplayCase release. Release publication is tag-driven, but the tag is created only after the candidate bytes pass locally and the release change has merged through the protected `main` branch.
 
 1. On a release branch, update `package.json` and `package-lock.json` to the intended semantic version, convert the accumulated changelog entries into the matching dated section, and add the operator-facing release notes. Update any version-specific workflow trigger, asset names, release-acceptance constants, and tag checks for that version.
 2. Run `npm run check`. Inspect `output/release/SHA256SUMS`, the external release manifest, the CycloneDX SBOM, and the tarball listing. The gate must prove two independent compilations are byte-identical and exercise the extracted package through real UDP capture, replay, authored evidence, `.nlb` export, artifact-local receiver verification, same-origin library persistence after package replacement, and the documented maximum-record replay workflow.
@@ -118,8 +118,8 @@ For an NMEA schema or fixture contribution:
 3. Seal and execute the production conformance path:
 
    ```bash
-   narrowslink decoder seal draft.json --out protocol.nldecoder
-   narrowslink decoder validate protocol.nldecoder
+   replaycase decoder seal draft.json --out protocol.nldecoder
+   replaycase decoder validate protocol.nldecoder
    ```
 
 4. Load the sealed file through **Live capture** and record repeatable real UDP or serial traffic.
@@ -130,6 +130,7 @@ Changing a description, schema, fixture, or expected result changes pack identit
 
 ## Engineering invariants
 
+- Use ReplayCase for current product, CLI, repository, and release branding. Preserve the legacy evidence, decoder, and storage identities and compatibility aliases documented in [branding compatibility](docs/architecture/branding-compatibility.md); never apply a global brand replacement to captured or content-addressed evidence.
 - Treat raw `SourceRecord` values as immutable input. Derive frames, decoded fields, metrics, diagnostics, incidents, and archives from them.
 - Store and compare time as safe integer microsecond offsets from the session's UTC start. Apply the declared IANA time zone only for display.
 - Use half-open incident and export ranges: `[startUs, endUs)`.
@@ -172,7 +173,7 @@ Changing a description, schema, fixture, or expected result changes pack identit
 | Replay support limits and worker processing contracts | `src/domain/limits.ts`, `src/processing/` |
 | Replay timing | `src/replay/` |
 | Evidence archive contract and generation | `src/domain/evidence-contract.ts`, `src/domain/bundle.ts` |
-| Evidence receiver verification and CLI | `verifier/`, `scripts/narrowslink.ts`, `vite.cli.config.ts` |
+| Evidence receiver verification and CLI | `verifier/`, `scripts/replaycase.ts`, `vite.cli.config.ts` |
 | Session serialization and import behavior | `src/data/session-file.ts`, `src/data/load-session.ts` |
 | Capture lifecycle and session finalization | `src/capture/CaptureDialog.tsx`, `src/capture/recorder.ts` |
 | Capture profiles and bounded preflight | `src/capture/capture-profile.ts`, `src/capture/capture-preflight.ts` |
@@ -194,7 +195,7 @@ Treat visible differences from the approved source as regressions unless the pul
 2. Capture the source and implementation at the same `1487 × 1058` viewport and equivalent incident state.
 3. Put both full frames into one comparison image, then repeat for any fidelity-critical region that is difficult to judge at full scale.
 4. Verify the responsive workspace at `390 × 844`, including body overflow, command reachability, timeline labels, incident content, and evidence controls.
-5. Update `docs/assets/narrowslink-dashboard.png`, the current evidence in `docs/design/`, and `design-qa.md` when the accepted appearance changes.
+5. Update `docs/assets/replaycase-dashboard.png`, the current evidence in `docs/design/`, and `design-qa.md` when the accepted appearance changes.
 
 Screenshots are evidence, not the review itself. Keep `design-qa.md` focused on the currently accepted source and implementation evidence, remaining intentional differences, current interaction coverage, and final pass/block result. Put change-by-change correction history in the pull request and record the notable delivered outcome in `CHANGELOG.md`.
 
@@ -215,7 +216,7 @@ Screenshots are evidence, not the review itself. Keep `design-qa.md` focused on 
 
 ## Contribution workflow
 
-1. Read the [Code of Conduct](CODE_OF_CONDUCT.md), then search [open issues](https://github.com/zrack/narrowslink/issues) before starting. Open an issue for behavior changes so the operator outcome, acceptance criteria, compatibility impact, and privacy implications can be agreed on first. Small typo-only documentation corrections can go directly to a pull request.
+1. Read the [Code of Conduct](CODE_OF_CONDUCT.md), then search [open issues](https://github.com/zrack/replaycase/issues) before starting. Open an issue for behavior changes so the operator outcome, acceptance criteria, compatibility impact, and privacy implications can be agreed on first. Small typo-only documentation corrections can go directly to a pull request.
 2. Use the route in [SUPPORT.md](SUPPORT.md) for setup and usage help. Do not open a public issue for a suspected vulnerability or attach sensitive telemetry; follow [SECURITY.md](SECURITY.md) instead.
 3. External contributors should fork the repository and add this repository as `upstream`. Collaborators may create a branch in the repository. Start from current `main` and use a descriptive branch such as `fix/serial-resync` or `docs/bundle-verification`:
 
@@ -245,6 +246,6 @@ Screenshots are evidence, not the review itself. Keep `design-qa.md` focused on 
 
 Only contribute telemetry that you have permission to publish. Strip credentials, device identifiers, personal data, operational secrets, and sensitive coordinates before committing a capture. Generated examples are preferred when they can reproduce the same protocol or failure behavior.
 
-Evidence bundles can contain raw records, decoded coordinates, markers, and operator notes. Treat them as potentially sensitive even though NarrowsLink builds them locally and does not upload them.
+Evidence bundles can contain raw records, decoded coordinates, markers, and operator notes. Treat them as potentially sensitive even though ReplayCase builds them locally and does not upload them.
 
 For a security-sensitive issue, do not attach the original capture to a public report. Follow [SECURITY.md](SECURITY.md) to report it privately, describe the affected format and minimum reproduction, and coordinate a sanitized fixture before sharing telemetry.

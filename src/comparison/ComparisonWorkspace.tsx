@@ -277,7 +277,7 @@ export function ComparisonSetupDialog({
       setCandidate({
         status: "error",
         fileName: file.name,
-        message: known ? cause.message : "NarrowsLink could not validate the candidate input.",
+        message: known ? cause.message : "ReplayCase could not validate the candidate input.",
         details: known ? cause.details : [cause instanceof Error ? cause.message : "Unknown candidate error."],
       });
     } finally {
@@ -351,7 +351,7 @@ export function ComparisonSetupDialog({
         <div className="dialog-icon"><ArrowsLeftRight size={24} /></div>
         <span className="dialog-kicker">Comparative replay</span>
         <h2 id="comparison-setup-title" data-dialog-focus tabIndex={-1}>Define two bounded inputs</h2>
-        <p id="comparison-setup-description">NarrowsLink compares only the explicit aligned overlap. It does not infer synchronized clocks or comparable decoder semantics.</p>
+        <p id="comparison-setup-description">ReplayCase compares only the explicit aligned overlap. It does not infer synchronized clocks or comparable decoder semantics.</p>
 
         <SourceSummary label="Baseline" source={baseline} />
 
@@ -466,8 +466,8 @@ function ComparisonRail({ model, onNewComparison }: Pick<ComparisonWorkspaceProp
   return (
     <aside className="left-rail comparison-rail" aria-label="Comparison inputs">
       <div className="brand-lockup">
-        <img src="/narrowslink-mark.svg" alt="NarrowsLink" />
-        <div><strong>NarrowsLink</strong><span>Comparison workspace</span></div>
+        <img src="/replaycase-mark.svg" alt="ReplayCase" />
+        <div><strong>ReplayCase</strong><span>Comparison workspace</span></div>
       </div>
       <div className="rail-scroll">
         {rows.map(({ label, source }) => (

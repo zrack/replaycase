@@ -132,7 +132,7 @@ async function openEvidenceBundle(
   bundlePath: string,
   expectedTitle: string,
 ): Promise<ReturnType<Page["getByRole"]>> {
-  await page.getByLabel("Choose a NarrowsLink evidence bundle").setInputFiles(bundlePath);
+  await page.getByLabel("Choose a ReplayCase evidence bundle").setInputFiles(bundlePath);
   const workspace = page.getByRole("main", { name: "Received incident evidence workspace" });
   await expect(workspace).toBeVisible({ timeout: 30_000 });
   await expect(workspace.getByRole("heading", { name: expectedTitle, level: 1 })).toBeVisible();
@@ -324,8 +324,8 @@ test("captures real NMEA UDP traffic and hands off the exact decoder interpretat
     .toHaveValue(receiverFinding);
 
   const malformedBundlePath = testInfo.outputPath("malformed-evidence.nlb");
-  await writeFile(malformedBundlePath, "This is not a NarrowsLink evidence archive.");
-  await page.getByLabel("Choose a NarrowsLink evidence bundle").setInputFiles(malformedBundlePath);
+  await writeFile(malformedBundlePath, "This is not a ReplayCase evidence archive.");
+  await page.getByLabel("Choose a ReplayCase evidence bundle").setInputFiles(malformedBundlePath);
   const rejectedDialog = page.getByRole("dialog", { name: "malformed-evidence.nlb was not opened" });
   await expect(rejectedDialog).toBeVisible();
   await expect(rejectedDialog).toContainText("Evidence bundle rejected");
@@ -412,7 +412,7 @@ test("records UDP, replays and investigates it, then exports independently verif
   const sessionDownloadPromise = page.waitForEvent("download");
   await captureDialog.getByRole("button", { name: "Stop, save & replay" }).click();
   const sessionDownload = await sessionDownloadPromise;
-  expect(sessionDownload.suggestedFilename()).toMatch(/^narrowslink-release-gate-udp-capture-.*\.nlsession$/);
+  expect(sessionDownload.suggestedFilename()).toMatch(/^replaycase-release-gate-udp-capture-.*\.nlsession$/);
   const sessionPath = testInfo.outputPath("captured-session.nlsession");
   await sessionDownload.saveAs(sessionPath);
 
@@ -540,7 +540,7 @@ test("records UDP, replays and investigates it, then exports independently verif
   expect(expectedRangeRecords[0]?.id).toBe(startRecord.id);
   expect(expectedRangeRecords.some((record) => record.id === endRecord.id)).toBe(false);
 
-  await page.getByLabel("Choose a local NarrowsLink replay").setInputFiles(sessionPath);
+  await page.getByLabel("Choose a local ReplayCase replay").setInputFiles(sessionPath);
   await expect(captureHeading).toBeVisible();
   await expect(savedSessionButton).toHaveCount(1);
   await expect(page.getByRole("button", { name: `Remove saved session ${CAPTURE_TITLE}` })).toHaveCount(1);

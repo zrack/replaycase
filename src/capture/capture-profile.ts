@@ -264,7 +264,7 @@ export function saveCaptureProfile(
   if (next.length > MAX_CAPTURE_PROFILES) {
     throw new CaptureProfileStorageError(
       "too-large",
-      `NarrowsLink supports up to ${MAX_CAPTURE_PROFILES} saved capture profiles.`,
+      `ReplayCase supports up to ${MAX_CAPTURE_PROFILES} saved capture profiles.`,
     );
   }
   next.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt, "en"));

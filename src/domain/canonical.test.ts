@@ -15,7 +15,7 @@ describe("canonical JSON and SHA-256", () => {
     const cases = [
       new Uint8Array(),
       new TextEncoder().encode("abc"),
-      new TextEncoder().encode("NarrowsLink decoder pack identity"),
+      new TextEncoder().encode("ReplayCase decoder pack identity"),
       Uint8Array.from({ length: 1_024 }, (_, index) => index % 251),
     ];
     for (const bytes of cases) {

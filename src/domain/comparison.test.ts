@@ -305,6 +305,20 @@ describe("comparative replay contract", () => {
     expect(suggestComparisonFindingFilename(model)).toBe("baseline-vs-candidate.nlcompare.json");
   });
 
+  it("validates a legacy-branded finding without rewriting its content or identity", () => {
+    const { baseline, candidate } = controlledPair();
+    const finding = structuredClone(buildComparisonFinding(
+      compareSources(baseline, candidate, { mode: "range-start" }),
+      "Legacy operator conclusion.",
+      "2026-07-24T22:00:00.000Z",
+    ));
+    finding.limitations = finding.limitations.map((value) => value.replace("ReplayCase", "NarrowsLink"));
+    finding.identity.canonicalSha256 = comparisonFindingHash(finding);
+    const bytes = JSON.stringify(finding);
+    expect(validateComparisonFinding(JSON.parse(bytes))).toEqual(finding);
+    expect(JSON.stringify(finding)).toBe(bytes);
+  });
+
   it("rejects a finding whose conclusion was changed after sealing", () => {
     const { baseline, candidate } = controlledPair();
     const finding = buildComparisonFinding(

@@ -24,7 +24,7 @@ afterEach(async () => {
 
 describe("large-session acceptance corpus", () => {
   it("streams deterministic canonical evidence with bounded ranges", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "narrowslink-large-session-"));
+    const directory = await mkdtemp(join(tmpdir(), "replaycase-large-session-"));
     temporaryDirectories.push(directory);
     const firstPath = join(directory, "first.nlsession");
     const secondPath = join(directory, "second.nlsession");

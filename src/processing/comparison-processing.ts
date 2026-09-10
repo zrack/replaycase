@@ -31,7 +31,7 @@ type WorkerFactory = () => Worker;
 function defaultWorkerFactory(): Worker {
   return new Worker(
     new URL("./comparison.worker.ts", import.meta.url),
-    { type: "module", name: "narrowslink-comparison-processor" },
+    { type: "module", name: "replaycase-comparison-processor" },
   );
 }
 
