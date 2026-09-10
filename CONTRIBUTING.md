@@ -7,6 +7,7 @@ ReplayCase is a local-first telemetry capture, replay, incident-analysis, and ev
 | Document | Owns |
 | --- | --- |
 | [README.md](README.md) | Current product orientation, setup, workflows, formats, and limitations |
+| [docs/README.md](docs/README.md) and [repository map](docs/repository-map.md) | Documentation navigation and source/test routing; not duplicate product policy or chronology |
 | [USE_CASES.md](USE_CASES.md) | Stable use-case IDs, current operator outcomes, support constraints, and implementation evidence |
 | [CHANGELOG.md](CHANGELOG.md) | The sole chronological record of notable completed changes and releases |
 | [ROADMAP.md](ROADMAP.md) | Planned work and exit criteria only |
@@ -164,28 +165,20 @@ Changing a description, schema, fixture, or expected result changes pack identit
 
 ## Where changes belong
 
-| Area | Files |
-| --- | --- |
-| Session schema and telemetry types | `src/domain/types.ts` |
-| Decoder-pack contract, identity, and conformance | `src/domain/decoder-pack.ts`, `src/domain/decoder-conformance.ts` |
-| Runtime registry, frame integrity, and field decoding | `src/domain/decoder.ts` |
-| Validation, metrics, diagnostics, and incidents | `src/domain/session.ts` |
-| Replay support limits and worker processing contracts | `src/domain/limits.ts`, `src/processing/` |
-| Replay timing | `src/replay/` |
-| Evidence archive contract and generation | `src/domain/evidence-contract.ts`, `src/domain/bundle.ts` |
-| Evidence receiver verification and CLI | `verifier/`, `scripts/replaycase.ts`, `vite.cli.config.ts` |
-| Session serialization and import behavior | `src/data/session-file.ts`, `src/data/load-session.ts` |
-| Capture lifecycle and session finalization | `src/capture/CaptureDialog.tsx`, `src/capture/recorder.ts` |
-| Capture profiles and bounded preflight | `src/capture/capture-profile.ts`, `src/capture/capture-preflight.ts` |
-| Serial capture and runtime-selected assembly | `src/capture/web-serial.ts`, `src/capture/serial-assembler.ts`, `src/capture/nsl01-serial-assembler.ts`, `src/capture/nmea0183-serial-assembler.ts` |
-| UDP browser protocol and local bridge | `src/capture/udp-bridge.ts`, `scripts/capture-bridge.mjs` |
-| Durable session-document library | `src/storage/session-library.ts` |
-| Marker, note, and authored-range persistence | `src/storage/session-storage.ts` |
-| Workspace UI and interactions | `src/App.tsx`, `src/styles.css` |
-| Browser release, accessibility, and capture-to-receiver verification | `tests/e2e/`, `playwright.config.ts` |
-| Deterministic demo and maximum-record data | `scripts/generate-demo-session.mjs`, `scripts/large-session-corpus.mjs` |
+Use the [repository map](docs/repository-map.md#where-to-make-a-change) for
+linked implementation entry points and test routing. The
+[documentation index](docs/README.md) routes operator and contributor guides;
+[architecture notes](docs/architecture/README.md) cover cross-cutting contracts.
 
-The approved visual source is `docs/design/narrowslink-mission-timeline-source.png`. Preserve its restrained, square-cornered, instrument-grade hierarchy unless a change intentionally establishes a new documented direction.
+The [design index](docs/design/README.md) distinguishes the approved source and
+current screenshots from older implementation captures. Preserve the source's
+restrained, square-cornered, instrument-grade hierarchy unless an approved
+change establishes a new documented direction.
+
+Keep local Graphify output out of commits. Follow the
+[map refresh contract](docs/repository-map.md#generated-files-and-graphify) so
+untracked copies, stale symbols, and private evidence cannot be presented as
+current GitHub source.
 
 ## Visual changes
 
