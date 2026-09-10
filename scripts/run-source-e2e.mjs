@@ -9,13 +9,13 @@ const host = "127.0.0.1";
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 function requestedPort() {
-  const raw = process.env.NARROWSLINK_E2E_PORT?.trim();
+  const raw = process.env.REPLAYCASE_E2E_PORT?.trim() || process.env.NARROWSLINK_E2E_PORT?.trim();
   if (!raw) return 0;
 
   const value = Number(raw);
   if (!Number.isInteger(value) || value < 1 || value > 65_535) {
     throw new Error(
-      "NARROWSLINK_E2E_PORT must be an integer between 1 and 65535.",
+      "REPLAYCASE_E2E_PORT must be an integer between 1 and 65535.",
     );
   }
   return value;
@@ -50,7 +50,7 @@ try {
       cwd: repositoryRoot,
       env: {
         ...process.env,
-        NARROWSLINK_E2E_BASE_URL: baseUrl,
+        REPLAYCASE_E2E_BASE_URL: baseUrl,
       },
       stdio: "inherit",
     },

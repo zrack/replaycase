@@ -1,8 +1,16 @@
 # Changelog
 
-All notable changes to NarrowsLink are recorded here. This is the canonical project history: the README describes the product as it works now, the use-case log catalogs current operator outcomes, the roadmap contains planned work, the design QA record holds the currently accepted visual evidence, and collaboration documents define current policy.
+All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This is the canonical project history: the README describes the product as it works now, the use-case log catalogs current operator outcomes, the roadmap contains planned work, the design QA record holds the currently accepted visual evidence, and collaboration documents define current policy.
 
 ## [Unreleased]
+
+## [0.4.0] - 2026-09-10
+
+### Changed
+
+- Renamed the GitHub repository, application, RC mark, CLI, release package, current documentation, and operator screenshots to ReplayCase. Release assets use `replaycase-<version>` and identify `zrack/replaycase` as their source.
+- Retained `narrowslink` as a CLI alias and the old runtime-discovery path and environment variables as compatibility fallbacks. Upgrades from the old npm package must uninstall it before installing ReplayCase to avoid a command-name collision; browser storage and exported evidence are not removed.
+- Preserved existing session, bundle, decoder-pack, comparison, and machine-report formats, file extensions, browser storage keys, deterministic fixture bytes, and published decoder identities. Historical release notes and dated proof records retain their original names and commands.
 
 ## [0.3.0] - 2026-09-09
 
@@ -90,7 +98,8 @@ All notable changes to NarrowsLink are recorded here. This is the canonical proj
 
 - Restricted the UDP bridge control plane to loopback access with server-enforced capture ownership and an internal short-lived bearer credential; the browser uses a same-origin application relay, so the credential is not exposed in runtime metadata, URLs, cookies, readiness output, or logs.
 
-[Unreleased]: https://github.com/zrack/narrowslink/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/zrack/narrowslink/releases/tag/v0.3.0
-[0.2.0]: https://github.com/zrack/narrowslink/releases/tag/v0.2.0
-[0.1.0]: https://github.com/zrack/narrowslink/releases/tag/v0.1.0
+[Unreleased]: https://github.com/zrack/replaycase/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/zrack/replaycase/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/zrack/replaycase/releases/tag/v0.3.0
+[0.2.0]: https://github.com/zrack/replaycase/releases/tag/v0.2.0
+[0.1.0]: https://github.com/zrack/replaycase/releases/tag/v0.1.0

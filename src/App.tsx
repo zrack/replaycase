@@ -339,7 +339,7 @@ function sessionLibraryErrorMessage(error: unknown): string {
     case "too-large":
       return "This session exceeds the 64 MiB local-library limit. The active replay remains usable.";
     case "open-failed":
-      return "The local session library could not be opened. Close other NarrowsLink windows and retry.";
+      return "The local session library could not be opened. Close other ReplayCase windows and retry.";
     case "transaction-failed":
     case "write-failed":
       return "The local session library could not finish the operation. The active replay was not changed.";
@@ -622,8 +622,8 @@ function LeftRail({ session, replayOffsetUs, onOpenReplay, onOpenBundle, onOpenC
   return (
     <aside className="left-rail" aria-label="Session navigation">
       <div className="brand-lockup">
-        <img src="/narrowslink-mark.svg" alt="NarrowsLink" />
-        <div><strong>NarrowsLink</strong><span>Local-first telemetry</span></div>
+        <img src="/replaycase-mark.svg" alt="ReplayCase" />
+        <div><strong>ReplayCase</strong><span>Local-first telemetry</span></div>
       </div>
       <div className="rail-scroll">
         <section className="rail-section sessions-heading">
@@ -968,7 +968,7 @@ function TransportProvenancePanel({ session, incident }: { session: ParsedSessio
     return (
       <div className="provenance-view provenance-unavailable" id="incident-panel-provenance" role="tabpanel" tabIndex={0} aria-labelledby="incident-tab-provenance">
         <div className="provenance-title"><h2>Transport provenance</h2><span className="provenance-status unavailable">Unavailable</span></div>
-        <p>{reason} NarrowsLink leaves the evidence unavailable instead of reconstructing it from recorder totals.</p>
+        <p>{reason} ReplayCase leaves the evidence unavailable instead of reconstructing it from recorder totals.</p>
       </div>
     );
   }
@@ -1579,11 +1579,11 @@ function Workspace({ session, onOpenReplay, onOpenBundle, onOpenCapture, onCompa
 }
 
 function LoadingScreen({ message, progress }: { message: string; progress?: SessionProcessingProgress }) {
-  return <main className="load-screen" role="status" aria-live="polite" aria-busy="true"><img src="/narrowslink-mark.svg" alt="" /><SpinnerGap className="spin" size={24} /><h1 data-load-focus tabIndex={-1}>NarrowsLink</h1><p>{progress?.message ?? message}</p>{progress && <div className="processing-meter"><progress max={100} value={progress.percent} aria-label="Replay processing progress" /><span>{Math.floor(progress.percent)}%</span></div>}</main>;
+  return <main className="load-screen" role="status" aria-live="polite" aria-busy="true"><img src="/replaycase-mark.svg" alt="" /><SpinnerGap className="spin" size={24} /><h1 data-load-focus tabIndex={-1}>ReplayCase</h1><p>{progress?.message ?? message}</p>{progress && <div className="processing-meter"><progress max={100} value={progress.percent} aria-label="Replay processing progress" /><span>{Math.floor(progress.percent)}%</span></div>}</main>;
 }
 
 function ErrorScreen({ error, onRetry, onOpenReplay, onOpenBundle }: { error: SessionLoadError; onRetry: () => void; onOpenReplay: () => void; onOpenBundle: () => void }) {
-  return <main className="load-screen error-screen" role="alert"><img src="/narrowslink-mark.svg" alt="" /><WarningCircle size={28} /><h1 data-load-focus tabIndex={-1}>Replay could not be opened</h1><p>{error.message}</p>{error.details.length > 0 && <ul>{error.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>}<div><button className="secondary-action" type="button" onClick={onOpenReplay}>Choose another replay</button><button className="secondary-action" type="button" onClick={onOpenBundle}>Open evidence bundle</button><button className="primary-action" type="button" onClick={onRetry}>Load bundled replay</button></div></main>;
+  return <main className="load-screen error-screen" role="alert"><img src="/replaycase-mark.svg" alt="" /><WarningCircle size={28} /><h1 data-load-focus tabIndex={-1}>Replay could not be opened</h1><p>{error.message}</p>{error.details.length > 0 && <ul>{error.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>}<div><button className="secondary-action" type="button" onClick={onOpenReplay}>Choose another replay</button><button className="secondary-action" type="button" onClick={onOpenBundle}>Open evidence bundle</button><button className="primary-action" type="button" onClick={onRetry}>Load bundled replay</button></div></main>;
 }
 
 function ReplayProcessingDialog({
@@ -1678,7 +1678,7 @@ function EvidenceOpenDialog({
           {state.status === "verifying" ? `Verifying ${state.fileName}` : `${state.fileName} was not opened`}
         </h2>
         {state.status === "verifying" ? (
-          <p id={descriptionId}>NarrowsLink is preflighting ZIP structure, bounding decompression, checking every artifact, and reconciling the incident before showing any evidence.</p>
+          <p id={descriptionId}>ReplayCase is preflighting ZIP structure, bounding decompression, checking every artifact, and reconciling the incident before showing any evidence.</p>
         ) : (
           <>
             <p id={descriptionId}>{state.error.message}</p>
@@ -1983,7 +1983,7 @@ export function App({ operatorRuntime = MANUAL_OPERATOR_RUNTIME }: { operatorRun
         ? cause
         : new EvidenceBundleLoadError(
             "WORKER_FAILURE",
-            "NarrowsLink could not verify the selected evidence bundle.",
+            "ReplayCase could not verify the selected evidence bundle.",
             file.name,
             [cause instanceof Error ? cause.message : "Unknown evidence verification error."],
           );
@@ -2148,8 +2148,8 @@ export function App({ operatorRuntime = MANUAL_OPERATOR_RUNTIME }: { operatorRun
 
   return (
     <>
-      <input ref={fileInputRef} className="visually-hidden" type="file" tabIndex={-1} aria-label="Choose a local NarrowsLink replay" accept=".json,.nlsession,application/json" onChange={(event) => void handleFile(event)} />
-      <input ref={evidenceInputRef} className="visually-hidden" type="file" tabIndex={-1} aria-label="Choose a NarrowsLink evidence bundle" accept=".nlb,application/zip" onChange={(event) => void handleEvidenceFile(event)} />
+      <input ref={fileInputRef} className="visually-hidden" type="file" tabIndex={-1} aria-label="Choose a local ReplayCase replay" accept=".json,.nlsession,application/json" onChange={(event) => void handleFile(event)} />
+      <input ref={evidenceInputRef} className="visually-hidden" type="file" tabIndex={-1} aria-label="Choose a ReplayCase evidence bundle" accept=".nlb,application/zip" onChange={(event) => void handleEvidenceFile(event)} />
       {comparisonModel != null ? (
         <ComparisonWorkspace
           key={comparisonWorkspaceKey(comparisonModel)}

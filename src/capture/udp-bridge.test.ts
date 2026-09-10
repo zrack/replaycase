@@ -812,7 +812,7 @@ describe("local UDP capture bridge", () => {
   it("enforces capture ownership and forwards an exact zero-length UDP datagram", async () => {
     const script = fileURLToPath(new URL("../../scripts/capture-bridge.mjs", import.meta.url));
     child = spawn(process.execPath, [script, "--control-port", "0", "--udp-port", "0", "--token", TOKEN], {
-      env: { ...process.env, NARROWSLINK_BRIDGE_TOKEN: "" },
+      env: { ...process.env, REPLAYCASE_BRIDGE_TOKEN: "" },
       stdio: ["pipe", "pipe", "pipe"],
     });
     const ready = await waitForReady(child);
@@ -1004,7 +1004,7 @@ describe("local UDP capture bridge", () => {
   it("joins and leaves a portable IPv4 multicast group", async ({ skip }) => {
     const script = fileURLToPath(new URL("../../scripts/capture-bridge.mjs", import.meta.url));
     child = spawn(process.execPath, [script, "--control-port", "0", "--udp-port", "0", "--token", TOKEN], {
-      env: { ...process.env, NARROWSLINK_BRIDGE_TOKEN: "" },
+      env: { ...process.env, REPLAYCASE_BRIDGE_TOKEN: "" },
       stdio: ["pipe", "pipe", "pipe"],
     });
     const ready = await waitForReady(child);

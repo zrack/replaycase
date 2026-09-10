@@ -468,7 +468,7 @@ function schemaArtifact(session: ParsedSession): object {
 }
 
 /**
- * Builds a verifiable NarrowsLink evidence archive entirely in memory.
+ * Builds a verifiable ReplayCase evidence archive entirely in memory.
  * Every time-bearing artifact is filtered with exact [startUs, endUs) semantics.
  */
 export async function buildEvidenceBundle(options: BuildEvidenceBundleOptions): Promise<Uint8Array> {

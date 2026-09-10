@@ -1,6 +1,6 @@
 import { normalizeUdpBridgeUrl } from "../capture/udp-bridge";
 
-export const OPERATOR_RUNTIME_PATH = "/narrowslink-runtime.json";
+export const OPERATOR_RUNTIME_PATH = "/replaycase-runtime.json";
 export const OPERATOR_RUNTIME_FORMAT = "narrowslink/operator-runtime" as const;
 export const OPERATOR_RUNTIME_FORMAT_VERSION = 1 as const;
 

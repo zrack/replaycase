@@ -1,10 +1,11 @@
 {
-  "name": "narrowslink",
-  "version": "0.3.0",
+  "name": "replaycase",
+  "version": "0.4.0",
   "private": true,
   "license": "MIT",
   "type": "module",
   "bin": {
+    "replaycase": "dist-cli/replaycase.mjs",
     "narrowslink": "dist-cli/narrowslink.mjs"
   },
   "engines": {
@@ -21,7 +22,7 @@
     "capture:demo:nmea": "node scripts/send-demo-nmea.mjs",
     "fixture:generate": "node scripts/generate-demo-session.mjs",
     "fixture:large": "node scripts/large-session-corpus.mjs",
-    "verify:bundle": "npm run build:cli --silent && node dist-cli/narrowslink.mjs verify",
+    "verify:bundle": "npm run build:cli --silent && node dist-cli/replaycase.mjs verify",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -895,7 +895,7 @@ export function compareSources(
   );
   const metrics = buildMetrics(baseline, candidate, alignment, areas);
   const limitations = [
-    "Alignment is operator-declared; NarrowsLink does not infer synchronized source clocks.",
+    "Alignment is operator-declared; ReplayCase does not infer synchronized source clocks.",
     "Only the aligned intersection is used for numeric deltas; unmatched range tails remain excluded.",
     "A metric assessment describes observed evidence, not causal attribution.",
     ...baseline.limitations.map((value) => `Baseline: ${value}`),
@@ -1469,7 +1469,7 @@ export function validateComparisonFinding(input: unknown): ComparisonFinding {
   const result = comparisonFindingSchema.safeParse(input);
   if (!result.success) {
     throw new ComparisonFindingValidationError(
-      "The comparison finding does not match the NarrowsLink format.",
+      "The comparison finding does not match the ReplayCase format.",
       result.error.issues.slice(0, 8).map((issue) => `${issue.path.join(".") || "finding"}: ${issue.message}`),
     );
   }
@@ -1544,7 +1544,7 @@ export function suggestComparisonFindingFilename(model: ComparisonModel): string
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 120);
-  return `${slug || "narrowslink-comparison"}.nlcompare.json`;
+  return `${slug || "replaycase-comparison"}.nlcompare.json`;
 }
 
 /** Starts a local browser download without transmitting either source or the finding. */

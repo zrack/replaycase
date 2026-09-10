@@ -18,7 +18,7 @@ function recordFor(bytes: Uint8Array): SourceRecord {
   };
 }
 
-describe("NarrowsLink frame decoder", () => {
+describe("ReplayCase frame decoder", () => {
   it("binds the supported decoder descriptor to the canonical byte-level schema", () => {
     const canonicalize = (value: unknown): unknown => {
       if (Array.isArray(value)) return value.map(canonicalize);

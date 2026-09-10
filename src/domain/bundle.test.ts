@@ -557,7 +557,7 @@ describe("buildEvidenceBundle", () => {
       range,
       generatedAt: "2026-07-16T06:00:00.000Z",
     });
-    const directory = await mkdtemp(join(tmpdir(), "narrowslink-bundle-"));
+    const directory = await mkdtemp(join(tmpdir(), "replaycase-bundle-"));
     const bundlePath = join(directory, "evidence.nlb");
     try {
       await writeFile(bundlePath, bytes);

@@ -61,7 +61,7 @@ jobs:
 
       - name: Test unpacked release bytes
         env:
-          NARROWSLINK_RELEASE_ARCHIVE: build/release/narrowslink-${{ env.RELEASE_VERSION }}.tgz
+          REPLAYCASE_RELEASE_ARCHIVE: build/release/replaycase-${{ env.RELEASE_VERSION }}.tgz
         run: npm run test:release
 
       - name: Verify published checksum set
@@ -71,11 +71,11 @@ jobs:
       - name: Upload verified release assets
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: narrowslink-release-${{ github.ref_name }}
+          name: replaycase-release-${{ github.ref_name }}
           path: |
-            build/release/narrowslink-*.tgz
-            build/release/narrowslink-*.release.json
-            build/release/narrowslink-*.cdx.json
+            build/release/replaycase-*.tgz
+            build/release/replaycase-*.release.json
+            build/release/replaycase-*.cdx.json
             build/release/SHA256SUMS
           if-no-files-found: error
           retention-days: 14
@@ -98,7 +98,7 @@ jobs:
       - name: Download verified release assets
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: narrowslink-release-${{ github.ref_name }}
+          name: replaycase-release-${{ github.ref_name }}
           path: build/release
 
       - name: Recheck release assets
@@ -112,13 +112,13 @@ jobs:
           RELEASE_VERSION="${GITHUB_REF_NAME#v}"
           test "v${RELEASE_VERSION}" = "${GITHUB_REF_NAME}"
           test -f "docs/releases/${GITHUB_REF_NAME}.md"
-          test -f "build/release/narrowslink-${RELEASE_VERSION}.tgz"
+          test -f "build/release/replaycase-${RELEASE_VERSION}.tgz"
           gh release create "${GITHUB_REF_NAME}" \
-            "build/release/narrowslink-${RELEASE_VERSION}.tgz" \
-            "build/release/narrowslink-${RELEASE_VERSION}.release.json" \
-            "build/release/narrowslink-${RELEASE_VERSION}.cdx.json" \
+            "build/release/replaycase-${RELEASE_VERSION}.tgz" \
+            "build/release/replaycase-${RELEASE_VERSION}.release.json" \
+            "build/release/replaycase-${RELEASE_VERSION}.cdx.json" \
             build/release/SHA256SUMS \
             --repo "${GITHUB_REPOSITORY}" \
             --verify-tag \
-            --title "NarrowsLink ${GITHUB_REF_NAME}" \
+            --title "ReplayCase ${GITHUB_REF_NAME}" \
             --notes-file "docs/releases/${GITHUB_REF_NAME}.md"

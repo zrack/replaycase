@@ -1,6 +1,6 @@
-# NarrowsLink decoder packs
+# ReplayCase decoder packs
 
-NarrowsLink decoder packs bind framing, a declarative schema, a supported parser runtime, and executable conformance fixtures to one immutable content identity. They do not contain JavaScript or other executable plug-in code.
+ReplayCase decoder packs bind framing, a declarative schema, a supported parser runtime, and executable conformance fixtures to one immutable content identity. They do not contain JavaScript or other executable plug-in code.
 
 The current application ships two packs:
 
@@ -11,7 +11,7 @@ The current application ships two packs:
 
 1. Open **Live capture**.
 2. Choose a bundled pack under **Decoder pack**, or select **Load pack** and choose a local `.nldecoder` or `.json` file.
-3. Wait for the loaded-pack notice. NarrowsLink validates the file shape, canonical SHA-256 identity, supported runtime, schema compatibility, and every bundled fixture before making the pack active.
+3. Wait for the loaded-pack notice. ReplayCase validates the file shape, canonical SHA-256 identity, supported runtime, schema compatibility, and every bundled fixture before making the pack active.
 4. Configure UDP or serial, run preflight with known traffic, and confirm that the selected pack produces the expected valid frames and message families. The pack is locked once preflight begins.
 5. Select **Start recording**. UDP replaces the discarded probe with a new capture identity; serial resets framing on the already selected port so only subsequent reads enter evidence.
 6. Stop and save. The version 2 `.nlsession` embeds the exact pack and records its pack, schema, runtime, and revision identities.
@@ -21,7 +21,7 @@ If pack validation or a fixture fails, capture does not start with that pack. Ex
 
 ## NMEA 0183 record boundaries
 
-NarrowsLink operates on bytes delivered to the laptop; it does not demodulate radio signals.
+ReplayCase operates on bytes delivered to the laptop; it does not demodulate radio signals.
 
 - For UDP, send one complete NMEA sentence per datagram. Each sentence must begin with `$`, end with `*HH`, and fit within 256 bytes including line endings.
 - For serial, the runtime assembles records at line-feed boundaries. CRLF is preserved. Unterminated or overlong input is retained as bounded partial records instead of being discarded.
@@ -31,7 +31,13 @@ From a source checkout, `npm run capture:demo:nmea -- --port 9104` sends repeata
 
 ## Pack contract
 
-A pack uses `narrowslink/decoder-pack` format version `1` and contains:
+A pack uses `narrowslink/decoder-pack` format version `1`.
+
+The format namespace and published pack metadata are retained across the
+ReplayCase rename. Do not relabel an existing pack's description or display name:
+those fields contribute to its immutable hash. Branding is not a decoder revision.
+
+Each pack contains:
 
 | Field | Purpose |
 | --- | --- |
@@ -60,7 +66,7 @@ Start with a JSON draft containing every pack field except `integrity`. Fixtures
 Seal the draft:
 
 ```bash
-narrowslink decoder seal nmea-draft.json --out nmea-reference.nldecoder
+replaycase decoder seal nmea-draft.json --out nmea-reference.nldecoder
 ```
 
 The command:
@@ -75,8 +81,8 @@ The command:
 Validate a pack received from another contributor:
 
 ```bash
-narrowslink decoder validate nmea-reference.nldecoder
-narrowslink decoder validate nmea-reference.nldecoder --json
+replaycase decoder validate nmea-reference.nldecoder
+replaycase decoder validate nmea-reference.nldecoder --json
 ```
 
 Use the pack SHA-256 as its immutable identity. Changing a description, schema field, fixture, or expected result creates a different pack and requires resealing.

@@ -49,7 +49,7 @@ async function processBlob(
     if (error instanceof SessionProcessingError) {
       throw new SessionLoadError(error.message, [...error.details]);
     }
-    throw new SessionLoadError("NarrowsLink could not decode this replay.", [
+    throw new SessionLoadError("ReplayCase could not decode this replay.", [
       error instanceof Error ? error.message : "Unknown decoder error",
     ]);
   }

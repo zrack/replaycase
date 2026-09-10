@@ -20,8 +20,8 @@ function sourceSbom() {
     version: 1,
     metadata: {
       component: {
-        "bom-ref": "narrowslink@0.1.0",
-        name: "narrowslink",
+        "bom-ref": "replaycase@0.1.0",
+        name: "replaycase",
         version: "0.1.0",
         type: "application",
         properties: [],
@@ -38,12 +38,12 @@ function sourceSbom() {
     ],
     dependencies: [
       {
-        ref: "narrowslink@0.1.0",
+        ref: "replaycase@0.1.0",
         dependsOn: ["dependency@1.0.0"],
       },
       {
         ref: "dependency@1.0.0",
-        dependsOn: ["narrowslink@0.1.0"],
+        dependsOn: ["replaycase@0.1.0"],
       },
     ],
   };
@@ -52,7 +52,7 @@ function sourceSbom() {
 describe("release SBOM normalization", () => {
   it("rewrites every root reference and retains a closed dependency graph", () => {
     const normalized = normalizeCycloneDx(sourceSbom(), identity);
-    const rootReference = "pkg:npm/narrowslink@0.1.0";
+    const rootReference = "pkg:npm/replaycase@0.1.0";
 
     expect(normalized.metadata.component["bom-ref"]).toBe(rootReference);
     expect(normalized.dependencies).toEqual([

@@ -727,7 +727,7 @@ export function validateSessionDocument(
   const result = sessionDocumentSchema.safeParse(input);
   if (!result.success) {
     throw new SessionValidationError(
-      "The replay file does not match NarrowsLink session format version 1 or 2.",
+      "The replay file does not match ReplayCase session format version 1 or 2.",
       result.error.issues.slice(0, 8).map((issue) => `${issue.path.join(".") || "document"}: ${issue.message}`),
     );
   }

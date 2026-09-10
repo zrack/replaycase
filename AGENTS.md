@@ -1,4 +1,4 @@
-# NarrowsLink Application Instructions
+# ReplayCase Application Instructions
 
 Run the local server yourself and open the application in the browser available to this environment. Do not give the user server-start instructions when you can run it.
 
@@ -8,9 +8,11 @@ Treat `docs/design/narrowslink-mission-timeline-source.png` as the source of tru
 
 ## Selected Product Direction
 
-- The approved concept is the mission-timeline-first NarrowsLink session review workspace.
+- The product and GitHub repository are named ReplayCase (`zrack/replaycase`). The RC mark and ReplayCase wordmark supersede the legacy branding in the source image; its layout, geometry, and instrument styling remain authoritative.
+- Preserve published evidence formats, file extensions, decoder-pack metadata and hashes, browser storage keys, and compatibility CLI/runtime aliases during branding work. Current documentation uses ReplayCase; published release notes and dated proof records retain historically accurate names and commands.
+- The approved concept is the mission-timeline-first ReplayCase session review workspace.
 - The primary outcome is to correlate link health, packet behavior, decoder state, diagnostics, markers, and decoded signals across a recorded session, then package a selected incident range into a reproducible handoff bundle.
-- Preserve the restrained, square-cornered, instrument-grade visual language of the existing NarrowsLink prototype.
+- Preserve the restrained, square-cornered, instrument-grade visual language of the existing ReplayCase prototype.
 - Prototype fidelity is the current priority: treat visible differences in composition, component geometry, density, spacing, typography, color, and hierarchy from the source image as product defects rather than optional polish.
 
 ## Product Engineering Constraints

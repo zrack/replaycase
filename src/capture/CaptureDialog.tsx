@@ -503,7 +503,7 @@ function downloadSession(session: SessionDocument): string {
     .replace(/^-|-$/g, "")
     .slice(0, 56) || "capture";
   const timestamp = session.startedAt.replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  const filename = `narrowslink-${slug}-${timestamp}.nlsession`;
+  const filename = `replaycase-${slug}-${timestamp}.nlsession`;
   const link = document.createElement("a");
   link.href = objectUrl;
   link.download = filename;
@@ -2514,7 +2514,7 @@ export function CaptureDialog({
               {operatorRuntime.mode === "managed" ? (
                 <div className="capture-managed-bridge capture-field-wide" role="status">
                   <strong>Managed local bridge · authenticated</strong>
-                  <span>NarrowsLink {operatorRuntime.version} · build {operatorRuntime.commit.slice(0, 12)}</span>
+                  <span>ReplayCase {operatorRuntime.version} · build {operatorRuntime.commit.slice(0, 12)}</span>
                 </div>
               ) : operatorRuntime.mode === "invalid" ? (
                 <p className="capture-capability-warning capture-field-wide" role="alert">

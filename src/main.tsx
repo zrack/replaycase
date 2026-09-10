@@ -13,7 +13,7 @@ import "./styles.css";
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
-  throw new Error("NarrowsLink could not find its root element.");
+  throw new Error("ReplayCase could not find its root element.");
 }
 
 configureZod({ jitless: true });

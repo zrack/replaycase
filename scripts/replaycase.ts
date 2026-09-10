@@ -25,12 +25,12 @@ import {
   type ReleaseIdentity,
 } from "./operator-runtime";
 
-declare const __NARROWSLINK_VERSION__: string;
-declare const __NARROWSLINK_COMMIT__: string;
+declare const __REPLAYCASE_VERSION__: string;
+declare const __REPLAYCASE_COMMIT__: string;
 
-export const NARROWSLINK_RELEASE: ReleaseIdentity = Object.freeze({
-  version: typeof __NARROWSLINK_VERSION__ === "string" ? __NARROWSLINK_VERSION__ : "0.3.0",
-  commit: typeof __NARROWSLINK_COMMIT__ === "string" ? __NARROWSLINK_COMMIT__ : "unknown",
+export const REPLAYCASE_RELEASE: ReleaseIdentity = Object.freeze({
+  version: typeof __REPLAYCASE_VERSION__ === "string" ? __REPLAYCASE_VERSION__ : "0.4.0",
+  commit: typeof __REPLAYCASE_COMMIT__ === "string" ? __REPLAYCASE_COMMIT__ : "unknown",
 });
 
 interface CliIo {
@@ -96,7 +96,7 @@ export function renderVerificationReport(report: EvidenceVerificationReport): st
     ? "Warnings: none"
     : ["Warnings:", ...report.warnings.map((warning) => `  - ${cleanTerminalText(warning)}`)].join("\n");
   return [
-    "NarrowsLink evidence verification: PASS",
+    "ReplayCase evidence verification: PASS",
     `Integrity: ${report.integrity}`,
     `Evidence: ${report.evidence} (capture: ${report.captureEvidence}; provenance: ${report.provenanceEvidence})`,
     `Authenticity: ${report.authenticity} (bundle is unsigned)`,
@@ -129,15 +129,15 @@ function failureReport(error: EvidenceVerificationError): FailedVerificationRepo
 
 function rootUsage(): string {
   return [
-    "Usage: narrowslink <command> [options]",
+    "Usage: replaycase <command> [options]",
     "",
     "Commands:",
     "  serve                 Start the self-contained local operator application",
-    "  verify <bundle.nlb>   Verify a NarrowsLink evidence bundle",
+    "  verify <bundle.nlb>   Verify a ReplayCase evidence bundle",
     "  decoder <command>     Seal or validate a bounded decoder pack",
     "  version               Print the release identity",
     "",
-    "Run `narrowslink <command> --help` for command-specific options.",
+    "Run `replaycase <command> --help` for command-specific options.",
     "",
   ].join("\n");
 }
@@ -145,8 +145,8 @@ function rootUsage(): string {
 function decoderUsage(): string {
   return [
     "Usage:",
-    "  narrowslink decoder validate <pack.nldecoder> [--json]",
-    "  narrowslink decoder seal <draft.json> --out <pack.nldecoder> [--json]",
+    "  replaycase decoder validate <pack.nldecoder> [--json]",
+    "  replaycase decoder seal <draft.json> --out <pack.nldecoder> [--json]",
     "",
     "Validates pack identity, runtime compatibility, and bundled conformance fixtures.",
     "Sealing replaces any draft integrity field, validates the result, and refuses to overwrite the output path.",
@@ -156,9 +156,9 @@ function decoderUsage(): string {
 
 function verifyUsage(): string {
   return [
-    "Usage: narrowslink verify <bundle.nlb> [--json]",
+    "Usage: replaycase verify <bundle.nlb> [--json]",
     "",
-    "Verifies a NarrowsLink v3 or v4 evidence bundle locally without network access.",
+    "Verifies a ReplayCase v3 or v4 evidence bundle locally without network access.",
     "Exit 0: internally consistent; exit 1: invalid or tampered; exit 2: usage or file I/O failure.",
     "",
   ].join("\n");
@@ -166,9 +166,9 @@ function verifyUsage(): string {
 
 function serveUsage(): string {
   return [
-    "Usage: narrowslink serve [options]",
+    "Usage: replaycase serve [options]",
     "",
-    "Starts the production NarrowsLink UI and authenticated UDP bridge locally.",
+    "Starts the production ReplayCase UI and authenticated UDP bridge locally.",
     "",
     "Options:",
     "  --app-port <port>            Stable UI port (default 47890; 0 selects a free port)",
@@ -186,8 +186,8 @@ function serveUsage(): string {
 
 function versionText(json: boolean): string {
   return json
-    ? `${safeJson({ name: "narrowslink", ...NARROWSLINK_RELEASE })}\n`
-    : `NarrowsLink ${NARROWSLINK_RELEASE.version} (${NARROWSLINK_RELEASE.commit})\n`;
+    ? `${safeJson({ name: "replaycase", ...REPLAYCASE_RELEASE })}\n`
+    : `ReplayCase ${REPLAYCASE_RELEASE.version} (${REPLAYCASE_RELEASE.commit})\n`;
 }
 
 function decoderPackReport(
@@ -217,7 +217,7 @@ function decoderPackReport(
 function renderDecoderPackReport(report: ReturnType<typeof decoderPackReport>): string {
   const pack = report.pack;
   return [
-    `NarrowsLink decoder pack: PASS (${report.action})`,
+    `ReplayCase decoder pack: PASS (${report.action})`,
     `Pack: ${cleanTerminalText(pack.displayName)} [${cleanTerminalText(pack.id)} ${cleanTerminalText(pack.revision)}]`,
     `Pack SHA-256: ${pack.sha256}`,
     `Runtime: ${pack.runtimeId} r${pack.runtimeRevision}`,
@@ -242,7 +242,7 @@ function decoderFailureText(error: DecoderPackValidationError): string {
   const details = error.details.length > 0
     ? `\n${error.details.map((detail) => `  - ${cleanTerminalText(detail)}`).join("\n")}`
     : "";
-  return `NarrowsLink decoder pack: FAIL\n${cleanTerminalText(error.message)}${details}\n`;
+  return `ReplayCase decoder pack: FAIL\n${cleanTerminalText(error.message)}${details}\n`;
 }
 
 async function runDecoder(argv: readonly string[], io: CliIo): Promise<number> {
@@ -276,7 +276,7 @@ async function runDecoder(argv: readonly string[], io: CliIo): Promise<number> {
         } else io.stderr(decoderFailureText(error));
         return 1;
       }
-      io.stderr(`NarrowsLink could not read the decoder pack: ${cleanTerminalText(error instanceof Error ? error.message : String(error))}\n`);
+      io.stderr(`ReplayCase could not read the decoder pack: ${cleanTerminalText(error instanceof Error ? error.message : String(error))}\n`);
       return 2;
     }
   }
@@ -315,7 +315,7 @@ async function runDecoder(argv: readonly string[], io: CliIo): Promise<number> {
         } else io.stderr(decoderFailureText(error));
         return 1;
       }
-      io.stderr(`NarrowsLink could not seal the decoder pack: ${cleanTerminalText(error instanceof Error ? error.message : String(error))}\n`);
+      io.stderr(`ReplayCase could not seal the decoder pack: ${cleanTerminalText(error instanceof Error ? error.message : String(error))}\n`);
       return 2;
     }
   }
@@ -376,14 +376,14 @@ export async function waitForShutdown(
       if (error !== undefined) {
         fatal = true;
         const message = error instanceof Error ? error.stack ?? error.message : String(error);
-        io.stderr(`NarrowsLink encountered a fatal runtime error: ${cleanTerminalText(message)}\n`);
+        io.stderr(`ReplayCase encountered a fatal runtime error: ${cleanTerminalText(message)}\n`);
       }
       if (stopping) return;
       stopping = true;
       void closeWithin(runtime, timeoutMs).then((closed) => {
         if (!closed) {
           exitCode = 1;
-          io.stderr(`NarrowsLink could not complete local evidence shutdown within ${timeoutMs} ms.\n`);
+          io.stderr(`ReplayCase could not complete local evidence shutdown within ${timeoutMs} ms.\n`);
         }
         cleanup();
         if (!closed || fatal) {
@@ -423,18 +423,18 @@ async function runServe(argv: readonly string[], io: CliIo): Promise<number> {
   try {
     runtime = await startOperatorRuntime({
       options,
-      release: NARROWSLINK_RELEASE,
+      release: REPLAYCASE_RELEASE,
       moduleUrl: import.meta.url,
     });
   } catch (error) {
-    io.stderr(`NarrowsLink could not start: ${cleanTerminalText(error instanceof Error ? error.message : String(error))}\n`);
+    io.stderr(`ReplayCase could not start: ${cleanTerminalText(error instanceof Error ? error.message : String(error))}\n`);
     return 1;
   }
 
   if (options.jsonReady) {
     io.stdout(`${safeJson(readyDocument(runtime)).replace(/\n/g, "")}\n`);
   } else {
-    io.stdout(`NarrowsLink ${runtime.release.version} is ready at ${runtime.appUrl}\n`);
+    io.stdout(`ReplayCase ${runtime.release.version} is ready at ${runtime.appUrl}\n`);
   }
   if (options.openBrowser && !openOperatorUrl(runtime.appUrl)) {
     io.stderr(`Could not open a browser automatically. Open ${runtime.appUrl}\n`);
@@ -456,7 +456,7 @@ async function runVerify(argv: readonly string[], io: CliIo): Promise<number> {
         formatVersion: 1,
         integrity: "failed",
         authenticity: "not-established",
-        error: { code: "USAGE_ERROR", message: "Expected: narrowslink verify <bundle.nlb> [--json]" },
+        error: { code: "USAGE_ERROR", message: "Expected: replaycase verify <bundle.nlb> [--json]" },
       } satisfies FailedVerificationReport)}\n`);
     } else {
       io.stderr(verifyUsage());
@@ -474,7 +474,7 @@ async function runVerify(argv: readonly string[], io: CliIo): Promise<number> {
       : new EvidenceVerificationError("CONTENT_INVALID", "Evidence verification failed unexpectedly.", undefined, { cause: error });
     const exitCode = verificationError.code === "ARCHIVE_IO_ERROR" ? 2 : 1;
     if (json) io.stdout(`${safeJson(failureReport(verificationError))}\n`);
-    else io.stderr(`NarrowsLink evidence verification: FAIL\n${verificationError.code}: ${cleanTerminalText(verificationError.message)}${verificationError.path ? `\nPath: ${cleanTerminalText(verificationError.path)}` : ""}\n`);
+    else io.stderr(`ReplayCase evidence verification: FAIL\n${verificationError.code}: ${cleanTerminalText(verificationError.message)}${verificationError.path ? `\nPath: ${cleanTerminalText(verificationError.path)}` : ""}\n`);
     return exitCode;
   }
 }
@@ -486,12 +486,12 @@ export async function runCli(argv: readonly string[], io: CliIo = DEFAULT_IO): P
       formatVersion: 1,
       integrity: "failed",
       authenticity: "not-established",
-      error: { code: "USAGE_ERROR", message: "Expected a NarrowsLink command." },
+      error: { code: "USAGE_ERROR", message: "Expected a ReplayCase command." },
     } satisfies FailedVerificationReport)}\n`);
     return 2;
   }
   if (argv.length === 1 && argv[0] === "--version") {
-    io.stdout(`${NARROWSLINK_RELEASE.version}\n`);
+    io.stdout(`${REPLAYCASE_RELEASE.version}\n`);
     return 0;
   }
   if (argv[0] === "version") {

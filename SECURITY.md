@@ -2,13 +2,14 @@
 
 ## Supported versions
 
-NarrowsLink is a pre-1.0 project under active development. Security fixes are made on the current `main` branch and, when warranted, in the latest patch release. Superseded patches, older commits, and forks do not receive guaranteed backports.
+ReplayCase is a pre-1.0 project under active development. Security fixes are made on the current `main` branch and, when warranted, in the latest patch release. Superseded patches, older commits, and forks do not receive guaranteed backports.
 
 | Version | Supported |
 | --- | --- |
 | Current `main` | Yes |
-| Latest `0.3.x` patch | Yes |
-| Superseded `0.3.x` patches | No guaranteed backports |
+| Latest `0.4.x` patch | Yes |
+| Superseded `0.4.x` patches | No guaranteed backports |
+| `0.3.x` | No guaranteed backports |
 | `0.2.x` | No guaranteed backports |
 | `0.1.x` | No guaranteed backports |
 | `< 0.1.0`, older commits, and forks | No |
@@ -17,7 +18,7 @@ NarrowsLink is a pre-1.0 project under active development. Security fixes are ma
 
 Do not open a public issue for a suspected vulnerability.
 
-Use the repository's [private Security advisories](https://github.com/zrack/narrowslink/security/advisories) area to report the issue and coordinate with the maintainer. Describe the affected version or commit, the impact, and the minimum steps needed to reproduce the issue.
+Use the repository's [private Security advisories](https://github.com/zrack/replaycase/security/advisories) area to report the issue and coordinate with the maintainer. Describe the affected version or commit, the impact, and the minimum steps needed to reproduce the issue.
 
 If GitHub does not offer the private report form for your account, contact the repository owner through their [GitHub profile](https://github.com/zrack) and ask for a private reporting channel without including sensitive technical details.
 

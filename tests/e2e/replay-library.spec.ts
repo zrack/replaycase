@@ -24,7 +24,7 @@ function savedSessions(page: Page) {
 test("recovers from invalid import and preserves a deduplicated investigation workspace", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Harbor relay downlink" })).toBeVisible();
-  const fileInput = page.getByLabel("Choose a local NarrowsLink replay");
+  const fileInput = page.getByLabel("Choose a local ReplayCase replay");
 
   await fileInput.setInputFiles({
     name: "broken.nlsession",

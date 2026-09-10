@@ -390,7 +390,7 @@ function parseCanonicalJson<T>(entries: Map<string, Uint8Array>, path: string, s
   } catch (error) {
     fail("CONTENT_INVALID", `${path} is not valid JSON.`, path, error);
   }
-  ensure(text === canonicalJson(value, true), "CONTENT_INVALID", `${path} is not canonical NarrowsLink JSON.`, path);
+  ensure(text === canonicalJson(value, true), "CONTENT_INVALID", `${path} is not canonical ReplayCase JSON.`, path);
   const result = schema.safeParse(value);
   if (!result.success) {
     const issue = result.error.issues[0];
@@ -1437,9 +1437,9 @@ export function verifyEvidenceBundleBytes(archiveBytes: Uint8Array): VerifiedEvi
       (manifestValue as { formatVersion?: unknown }).formatVersion as 3 | 4,
     )
   ) {
-    fail("UNSUPPORTED_BUNDLE_VERSION", `Unsupported NarrowsLink evidence bundle version ${String((manifestValue as { formatVersion?: unknown }).formatVersion)}.`, "manifest.json");
+    fail("UNSUPPORTED_BUNDLE_VERSION", `Unsupported ReplayCase evidence bundle version ${String((manifestValue as { formatVersion?: unknown }).formatVersion)}.`, "manifest.json");
   }
-  ensure(manifestText === canonicalJson(manifestValue, true), "CONTENT_INVALID", "manifest.json is not canonical NarrowsLink JSON.", "manifest.json");
+  ensure(manifestText === canonicalJson(manifestValue, true), "CONTENT_INVALID", "manifest.json is not canonical ReplayCase JSON.", "manifest.json");
   const parsedManifest = evidenceBundleManifestSchema.safeParse(manifestValue);
   if (!parsedManifest.success) fail("CONTENT_INVALID", "manifest.json does not match the supported v3/v4 evidence schema.", "manifest.json", parsedManifest.error);
   const manifest = parsedManifest.data;

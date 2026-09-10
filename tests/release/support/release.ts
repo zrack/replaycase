@@ -247,7 +247,7 @@ function parsePayloadFiles(payload: Record<string, unknown>): readonly ReleasePa
       throw new Error(`The release manifest repeats payload path ${entry.path}.`);
     }
     paths.add(entry.path);
-    const requiredMode = entry.path === "bin/narrowslink.mjs" ? "0755" : "0644";
+    const requiredMode = ["bin/replaycase.mjs", "bin/narrowslink.mjs"].includes(entry.path) ? "0755" : "0644";
     if (entry.mode !== requiredMode) {
       throw new Error(`The release manifest declares an invalid mode for ${entry.path}.`);
     }
@@ -275,10 +275,10 @@ function parseReleaseManifest(value: unknown): ParsedReleaseManifest {
   const inputs = value.inputs;
   const toolchain = value.toolchain;
   if (
-    value.format !== "narrowslink/release-manifest"
+    value.format !== "replaycase/release-manifest"
     || value.formatVersion !== 1
-    || value.product !== "NarrowsLink"
-    || value.packageName !== "narrowslink"
+    || value.product !== "ReplayCase"
+    || value.packageName !== "replaycase"
     || typeof value.version !== "string"
     || !releaseVersionPattern.test(value.version)
     || typeof value.commit !== "string"
@@ -293,7 +293,7 @@ function parseReleaseManifest(value: unknown): ParsedReleaseManifest {
     || typeof value.tagAnnotated !== "boolean"
     || typeof value.buildId !== "string"
     || !isRecord(source)
-    || source.repository !== "https://github.com/zrack/narrowslink"
+    || source.repository !== "https://github.com/zrack/replaycase"
     || source.commit !== value.commit
     || source.tree !== value.tree
     || source.sourceDateEpoch !== value.sourceDateEpoch
@@ -443,22 +443,22 @@ function validateCycloneDxSbom(value: unknown, manifest: ParsedReleaseManifest):
   }
 
   const root = metadata.component;
-  const rootReference = `pkg:npm/narrowslink@${manifest.identity.version}`;
+  const rootReference = `pkg:npm/replaycase@${manifest.identity.version}`;
   if (
     root["bom-ref"] !== rootReference
     || root.purl !== rootReference
     || root.type !== "application"
-    || root.name !== "narrowslink"
+    || root.name !== "replaycase"
     || root.version !== manifest.identity.version
     || !Array.isArray(root.properties)
     || !root.properties.some((property) => (
       isRecord(property)
-      && property.name === "narrowslink:distribution"
+      && property.name === "replaycase:distribution"
       && property.value === "bundled"
     ))
     || !root.properties.some((property) => (
       isRecord(property)
-      && property.name === "narrowslink:source-commit"
+      && property.name === "replaycase:source-commit"
       && property.value === manifest.identity.commit
     ))
   ) {
@@ -497,7 +497,7 @@ function validateCycloneDxSbom(value: unknown, manifest: ParsedReleaseManifest):
     }
   }
   if (!dependencyReferences.has(rootReference)) {
-    throw new Error("The embedded CycloneDX dependency graph omits the NarrowsLink root component.");
+    throw new Error("The embedded CycloneDX dependency graph omits the ReplayCase root component.");
   }
 }
 
@@ -511,11 +511,11 @@ async function validatePublishedMetadata(
   const embeddedSbomPath = join(packageRoot, "SBOM.cdx.json");
   const externalManifestPath = join(
     releaseRoot,
-    `narrowslink-${manifest.identity.version}.release.json`,
+    `replaycase-${manifest.identity.version}.release.json`,
   );
   const externalSbomPath = join(
     releaseRoot,
-    `narrowslink-${manifest.identity.version}.cdx.json`,
+    `replaycase-${manifest.identity.version}.cdx.json`,
   );
   const [
     embeddedManifest,
@@ -543,7 +543,7 @@ async function validatePublishedMetadata(
 function parseVersionDocument(value: unknown): ReleaseIdentity {
   if (
     !isRecord(value)
-    || value.name !== "narrowslink"
+    || value.name !== "replaycase"
     || typeof value.version !== "string"
     || !releaseVersionPattern.test(value.version)
     || typeof value.commit !== "string"
@@ -642,9 +642,9 @@ async function installReleaseGlobally(
   }
 
   const installedExecutable = process.platform === "win32"
-    ? join(prefix, "narrowslink.cmd")
-    : join(prefix, "bin", "narrowslink");
-  await requireFile(installedExecutable, "the globally installed narrowslink command");
+    ? join(prefix, "replaycase.cmd")
+    : join(prefix, "bin", "replaycase");
+  await requireFile(installedExecutable, "the globally installed replaycase command");
   if (process.platform !== "win32") {
     await access(installedExecutable, fsConstants.X_OK);
   }
@@ -658,6 +658,13 @@ async function installReleaseGlobally(
     || installedIdentity.commit !== expectedIdentity.commit
   ) {
     throw new Error("The globally installed command identity does not match release-manifest.json.");
+  }
+  const legacyExecutable = process.platform === "win32"
+    ? join(prefix, "narrowslink.cmd")
+    : join(prefix, "bin", "narrowslink");
+  const legacyIdentity = await readCliIdentity(legacyExecutable, operatorWorkingDirectory, "The legacy alias");
+  if (legacyIdentity.version !== expectedIdentity.version || legacyIdentity.commit !== expectedIdentity.commit) {
+    throw new Error("The legacy alias does not identify the installed ReplayCase release.");
   }
   return installedExecutable;
 }
@@ -739,10 +746,10 @@ async function waitForExit(
 }
 
 export function configuredReleaseArchive(): string {
-  const configured = process.env.NARROWSLINK_RELEASE_ARCHIVE?.trim();
+  const configured = process.env.REPLAYCASE_RELEASE_ARCHIVE?.trim() || process.env.NARROWSLINK_RELEASE_ARCHIVE?.trim();
   if (!configured) {
     throw new Error(
-      "NARROWSLINK_RELEASE_ARCHIVE must point to the built NarrowsLink .tgz release.",
+      "REPLAYCASE_RELEASE_ARCHIVE must point to the built ReplayCase .tgz release.",
     );
   }
   return resolve(configured);
@@ -753,10 +760,10 @@ export async function unpackRelease(
 ): Promise<ReleaseInstallation> {
   await requireFile(archivePath, "the configured release archive");
   if (!basename(archivePath).endsWith(".tgz")) {
-    throw new Error(`NARROWSLINK_RELEASE_ARCHIVE must name a .tgz file: ${archivePath}`);
+    throw new Error(`REPLAYCASE_RELEASE_ARCHIVE must name a .tgz file: ${archivePath}`);
   }
 
-  const temporaryRoot = await mkdtemp(join(tmpdir(), "narrowslink-release-acceptance-"));
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "replaycase-release-acceptance-"));
   const unpackedRoot = join(temporaryRoot, "unpacked");
   const operatorWorkingDirectory = join(temporaryRoot, "operator-cwd");
   await Promise.all([
@@ -776,11 +783,11 @@ export async function unpackRelease(
     }
 
     const packageRoot = join(unpackedRoot, "package");
-    const packagedExecutablePath = join(packageRoot, "bin", "narrowslink.mjs");
+    const packagedExecutablePath = join(packageRoot, "bin", "replaycase.mjs");
     const appRoot = join(packageRoot, "app");
     const fixturePath = join(appRoot, "fixtures", "harbor-relay-session.json");
     await Promise.all([
-      requireFile(packagedExecutablePath, "package/bin/narrowslink.mjs"),
+      requireFile(packagedExecutablePath, "package/bin/replaycase.mjs"),
       requireFile(join(appRoot, "index.html"), "package/app/index.html"),
       requireFile(fixturePath, "the bundled replay fixture"),
       requireFile(join(packageRoot, "release-manifest.json"), "release-manifest.json"),

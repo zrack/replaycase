@@ -188,7 +188,7 @@ test("packet-family heading stays above readable family labels at every layout b
 
 test("received evidence passes axe and remains bounded at narrow widths", async ({ page }, testInfo) => {
   const bundlePath = await createDemoEvidenceBundle(page, testInfo);
-  await page.getByLabel("Choose a NarrowsLink evidence bundle").setInputFiles(bundlePath);
+  await page.getByLabel("Choose a ReplayCase evidence bundle").setInputFiles(bundlePath);
   const receiver = page.getByRole("main", { name: "Received incident evidence workspace" });
   await expect(receiver).toBeVisible({ timeout: 30_000 });
   await expectNoAxeViolations(page);

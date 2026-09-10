@@ -125,6 +125,7 @@ const NSL01_PACK_DRAFT = {
   id: DECODER_ID,
   revision: DECODER_REVISION,
   displayName: "NSL-01",
+  // Published pack metadata is content-addressed; a brand edit would change its identity.
   description: "NarrowsLink reference binary telemetry envelope and five packet families.",
   runtime: {
     id: "nsl01-binary-v1",

@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createCaptureBridge } from "./capture-bridge.mjs";
-import { waitForShutdown } from "./narrowslink.ts";
+import { waitForShutdown } from "./replaycase.ts";
 import {
   parseServeArguments,
   ServeArgumentError,
@@ -30,7 +30,7 @@ afterEach(async () => {
 });
 
 async function makeApplication() {
-  applicationRoot = await mkdtemp(join(tmpdir(), "narrowslink-operator-runtime-"));
+  applicationRoot = await mkdtemp(join(tmpdir(), "replaycase-operator-runtime-"));
   await mkdir(join(applicationRoot, "assets"));
   await writeFile(
     join(applicationRoot, "index.html"),
@@ -211,7 +211,7 @@ describe("managed operator runtime", () => {
     expect(root.headers.get("content-security-policy")).not.toContain(runtime.bridgeUrl);
     expect(root.headers.get("set-cookie")).toBeNull();
 
-    const runtimeResponse = await fetch(`${runtime.appUrl}/narrowslink-runtime.json`);
+    const runtimeResponse = await fetch(`${runtime.appUrl}/replaycase-runtime.json`);
     expect(runtimeResponse.headers.get("cache-control")).toBe("no-store");
     const document = await runtimeResponse.json();
     expect(document).toEqual({
@@ -226,6 +226,9 @@ describe("managed operator runtime", () => {
       release,
     });
     expect(JSON.stringify(document)).not.toContain(runtime.bridgeUrl);
+    const legacyResponse = await fetch(`${runtime.appUrl}/narrowslink-runtime.json`);
+    expect(legacyResponse.headers.get("cache-control")).toBe("no-store");
+    expect(await legacyResponse.json()).toEqual(document);
 
     const directBridgeRequest = await fetch(`${runtime.bridgeUrl}/v1/status`, {
       headers: { Origin: runtime.appUrl },

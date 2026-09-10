@@ -31,7 +31,7 @@ export interface MockWebSerialController {
 }
 
 /**
- * Installs the smallest browser-facing Web Serial surface used by NarrowsLink.
+ * Installs the smallest browser-facing Web Serial surface used by ReplayCase.
  * The stream intentionally remains open until the application cancels its
  * reader so a clean operator stop is not mistaken for a device disconnect.
  */

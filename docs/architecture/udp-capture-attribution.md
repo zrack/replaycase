@@ -1,6 +1,6 @@
 # UDP capture-path attribution
 
-NarrowsLink records only the evidence available at its UDP socket. This contract separates measured capture-path observations from deterministic protocol estimates and unavailable lower-layer evidence.
+ReplayCase records only the evidence available at its UDP socket. This contract separates measured capture-path observations from deterministic protocol estimates and unavailable lower-layer evidence.
 
 ## Host drop counter
 
@@ -8,7 +8,7 @@ The bridge samples a host counter when its UDP socket starts listening and immed
 
 | Host | Observation source | Scope | Current result |
 | --- | --- | --- | --- |
-| Linux with readable procfs | `/proc/self/net/udp` or `/proc/self/net/udp6`, intersected with `/proc/self/fd` socket inodes | One identified NarrowsLink UDP socket between start and terminal samples | Measured datagram-drop delta from `linux-proc-net-udp-socket` |
+| Linux with readable procfs | `/proc/self/net/udp` or `/proc/self/net/udp6`, intersected with `/proc/self/fd` socket inodes | One identified ReplayCase UDP socket between start and terminal samples | Measured datagram-drop delta from `linux-proc-net-udp-socket` |
 | Linux without readable procfs or a unique socket identity | Explicit unavailable source | No counter is inferred | `unavailable-procfs`, `unavailable-socket-identity`, or `unavailable-counter-regression` |
 | macOS and Windows | Explicit unsupported-platform source | No counter is inferred | `unavailable-unsupported-platform` |
 
@@ -27,7 +27,7 @@ UDP provenance schema version 2 records four distinct layers for the whole sessi
 | IP | UDP estimate plus 20 bytes per IPv4 datagram or 40 bytes per IPv6 datagram | Minimum estimate assuming no IP options, extension headers, or fragmentation |
 | Link and radio | `null` | Unavailable at a UDP socket |
 
-NarrowsLink does not use these estimates to claim measured wire utilization. Ethernet framing, VLAN tags, tunnels, IP fragmentation, radio framing, forward-error correction, retransmission, encryption overhead, and losses before the socket remain outside this observation point.
+ReplayCase does not use these estimates to claim measured wire utilization. Ethernet framing, VLAN tags, tunnels, IP fragmentation, radio framing, forward-error correction, retransmission, encryption overhead, and losses before the socket remain outside this observation point.
 
 ## Evidence compatibility
 

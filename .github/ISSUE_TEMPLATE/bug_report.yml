@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for helping improve NarrowsLink. Do not attach operational telemetry, credentials, device identifiers, precise locations, or other sensitive evidence. Prefer the bundled fixture or a minimal synthetic sample. For a security vulnerability, use the private reporting link in the issue chooser instead.
+        Thanks for helping improve ReplayCase. Do not attach operational telemetry, credentials, device identifiers, precise locations, or other sensitive evidence. Prefer the bundled fixture or a minimal synthetic sample. For a security vulnerability, use the private reporting link in the issue chooser instead.
 
   - type: textarea
     id: summary
@@ -63,9 +63,9 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Include NarrowsLink commit or version, operating system, browser and version, and relevant hardware or bridge details. Redact hostnames and identifiers.
+      description: Include ReplayCase commit or version, operating system, browser and version, and relevant hardware or bridge details. Redact hostnames and identifiers.
       placeholder: |
-        NarrowsLink commit: abc1234
+        ReplayCase commit: abc1234
         OS: macOS 15.5
         Browser: Chrome 138
         Bridge/device: local capture bridge; synthetic source

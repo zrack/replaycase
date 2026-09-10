@@ -623,7 +623,7 @@ function extractEntry(archive: Uint8Array, entry: CentralDirectoryEntry, range: 
 }
 
 /**
- * Reads a NarrowsLink evidence ZIP without touching the filesystem.
+ * Reads a ReplayCase evidence ZIP without touching the filesystem.
  *
  * The container is structurally validated before any entry is inflated. The
  * returned map owns stable copies of every entry's uncompressed bytes.

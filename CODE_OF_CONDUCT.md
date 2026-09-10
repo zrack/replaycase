@@ -1,6 +1,6 @@
 # Code of Conduct
 
-NarrowsLink is built for careful investigation. We expect the same care in project collaboration.
+ReplayCase is built for careful investigation. We expect the same care in project collaboration.
 
 ## Expected conduct
 
@@ -18,4 +18,4 @@ For ordinary project concerns, contact the repository owner privately through th
 
 Maintainers may edit or remove content, limit participation, or ban contributors when needed to protect the project and its community. Reports will be evaluated on their evidence and impact, with information shared only as needed to resolve the concern. Good-faith reporters will not face retaliation.
 
-This code applies to repository discussions, issues, pull requests, reviews, and other spaces represented as part of NarrowsLink.
+This code applies to repository discussions, issues, pull requests, reviews, and other spaces represented as part of ReplayCase.

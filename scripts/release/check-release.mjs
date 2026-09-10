@@ -22,13 +22,13 @@ const acceptance = spawnSync(command, args, {
   cwd: REPOSITORY_ROOT,
   env: {
     ...process.env,
-    NARROWSLINK_RELEASE_ARCHIVE: build.archive,
+    REPLAYCASE_RELEASE_ARCHIVE: build.archive,
   },
   stdio: "inherit",
 });
 if (acceptance.error) throw acceptance.error;
 if (acceptance.status !== 0) {
-  throw new Error(`Unpacked NarrowsLink release acceptance failed with exit ${String(acceptance.status)}.`);
+  throw new Error(`Unpacked ReplayCase release acceptance failed with exit ${String(acceptance.status)}.`);
 }
 
-process.stdout.write(`NarrowsLink ${build.version} release bytes passed reproducibility and unpacked acceptance.\n`);
+process.stdout.write(`ReplayCase ${build.version} release bytes passed reproducibility and unpacked acceptance.\n`);

@@ -1,18 +1,18 @@
-# NarrowsLink roadmap
+# ReplayCase roadmap
 
 This file contains planned work only. See [README.md](README.md) for current capabilities, [USE_CASES.md](USE_CASES.md) for supported operator outcomes, and [CHANGELOG.md](CHANGELOG.md) for completed changes. The work areas below are not a release promise or strict sequence; they describe the next product bets that still need design, implementation, and evidence.
 
 ## Product goal
 
-**NarrowsLink makes constrained telemetry incidents reproducible.**
+**ReplayCase makes constrained telemetry incidents reproducible.**
 
-NarrowsLink is a local-first evidence workbench that captures the telemetry and transport evidence available at a laptop, replays it deterministically through an identified decoder, and packages an exact incident so another engineer can verify what was observed, what was inferred, and what remains unknown.
+ReplayCase is a local-first evidence workbench that captures the telemetry and transport evidence available at a laptop, replays it deterministically through an identified decoder, and packages an exact incident so another engineer can verify what was observed, what was inferred, and what remains unknown.
 
 This is the target product definition. [README.md](README.md) and [USE_CASES.md](USE_CASES.md) remain authoritative for what the current application supports.
 
 ## Success definition
 
-The strongest success test is that a person who was not present during the test can receive a NarrowsLink bundle on another machine, verify it, open the exact incident, inspect the same raw and decoded evidence, understand the capture-path limitations, and continue the investigation without the original system or laptop.
+The strongest success test is that a person who was not present during the test can receive a ReplayCase bundle on another machine, verify it, open the exact incident, inspect the same raw and decoded evidence, understand the capture-path limitations, and continue the investigation without the original system or laptop.
 
 Success requires five properties:
 
@@ -20,13 +20,13 @@ Success requires five properties:
 - **Deterministic interpretation:** the session identifies the exact decoder pack, schema, parser runtime, and revision. Replaying the same input produces the same decoded output and diagnostics.
 - **Fast investigation:** an operator can isolate a useful incident range and correlate packet behavior, link state, diagnostics, and decoded values without writing custom analysis code.
 - **Independent handoff:** a receiving engineer can verify and inspect the archive offline while clearly distinguishing internal consistency, evidence completeness, and source authenticity.
-- **Protocol portability:** a contributor can add a documented decoder pack with fixtures and expected results without modifying NarrowsLink's core capture, replay, or evidence pipeline.
+- **Protocol portability:** a contributor can add a documented decoder pack with fixtures and expected results without modifying ReplayCase's core capture, replay, or evidence pipeline.
 
-The north-star measure is **successful independently verified incident handoffs**. Count a handoff as successful only when it originates from a real capture, contains an exact incident range, passes verification on another NarrowsLink installation, exposes the same raw and decoded evidence plus known limitations, and remains useful without the original laptop or source system. Track the percentage of shared bundles that recipients successfully verify and open, together with the time from incident selection to verified handoff. Packet counts, sessions saved, dashboard views, and installed decoder counts are not substitutes for that outcome.
+The north-star measure is **successful independently verified incident handoffs**. Count a handoff as successful only when it originates from a real capture, contains an exact incident range, passes verification on another ReplayCase installation, exposes the same raw and decoded evidence plus known limitations, and remains useful without the original laptop or source system. Track the percentage of shared bundles that recipients successfully verify and open, together with the time from incident selection to verified handoff. Packet counts, sessions saved, dashboard views, and installed decoder counts are not substitutes for that outcome.
 
 ## Strategic horizon
 
-The goal positions NarrowsLink as the local evidence layer for constrained telemetry: a tool that lets small teams capture what happened, understand why it happened, and hand off proof without requiring a cloud account, vendor backend, or custom one-off debug script.
+The goal positions ReplayCase as the local evidence layer for constrained telemetry: a tool that lets small teams capture what happened, understand why it happened, and hand off proof without requiring a cloud account, vendor backend, or custom one-off debug script.
 
 The product can move in five useful directions:
 
@@ -47,8 +47,8 @@ Execution owner: repository maintainer coordinates the pilot. The recording oper
 Planned work:
 
 - Capture a real non-demo telemetry source through a documented UDP or physical serial topology, using a decoder pack whose immutable identity is preserved in the session.
-- Record the source, receiver, laptop, operating system, NarrowsLink build, decoder identity, capture settings, observation point, and every known capture-path limitation.
-- Isolate one exact incident, export the unchanged `.nlb`, and transfer it to a second NarrowsLink installation without sharing the original source or session workspace.
+- Record the source, receiver, laptop, operating system, ReplayCase build, decoder identity, capture settings, observation point, and every known capture-path limitation.
+- Isolate one exact incident, export the unchanged `.nlb`, and transfer it to a second ReplayCase installation without sharing the original source or session workspace.
 - Have an engineer who was not present verify the archive, reproduce its raw and decoded evidence and diagnostics, and record what they could and could not conclude.
 - Preserve the session, bundle SHA-256, verification report, topology notes, and recipient result as a durable field-proof record.
 
@@ -86,11 +86,11 @@ Exit criteria: [ACCESSIBILITY.md](ACCESSIBILITY.md) records reproducible manual 
 
 - Let operators and protocol engineers build, validate, and publish decoder packs with sample captures, expected decoded fields, diagnostics, and evidence-bundle fixtures.
 - Add local schema authoring and decoder-revision migration tools that use comparison findings to show how a proposed pack changes packets, diagnostics, timelines, and bundle output.
-- Support a curated registry of community protocol packs without making NarrowsLink dependent on a hosted service.
+- Support a curated registry of community protocol packs without making ReplayCase dependent on a hosted service.
 - Make protocol packs portable enough for labs, field teams, educators, and hobby communities to exchange reproducible telemetry examples.
 - Publish an example protocol pack that can be used as a teaching fixture, regression suite, and contribution template.
 
-Exit criteria: a new telemetry community can bring a protocol, fixtures, and expected behavior into NarrowsLink without forking the application.
+Exit criteria: a new telemetry community can bring a protocol, fixtures, and expected behavior into ReplayCase without forking the application.
 
 ## Moonshot: Incident evidence exchange
 
@@ -100,7 +100,7 @@ Exit criteria: a new telemetry community can bring a protocol, fixtures, and exp
 - Import and validate portable comparison findings inside the case file while requiring the exact cited source artifacts for reproduction.
 - Define interoperable machine-readable citations so issue trackers, test reports, vendors, and research records can point to the same verified evidence.
 
-Exit criteria: NarrowsLink becomes a practical handoff format for telemetry incidents, not only a local review tool.
+Exit criteria: ReplayCase becomes a practical handoff format for telemetry incidents, not only a local review tool.
 
 ## Product boundary
 

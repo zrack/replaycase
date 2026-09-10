@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Review the private security-reporting policy
-    url: https://github.com/zrack/narrowslink/blob/main/SECURITY.md
+    url: https://github.com/zrack/replaycase/blob/main/SECURITY.md
     about: Follow the current access-aware instructions before sharing security details or telemetry.
   - name: Ask for help
-    url: https://github.com/zrack/narrowslink/blob/main/SUPPORT.md
+    url: https://github.com/zrack/replaycase/blob/main/SUPPORT.md
     about: Read the support guide before opening a reproducible bug report.

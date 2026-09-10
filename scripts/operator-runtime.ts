@@ -22,7 +22,8 @@ const DEFAULT_UDP_PORT = 9_104;
 const MAX_ASSET_BYTES = 32 * 1024 * 1024;
 const MAX_PROXY_REQUEST_BYTES = 4_096;
 const MAX_REQUEST_URL_LENGTH = 2_048;
-const RUNTIME_PATH = "/narrowslink-runtime.json";
+const RUNTIME_PATH = "/replaycase-runtime.json";
+const LEGACY_RUNTIME_PATH = "/narrowslink-runtime.json";
 const BRIDGE_PROXY_PATHS = new Set(["/v1/status", "/v1/events", "/v1/start", "/v1/stop"]);
 
 const CONTENT_TYPES = new Map([
@@ -137,7 +138,7 @@ export function resolveApplicationRoot(moduleUrl: string): string {
   ];
   const selected = candidates.find((candidate) => existsSync(resolve(candidate, "index.html")));
   if (!selected) {
-    throw new Error("NarrowsLink application assets are missing from the release.");
+    throw new Error("ReplayCase application assets are missing from the release.");
   }
   return selected;
 }
@@ -284,7 +285,7 @@ async function relayBridgeRequest(
     throw new ProxyRequestError(403, "origin-not-allowed", "This browser origin is not allowed to access the local bridge.");
   }
   if (expectedMethod === "POST" && request.headers.origin !== options.appUrl) {
-    throw new ProxyRequestError(403, "origin-required", "Managed bridge changes require the NarrowsLink application origin.");
+    throw new ProxyRequestError(403, "origin-required", "Managed bridge changes require the ReplayCase application origin.");
   }
 
   const body = expectedMethod === "POST" ? await readProxyBody(request) : undefined;
@@ -394,7 +395,7 @@ export function createOperatorAssetHandler(options: AssetHandlerOptions) {
   return async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
     const bridgeUrl = options.bridgeUrl();
     if (!bridgeUrl) {
-      sendText(response, 503, "NarrowsLink is still starting.\n");
+      sendText(response, 503, "ReplayCase is still starting.\n");
       return;
     }
     if (request.headers.host !== expectedHost) {
@@ -433,10 +434,10 @@ export function createOperatorAssetHandler(options: AssetHandlerOptions) {
     }
     const headOnly = request.method === "HEAD";
 
-    if (url.pathname === RUNTIME_PATH) {
+    if (url.pathname === RUNTIME_PATH || url.pathname === LEGACY_RUNTIME_PATH) {
       const defaults = options.defaults();
       if (!defaults) {
-        sendText(response, 503, "NarrowsLink runtime defaults are unavailable.\n");
+        sendText(response, 503, "ReplayCase runtime defaults are unavailable.\n");
         return;
       }
       const body = Buffer.from(JSON.stringify(runtimeDocument(options.appUrl, defaults, options.release)), "utf8");
@@ -486,7 +487,7 @@ async function listen(server: Server, port: number): Promise<number> {
   });
   const address = server.address();
   if (!address || typeof address === "string") {
-    throw new Error("NarrowsLink application server did not expose a TCP address.");
+    throw new Error("ReplayCase application server did not expose a TCP address.");
   }
   return address.port;
 }
@@ -514,7 +515,7 @@ export async function startOperatorRuntime(input: {
   const appServer = createServer((request, response) => {
     void (handler
       ? handler(request, response)
-      : Promise.resolve(sendText(response, 503, "NarrowsLink is still starting.\n"))
+      : Promise.resolve(sendText(response, 503, "ReplayCase is still starting.\n"))
     ).catch(() => {
       if (!response.headersSent) sendText(response, 500, "Internal server error.\n");
       else if (!response.writableEnded) response.end();
@@ -549,7 +550,7 @@ export async function startOperatorRuntime(input: {
   }
   if (!bridge || !bridgeUrl || !udpDefaults) {
     await closeServer(appServer);
-    throw new Error("NarrowsLink bridge readiness was incomplete.");
+    throw new Error("ReplayCase bridge readiness was incomplete.");
   }
   const activeBridge = bridge;
   const activeBridgeUrl = bridgeUrl;
@@ -570,7 +571,7 @@ export async function startOperatorRuntime(input: {
       const appServerClose = closeServer(appServer);
       await activeBridge.close({
         code: "bridge-shutdown",
-        message: "The NarrowsLink operator runtime shut down before the operator completed the capture.",
+        message: "The ReplayCase operator runtime shut down before the operator completed the capture.",
       });
       appServer.closeIdleConnections();
       await appServerClose;

@@ -2,10 +2,10 @@ import { defineConfig, devices } from "@playwright/test";
 
 const inCi = process.env.CI === "true";
 const externallyManagedBaseUrl =
-  process.env.NARROWSLINK_E2E_BASE_URL?.trim() || null;
-const configuredPort = Number(process.env.NARROWSLINK_E2E_PORT ?? "4173");
+  process.env.REPLAYCASE_E2E_BASE_URL?.trim() || process.env.NARROWSLINK_E2E_BASE_URL?.trim() || null;
+const configuredPort = Number(process.env.REPLAYCASE_E2E_PORT ?? process.env.NARROWSLINK_E2E_PORT ?? "4173");
 if (!Number.isInteger(configuredPort) || configuredPort < 1 || configuredPort > 65_535) {
-  throw new Error("NARROWSLINK_E2E_PORT must be an integer between 1 and 65535.");
+  throw new Error("REPLAYCASE_E2E_PORT must be an integer between 1 and 65535.");
 }
 const baseUrl = externallyManagedBaseUrl ?? `http://127.0.0.1:${configuredPort}`;
 
@@ -21,7 +21,7 @@ if (externallyManagedBaseUrl) {
     || parsed.hash
   ) {
     throw new Error(
-      "NARROWSLINK_E2E_BASE_URL must be an HTTP origin on 127.0.0.1.",
+      "REPLAYCASE_E2E_BASE_URL must be an HTTP origin on 127.0.0.1.",
     );
   }
 }
