@@ -2,7 +2,15 @@
 
 An automated loopback capture proves the software path. It does not satisfy NarrowsLink's north-star outcome. A field proof must use a real non-demo telemetry source and an independent recipient.
 
-Use [PILOT-001](pilot-plan.md) to assign the first source, recording operator, and independent recipient. Its empty worksheet is preparation only; the [2026-08-19 readiness record](2026-08-19-readiness.md) remains pending until a new dated record provides actual evidence.
+Use [PILOT-001](pilot-plan.md) to assign the first source, recording operator, and independent recipient. Its empty worksheet is preparation only. The [current readiness record](2026-09-10-readiness.md) verifies the published v0.3.0 package and automated gates; it does not establish a real-source handoff.
+
+## Evidence and status
+
+- [Current release readiness: 2026-09-10](2026-09-10-readiness.md): identified release assets, automated verification, compatibility, and remaining field-proof requirements.
+- [PILOT-001](pilot-plan.md): source, recording operator, and independent recipient remain unassigned; the pilot is not started.
+- [Historical environment audit: 2026-08-19](2026-08-19-readiness.md): the hardware and source observations from that date, not a current device inventory.
+
+No passing independent field-proof record exists yet. Preserve dated readiness records, and add a separate dated result when a real attempt occurs. Keep unsuccessful attempts and their limitations rather than replacing them with automated results.
 
 ## Before capture
 

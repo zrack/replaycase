@@ -13,7 +13,7 @@ The application is local-first. The packaged distribution starts the production 
 - Follow the [user guide](USER_GUIDE.md) for installation, live capture, replay, incident authoring, evidence handoff, upgrades, removal, and troubleshooting.
 - Download the current package and release evidence from [NarrowsLink v0.3.0](https://github.com/zrack/narrowslink/releases/tag/v0.3.0).
 - Review the [use-case log](USE_CASES.md) for supported operator outcomes and current constraints.
-- Review the [field-proof procedure](docs/field-proofs/README.md) and current [readiness record](docs/field-proofs/2026-08-19-readiness.md) before claiming an independent real-world handoff.
+- Review the [field-proof procedure](docs/field-proofs/README.md), current [readiness record](docs/field-proofs/2026-09-10-readiness.md), and [pilot plan](docs/field-proofs/pilot-plan.md) before claiming an independent real-world handoff.
 - Use the [decoder-pack guide](DECODER_PACKS.md) to load, author, seal, validate, and hand off a protocol definition.
 - Use [SUPPORT.md](SUPPORT.md) to prepare a reproducible support request without disclosing sensitive telemetry.
 - Contributors should start with [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -323,7 +323,7 @@ Local does not automatically mean safe to share. A saved replay or evidence bund
 - The current application receiver and CLI accept bounded version 3 and 4 `.nlb` bundles up to 64 MiB compressed and 128 MiB total declared uncompressed content; v0.3.0 writes version 4. They establish internal consistency and report the evidence NarrowsLink could observe. Because bundles are unsigned, neither path establishes author, source-channel, or originating-build authenticity. The receiver reconstructs only the selected evidence in the archive and does not recreate unavailable whole-session context.
 - Comparison accepts one selected range from the current replay or verified receiver and one range from a validated session or verified bundle. It does not infer clock synchronization, discover shared events, compare values across different decoder identities or RSSI evidence bases, establish causality, or embed source files. Packet, diagnostic, and decoded-field deltas require selected raw support in both inputs; a bundle that excludes it remains review-required. Findings are bounded to 1 MiB and unsigned; their canonical SHA-256 establishes internal identity, not authorship or source authenticity.
 - Automated coverage exercises the complete real-loopback UDP and simulated Web Serial capture-to-evidence loops in Playwright Chromium, Firefox, and WebKit and gates axe rules tagged WCAG A/AA, critical keyboard focus, responsive reflow, failure recovery, and independent archive verification. Physical Web Serial devices and manual screen-reader/browser combinations remain outside the automated release gate.
-- No independent physical field handoff has been completed in this repository yet. Loopback UDP and simulated serial prove the software pipeline, not a real radio, adapter, source system, or second-person handoff; see the [current readiness record](docs/field-proofs/2026-08-19-readiness.md).
+- No independent physical field handoff has been completed in this repository yet. Loopback UDP and simulated serial prove the software pipeline, not a real radio, adapter, source system, or second-person handoff; see the [current readiness record](docs/field-proofs/2026-09-10-readiness.md).
 
 ## Project documentation
 
@@ -337,7 +337,7 @@ Local does not automatically mean safe to share. A saved replay or evidence bund
 | [ACCESSIBILITY.md](ACCESSIBILITY.md) | Current automated accessibility evidence, keyboard contract, support boundary, and manual certification matrix |
 | [design-qa.md](design-qa.md) | Current accepted visual baseline and verification evidence |
 | [docs/architecture/udp-capture-attribution.md](docs/architecture/udp-capture-attribution.md) | Host UDP drop-counter, byte-accounting, compatibility, and claim boundaries |
-| [docs/field-proofs/](docs/field-proofs/) | Independent real-source handoff procedure and dated proof records |
+| [docs/field-proofs/](docs/field-proofs/) | Pilot plan, release-readiness evidence, and independent real-source handoff procedure and records |
 | [docs/releases/](docs/releases/) | Immutable operator-facing summaries and installation notes for each published tag |
 
 For step-by-step operation, use the [user guide](USER_GUIDE.md). For problem reporting, see [SUPPORT.md](SUPPORT.md). Report vulnerabilities through the private process in [SECURITY.md](SECURITY.md), and review [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before participating in project spaces.
