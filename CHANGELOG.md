@@ -4,6 +4,8 @@ All notable changes to NarrowsLink are recorded here. This is the canonical proj
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-09
+
 ### Added
 
 - Added a capture-scoped Linux UDP socket-drop adapter that reconciles `/proc/self/net/udp` or `udp6` with the bridge process socket inode, preserves explicit unavailable reasons on unsupported or ambiguous hosts, and projects positive measured drops into immutable transport evidence and capture-path diagnostics.
@@ -19,10 +21,16 @@ All notable changes to NarrowsLink are recorded here. This is the canonical proj
 ### Fixed
 
 - Detached a removed active replay from persisted workspace writes even when residual marker, note, or authored-range cleanup fails, preventing stale cleanup state from erasing the still-open in-memory note in WebKit.
+- Kept the packet-family heading inside the narrow timeline gutter and above its first family label without changing the desktop lane geometry.
+
+### Security
+
+- Updated the PostCSS and Browserslist development dependencies to address GHSA-fxqj-rqcc-2cmp and GHSA-73wf-gq98-2v4g, with regression checks for untrusted source-map annotations and malformed custom browser statistics. Ordinary CSS processing, explicit source maps, and valid browser statistics remain supported.
 
 ### Documentation
 
 - Documented the UDP capture-attribution contract, bundle compatibility, independent field-proof procedure, and a dated pending readiness result that does not substitute loopback or simulated-device coverage for physical evidence.
+- Aligned operator installation and receiving instructions with the v0.3.0 package. Version 4 bundles require a v0.3.0 receiver; older version 3 bundles and version 1 and 2 sessions remain readable. Added a concrete pending pilot plan and recipient worksheet without claiming a completed field handoff.
 
 ## [0.2.0] - 2026-07-25
 
@@ -82,6 +90,7 @@ All notable changes to NarrowsLink are recorded here. This is the canonical proj
 
 - Restricted the UDP bridge control plane to loopback access with server-enforced capture ownership and an internal short-lived bearer credential; the browser uses a same-origin application relay, so the credential is not exposed in runtime metadata, URLs, cookies, readiness output, or logs.
 
-[Unreleased]: https://github.com/zrack/narrowslink/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/zrack/narrowslink/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/zrack/narrowslink/releases/tag/v0.3.0
 [0.2.0]: https://github.com/zrack/narrowslink/releases/tag/v0.2.0
 [0.1.0]: https://github.com/zrack/narrowslink/releases/tag/v0.1.0

@@ -45,6 +45,18 @@ Inspect the installed build identity:
 narrowslink version --json
 ```
 
+## Evidence compatibility
+
+This release writes version 4 `.nlb` bundles and verifies versions 3 and 4.
+Upgrade v0.2.0 receiving installations before sharing a new bundle; they can
+read only version 3. There is no downgrade export, and editing an archive's
+manifest is not a conversion. Existing version 1 and 2 session files remain
+readable without rewriting their evidence.
+
+Verification separates internal consistency, capture completeness, and
+authenticity. Bundles remain unsigned. A passing verifier does not certify
+the source, radio path, or originating engineer.
+
 ## Upgrade and removal
 
 Install a newer NarrowsLink release and restart it on the same loopback host

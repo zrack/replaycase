@@ -163,6 +163,29 @@ test("narrow and 200-percent-equivalent layouts reflow while wide evidence remai
   await expect(page.locator(".diagnostic-severity").first()).toBeVisible();
 });
 
+test("packet-family heading stays above readable family labels at every layout breakpoint", async ({ page }, testInfo) => {
+  for (const viewport of [
+    { width: 1487, height: 1058 },
+    { width: 1220, height: 900 },
+    { width: 1060, height: 980 },
+    { width: 960, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    const heading = await page.locator(".families-lane .lane-label strong").boundingBox();
+    const label = await page.locator(".families-lane .lane-label").boundingBox();
+    const firstFamily = await page.locator(".family-row > span").first().boundingBox();
+    expect(heading).not.toBeNull();
+    expect(label).not.toBeNull();
+    expect(firstFamily).not.toBeNull();
+    if (!heading || !label || !firstFamily) throw new Error("Packet-family labels are missing.");
+    expect(heading.y + heading.height).toBeLessThanOrEqual(firstFamily.y);
+    expect(heading.x + heading.width).toBeLessThanOrEqual(label.x + label.width);
+    await expectPageFitsViewport(page);
+    await page.screenshot({ path: testInfo.outputPath(`packet-families-${viewport.width}.png`), fullPage: true });
+  }
+});
+
 test("received evidence passes axe and remains bounded at narrow widths", async ({ page }, testInfo) => {
   const bundlePath = await createDemoEvidenceBundle(page, testInfo);
   await page.getByLabel("Choose a NarrowsLink evidence bundle").setInputFiles(bundlePath);

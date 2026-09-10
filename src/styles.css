@@ -5046,6 +5046,15 @@ select:focus-visible {
     --label-gutter: 126px;
   }
 
+  .families-lane .lane-label {
+    padding-right: 0;
+  }
+
+  .families-lane .lane-label strong {
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
   .app-shell {
     grid-template-columns: 200px minmax(620px, 1fr) 250px;
   }

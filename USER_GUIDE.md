@@ -1,6 +1,6 @@
 # NarrowsLink user guide
 
-This guide covers NarrowsLink v0.2.0 operation from installation through local capture, replay, incident authoring, evidence export, receiver verification, and comparative replay. Source contributors should use [CONTRIBUTING.md](CONTRIBUTING.md).
+This guide covers NarrowsLink v0.3.0 operation from installation through local capture, replay, incident authoring, evidence export, receiver verification, and comparative replay. Source contributors should use [CONTRIBUTING.md](CONTRIBUTING.md).
 
 NarrowsLink keeps telemetry, saved sessions, operator annotations, and evidence generation on the local machine. It does not provide accounts, cloud storage, hosted ingestion, or telemetry upload.
 
@@ -12,17 +12,17 @@ You need:
 - A local browser.
 - A supported Chromium browser for physical Web Serial capture.
 - Enough browser memory and storage for the sessions you plan to process and retain.
-- The four files from the [NarrowsLink v0.2.0 release](https://github.com/zrack/narrowslink/releases/tag/v0.2.0).
+- The four files from the [NarrowsLink v0.3.0 release](https://github.com/zrack/narrowslink/releases/tag/v0.3.0).
 
 The release package contains the production application, authenticated UDP bridge, bundled Harbor relay replay, decoder-pack tools, application and CLI evidence receivers, and comparison workflow. A source checkout, Vite, and project dependencies are not required.
 
-## Install and verify v0.2.0
+## Install and verify v0.3.0
 
 Download these four release assets into one directory:
 
-- `narrowslink-0.2.0.tgz`
-- `narrowslink-0.2.0.release.json`
-- `narrowslink-0.2.0.cdx.json`
+- `narrowslink-0.3.0.tgz`
+- `narrowslink-0.3.0.release.json`
+- `narrowslink-0.3.0.cdx.json`
 - `SHA256SUMS`
 
 On macOS, verify the published checksum set:
@@ -42,7 +42,7 @@ All three listed assets must report `OK`. The checksum file is delivered through
 Install the package without running lifecycle scripts:
 
 ```bash
-npm install --global ./narrowslink-0.2.0.tgz --ignore-scripts
+npm install --global ./narrowslink-0.3.0.tgz --ignore-scripts
 ```
 
 Confirm the installed identity:
@@ -51,7 +51,7 @@ Confirm the installed identity:
 narrowslink version --json
 ```
 
-The output must identify version `0.2.0`. Compare its full commit and version with `narrowslink-0.2.0.release.json`. If either differs, stop and resolve the package mismatch before collecting evidence.
+The output must identify version `0.3.0`. Compare its full commit and version with `narrowslink-0.3.0.release.json`. If either differs, stop and resolve the package mismatch before collecting evidence.
 
 ## Start and stop NarrowsLink
 
@@ -287,13 +287,13 @@ The preview size is an estimate. The archive manifest contains the actual artifa
 
 Every bundle includes range-filtered transport events and whole-session provenance, bridge-journal, and integrity-receipt artifacts. Optional source, decoded, diagnostic, schema, marker, and note artifacts follow the selected incident and inclusion controls.
 
-Version 3 and 4 raw and decoded artifacts are each limited to 100,000 rows. Current source creates version 4 bundles; the published v0.2.0 application creates version 3. When investigating a larger replay, select a narrower incident before including those groups. The maximum-record release case uses an exact 10,000-record incident rather than exporting the full 200,000-record session.
+Version 3 and 4 raw and decoded artifacts are each limited to 100,000 rows. NarrowsLink v0.3.0 creates version 4 bundles; v0.2.0 creates version 3. When investigating a larger replay, select a narrower incident before including those groups. The maximum-record release case uses an exact 10,000-record incident rather than exporting the full 200,000-record session.
 
 ## Verify a received bundle
 
 Treat received `.nlb` bytes as untrusted.
 
-The v0.2.0 application verifies version 3 bundles. Current source verifies versions 3 and 4. Open the incident directly:
+The v0.3.0 application and CLI verify versions 3 and 4. Upgrade a v0.2.0 receiver before opening a version 4 bundle; changing a manifest or file extension is not a conversion. Open the incident directly:
 
 1. Start NarrowsLink on the receiving machine.
 2. Select **Open evidence** in the Sessions rail or top bar.
@@ -345,7 +345,7 @@ For a real-world handoff claim, follow the [independent field-proof procedure](d
 
 ## Compare two bounded inputs
 
-NarrowsLink v0.2.0 can compare an exact incident from the active replay or the fixed range from a verified receiver bundle with one candidate session or bundle.
+NarrowsLink v0.3.0 can compare an exact incident from the active replay or the fixed range from a verified receiver bundle with one candidate session or bundle.
 
 1. In the replay workspace, select the baseline incident and choose **Compare**. In the receiver workspace, choose **Compare** to use the bundle's exact included range.
 2. Under **Candidate**, choose a `.nlsession`, `.json`, or `.nlb`. NarrowsLink validates a session through the normal decoder pipeline and verifies a bundle through the production receiver before continuing. Session processing shows the same phase progress as replay import and can be cancelled without replacing either source workspace.
@@ -405,6 +405,15 @@ narrowslink serve
 
 The installed package and browser-held library are separate. Replacing package files does not remove sessions or operator workspace data.
 
+### Evidence compatibility
+
+| Application | Bundle writer | Bundle receiver |
+| --- | --- | --- |
+| v0.2.0 | Version 3 | Version 3 only |
+| v0.3.0 | Version 4 | Versions 3 and 4 |
+
+Upgrade both the recording and receiving installations to v0.3.0 for a new handoff. Existing version 1 and 2 session documents remain supported without rewriting their evidence. Existing version 3 bundles remain inspectable. New version 4 bundles require the newer receiver; NarrowsLink does not provide a downgrade export. Keep original artifacts rather than editing manifests or removing provenance to make an older verifier accept them.
+
 ## Remove NarrowsLink
 
 Stop the running process, then uninstall the package:
@@ -442,7 +451,7 @@ To intentionally purge the browser-held library and workspace, preserve any requ
 | The finalized session did not download | Select **Retry download**. The finalized session remains available until it is downloaded or explicitly discarded. |
 | Finalization failed | Select **Retry finalization**. Discard only when losing the retained capture is acceptable. |
 | A replay cannot be opened | Choose another file or load the bundled replay. Check the extension, session format, 64 MiB canonical-file limit, 200,000-record limit, 24-hour limit, and file integrity. |
-| Replay processing appears slow | Keep the processing dialog open and inspect its current phase. The UI should continue updating at least once per second on the tested upper-tier corpus. Cancel to preserve the current workspace, then retry with another browser or a smaller synthetic reproduction if the machine lacks memory. |
+| Replay processing appears slow | Keep the processing dialog open and inspect its current phase. The tested upper-tier gate allows no main-thread heartbeat gap above five seconds; it does not guarantee one update per second on every machine. Cancel to preserve the current workspace, then retry with another browser or a smaller synthetic reproduction if the machine lacks memory. |
 | The library is unavailable or full | Keep using the active replay, free site storage if possible, then select **Retry local library**. Preserve downloaded session files. |
 | Saved sessions appear missing after upgrade | Return to the same `127.0.0.1` application port and browser profile. |
 | Verifier exits `1` | Treat the bundle as invalid or unsupported and do not extract it. |
@@ -463,7 +472,7 @@ Review and sanitize evidence before committing it to a repository, attaching it 
 
 The managed bridge control plane is loopback-only and uses an internal short-lived credential. The UDP listener still binds the interface chosen by the operator and can receive traffic from that interface.
 
-Release checksums and bundle verification establish internal consistency. The v0.2 release, checksum file, decoder packs, comparison findings, and version 3 or 4 evidence bundles are unsigned. They do not establish publisher, author, source-channel, or build-environment authenticity.
+Release checksums and bundle verification establish internal consistency. The v0.3 release, checksum file, decoder packs, comparison findings, and version 3 or 4 evidence bundles are unsigned. They do not establish publisher, author, source-channel, or build-environment authenticity.
 
 ## Current operating limits
 

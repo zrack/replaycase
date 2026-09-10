@@ -29,7 +29,7 @@ declare const __NARROWSLINK_VERSION__: string;
 declare const __NARROWSLINK_COMMIT__: string;
 
 export const NARROWSLINK_RELEASE: ReleaseIdentity = Object.freeze({
-  version: typeof __NARROWSLINK_VERSION__ === "string" ? __NARROWSLINK_VERSION__ : "0.2.0",
+  version: typeof __NARROWSLINK_VERSION__ === "string" ? __NARROWSLINK_VERSION__ : "0.3.0",
   commit: typeof __NARROWSLINK_COMMIT__ === "string" ? __NARROWSLINK_COMMIT__ : "unknown",
 });
 
