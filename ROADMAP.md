@@ -42,6 +42,8 @@ The near-term roadmap should keep serving those directions. Work that does not i
 
 Prove the complete product outcome outside the controlled loopback and simulated-device gates. The purpose is not another parser demo; it is a handoff that remains useful after the source system and capture laptop are gone.
 
+Execution owner: repository maintainer coordinates the pilot. The recording operator, real source, and independent recipient are not yet assigned; [PILOT-001](docs/field-proofs/pilot-plan.md) owns those decisions and the recipient worksheet. Confirm them before scheduling a field test. Both installations must use a published package compatible with the exported bundle format.
+
 Planned work:
 
 - Capture a real non-demo telemetry source through a documented UDP or physical serial topology, using a decoder pack whose immutable identity is preserved in the session.
@@ -51,6 +53,15 @@ Planned work:
 - Preserve the session, bundle SHA-256, verification report, topology notes, and recipient result as a durable field-proof record.
 
 Exit criteria: one independently verified incident handoff created from a real non-NSL-01 capture, opened on a second installation by a person who was not present, with matching evidence and explicit limitations.
+
+## After the first pilot
+
+- Turn observed setup, capture recovery, diagnostic interpretation, and handoff failures into reproducible issues and regression fixtures, with permission to retain any real telemetry.
+- Repeat the handoff with a small set of additional operators; record verification success, assistance required, time to verified open, and time to a useful conclusion. Keep failed attempts in the evidence record.
+- Complete the applicable hardware and assistive-technology checks below. A UDP pilot does not certify physical serial, and browser-engine tests do not certify screen readers.
+- Choose the next protocol or larger feature from the repeated operator need. Do not expand a decoder catalog or add signing merely to fill a release.
+
+Exit criteria: the team can identify the next engineering priority from observed pilot failures and useful investigations, not from demo throughput or feature counts. The strategic work below remains conditional on that evidence.
 
 ## Authenticity and trusted identity
 

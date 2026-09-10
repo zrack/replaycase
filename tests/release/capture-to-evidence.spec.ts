@@ -114,7 +114,7 @@ test("unpacked release records UDP and preserves verifiable evidence across repl
     const originalPort = Number(new URL(appUrl).port);
     const releaseIdentity = { ...installation.identity };
     expect(originalPort).toBeGreaterThan(0);
-    expect(releaseIdentity.version).toBe("0.2.0");
+    expect(releaseIdentity.version).toBe("0.3.0");
     expect(releaseIdentity.commit).toMatch(/^[0-9a-f]{40}$/);
     expect(server.ready).toMatchObject(releaseIdentity);
     expect(new URL(server.ready.bridgeUrl).hostname).toBe("127.0.0.1");

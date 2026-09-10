@@ -7,8 +7,9 @@ NarrowsLink is a pre-1.0 project under active development. Security fixes are ma
 | Version | Supported |
 | --- | --- |
 | Current `main` | Yes |
-| Latest `0.2.x` patch | Yes |
-| Superseded `0.2.x` patches | No guaranteed backports |
+| Latest `0.3.x` patch | Yes |
+| Superseded `0.3.x` patches | No guaranteed backports |
+| `0.2.x` | No guaranteed backports |
 | `0.1.x` | No guaranteed backports |
 | `< 0.1.0`, older commits, and forks | No |
 

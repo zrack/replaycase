@@ -2,10 +2,12 @@
 
 An automated loopback capture proves the software path. It does not satisfy NarrowsLink's north-star outcome. A field proof must use a real non-demo telemetry source and an independent recipient.
 
+Use [PILOT-001](pilot-plan.md) to assign the first source, recording operator, and independent recipient. Its empty worksheet is preparation only; the [2026-08-19 readiness record](2026-08-19-readiness.md) remains pending until a new dated record provides actual evidence.
+
 ## Before capture
 
 1. Draw the observation topology from telemetry producer through radio, modem, base station, forwarding software, network, or serial adapter to the NarrowsLink laptop.
-2. Record the source hardware and firmware, receiving hardware, adapter or bridge, laptop operating system, NarrowsLink build identity, decoder-pack identity, and capture settings.
+2. Record the source hardware and firmware, receiving hardware, adapter or bridge, laptop operating system, NarrowsLink build identity, decoder-pack identity, and capture settings. Upgrade recording and receiving installations to v0.3.0 before a new handoff; v0.2.0 cannot read new version 4 bundles.
 3. State what NarrowsLink can observe at that point and what remains upstream, unavailable, estimated, or based on another device's counters.
 4. Run preflight, confirm traffic and decoder fit, then stop the probe and deliberately start the evidence capture.
 

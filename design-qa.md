@@ -7,6 +7,7 @@ This document records the currently accepted visual baseline and its verificatio
 - Source visual truth: [mission-timeline source](docs/design/narrowslink-mission-timeline-source.png)
 - Current browser-rendered implementation: [release desktop implementation](docs/design/implementation-release-desktop.png)
 - Current responsive implementation: [release mobile implementation](docs/design/implementation-release-mobile.png)
+- Current narrow-desktop packet-family geometry: [1220-pixel workspace](docs/design/packet-family-narrow.png), captured at `1220 x 900` with a full-page screenshot, the bundled replay paused, an empty library, and no authored markers or notes.
 - Accepted source/geometry comparison from the preceding equivalent workspace state: [full comparison](docs/design/comparison-production-final.png)
 - Accepted focused source/geometry comparison: [focused comparison](docs/design/comparison-production-focused.png)
 - Responsive session-library dialog evidence: [responsive library implementation](docs/design/implementation-functional-mobile.png)
@@ -74,15 +75,14 @@ Seven visible differences are intentional and accepted product, data, or accessi
 - Diagnostics add visible severity words or compact `C`/`W`/`I` tokens, and overview incidents expose selected-state treatment, so meaning is not carried by color alone.
 - Live capture adds a compact local profile row and a bounded preflight state before recording. These controls extend the source-aligned dialog rather than changing the mission workspace, and their locked, warning, and ready states represent real source observations rather than decorative setup progress.
 
-## Comparison history
+## Capture setup baseline
 
-- Initial field-capture pass at `1487 × 1058`: adding the profile row pushed the primary capture actions below the visible modal edge, a P2 reachability and source-geometry regression.
-- Fix: made the capture action strip sticky inside the existing scroll-bounded, square-cornered dialog and corrected the narrow layout so **Save setup** and delete occupy separate grid tracks.
-- Post-fix evidence: [desktop capture setup](docs/design/capture-profile-setup.png), [ready preflight](docs/design/capture-preflight-ready.png), and [mobile capture setup](docs/design/capture-profile-mobile.png) keep the current phase action visible without document overflow or control overlap. No actionable P0, P1, or P2 findings remain.
+The capture action strip stays sticky inside the scroll-bounded, square-cornered dialog; **Save setup** and delete occupy separate narrow-screen grid tracks. The [desktop capture setup](docs/design/capture-profile-setup.png), [ready preflight](docs/design/capture-preflight-ready.png), and [mobile capture setup](docs/design/capture-profile-mobile.png) keep the current phase action visible without document overflow or control overlap.
 
 ## Focused comparison evidence
 
 - Timeline: the final comparison confirms equivalent label and scale gutters, minute-aligned ticks, connection/received-packet-rate/inferred-missing-frame order (labeled Connection, Throughput, and Loss in the UI), five packet-family bands, extended decoder-resync state, diagnostic and marker lanes, geographic traces, and selected-range treatment.
+- Packet-family heading: the `1487`, `1220`, `1060`, `960`, and `390` CSS-pixel regression checks keep the original font size, the heading inside its gutter, and its bottom edge above the first family label in Chromium, Firefox, and WebKit. Narrow layouts reclaim right padding and letter spacing rather than wrapping the heading over the first row; desktop lane geometry remains unchanged.
 - Incident rail: the final comparison and current release evidence confirm equivalent range summary, selector, semantic tabs, compact chronological narrative, visible non-color severity tokens, and session-wide operator-note region.
 - Evidence workspace: the current full and focused comparisons confirm the summary-to-table hierarchy, operator context, estimated size/group count, source-aligned primary export placement, and a fully visible six-row table. Optional Diagnostics remains independently selectable while the sixth Capture integrity row is required.
 - Source rail and header: widths, dividers, title/meta hierarchy, compact replay actions, loaded-source navigation, live capture, and dense real saved-session rows align with the prototype without fabricating availability.
@@ -141,11 +141,11 @@ Seven visible differences are intentional and accepted product, data, or accessi
 - Verified the comparison setup and workspace with axe rules tagged WCAG A/AA, keyboard-scrollable evidence regions, and no page-level overflow at `960 × 900`, `640 × 900`, and `390 × 844` in Chromium, Firefox, and WebKit.
 - Recorded a 24-datagram loopback acceptance capture and visually confirmed the verified Provenance tab reconciled all 24 records and 737 retained bytes to one exact remote endpoint and a clean two-entry bridge journal while preserving the unavailable host-drop-counter boundary.
 - Exercised simulated Web Serial device selection through four fragmented reads, retained four complete frames and one terminal partial frame without byte loss, saved and deduplicated the canonical v2 session, reopened and replayed it from IndexedDB, authored an exact half-open range, and verified the downloaded `.nlb` with the production receiver in Chromium, Firefox, and WebKit. Physical device, driver, and native permission behavior remains a manual boundary.
-- Launched the v0.2 operator build with `narrowslink serve` and visually confirmed the production workspace, profile setup, and live preflight at the managed origin. The dialog showed the authenticated managed-bridge state without bridge URL or token fields, preserved the accepted component geometry, and produced no browser warnings or errors.
+- The v0.3 packaged-release gate verifies the managed production workspace, authenticated capture setup, UDP preflight, and absence of browser errors. Profile and preflight visual anatomy remain defined by the accepted captures above; native hardware and manual screen-reader certification remain outside this automated result.
 - Repeated the capture-to-receiver, replay/library, failure-recovery, axe rules tagged WCAG A/AA, focus-handoff, responsive, keyboard-scroller, and forced-color gates in Playwright Chromium, Firefox, and WebKit.
 - Imported the deterministic 52,378,445-byte, 200,000-record corpus with visible phase progress, retained interaction heartbeats, exact canonical-byte persistence, and no workspace replacement on cancellation; then reopened it, compared its exact 10,000-record incident, cancelled one bundle build without a download, rebuilt it, and verified exactly 10,000 raw and decoded records through the production receiver in Chromium, Firefox, and WebKit.
 - Repeated the maximum-record import, persistence, reload, reopen, and progress path from the independently built unpacked operator distribution in Chromium, Firefox, and WebKit.
-- Current release evidence: TypeScript validation, `289` tests across `37` files, the production application and CLI builds, CLI smoke verification, `52` passing source-workspace Playwright checks with `2` intentional engine-redundant cancellation skips, two byte-identical release compilations, and all `6` unpacked-package capture-to-receiver and maximum-record checks across Chromium, Firefox, and WebKit passed.
+- Current release evidence: TypeScript validation, `302` tests across `39` files, the production application and CLI builds, CLI smoke verification, `55` passing source-workspace Playwright checks with `2` intentional engine-redundant cancellation skips, two byte-identical release compilations, and all `6` unpacked-package capture-to-receiver and maximum-record checks across Chromium, Firefox, and WebKit passed.
 
 ## Implementation checklist
 
