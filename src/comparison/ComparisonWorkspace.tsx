@@ -12,6 +12,8 @@ import {
   Circle,
   DownloadSimple,
   FileArrowUp,
+  FloppyDisk,
+  FolderOpen,
   Package,
   SpinnerGap,
   UploadSimple,
@@ -27,6 +29,7 @@ import {
   MAX_COMPARISON_CONCLUSION_LENGTH,
   suggestComparisonFindingFilename,
   type ComparisonAlignment,
+  type ComparisonFinding,
   type ComparisonMetric,
   type ComparisonModel,
   type ComparisonSource,
@@ -69,6 +72,7 @@ type ComparisonBuildState =
 
 export interface ComparisonSetupDialogProps {
   baseline: ComparisonSource;
+  initialCandidate?: ComparisonSource;
   onClose: () => void;
   onStart: (model: ComparisonModel) => void;
 }
@@ -79,6 +83,9 @@ export interface ComparisonWorkspaceProps {
   onReturn: () => void;
   onOpenReplay: () => void;
   onOpenBundle: () => void;
+  onOpenCases?: () => void;
+  onSaveFinding?: (finding: ComparisonFinding) => Promise<void>;
+  initialConclusion?: string;
 }
 
 function shortHash(value: string): string {
@@ -202,6 +209,7 @@ function SourceSummary({
 
 export function ComparisonSetupDialog({
   baseline,
+  initialCandidate,
   onClose,
   onStart,
 }: ComparisonSetupDialogProps) {
@@ -209,7 +217,7 @@ export function ComparisonSetupDialog({
   const candidateControllerRef = useRef<AbortController | null>(null);
   const comparisonControllerRef = useRef<AbortController | null>(null);
   const candidateOperationRef = useRef(0);
-  const [candidate, setCandidate] = useState<CandidateState>({ status: "idle" });
+  const [candidate, setCandidate] = useState<CandidateState>(initialCandidate ? { status: "evidence", fileName: initialCandidate.title, source: initialCandidate } : { status: "idle" });
   const [comparisonBuild, setComparisonBuild] = useState<ComparisonBuildState>({ status: "idle" });
   const [alignmentMode, setAlignmentMode] = useState<ComparisonAlignment["mode"]>("range-start");
   const [anchorLabel, setAnchorLabel] = useState("");
@@ -355,7 +363,7 @@ export function ComparisonSetupDialog({
 
         <SourceSummary label="Baseline" source={baseline} />
 
-        <section className="comparison-candidate-picker">
+        {!initialCandidate && <section className="comparison-candidate-picker">
           <div>
             <span>Candidate</span>
             <small>Validated `.nlsession` or independently verified `.nlb`</small>
@@ -371,7 +379,7 @@ export function ComparisonSetupDialog({
               onChange={(event) => void loadCandidate(event)}
             />
           </label>
-        </section>
+        </section>}
 
         {candidate.status === "loading" && (
           <div className="comparison-load-status comparison-load-progress" role="status">
@@ -509,6 +517,7 @@ function ComparisonTopBar(props: ComparisonWorkspaceProps) {
         {props.model.alignment.label} <i>•</i> {formatDurationUs(props.model.alignment.overlap.durationUs, true)} overlap <i>•</i> {props.model.metrics.length} bounded measures
       </div>
       <div className="header-actions">
+        {props.onOpenCases && <button className="secondary-action" type="button" onClick={props.onOpenCases}><FolderOpen size={15} /> Cases</button>}
         <button className="secondary-action" type="button" onClick={props.onReturn}>Return</button>
         <button className="secondary-action" type="button" onClick={props.onOpenReplay}><UploadSimple size={15} /> Open replay</button>
         <button className="secondary-action" type="button" onClick={props.onOpenBundle}><Package size={15} /> Open evidence</button>
@@ -713,16 +722,28 @@ function EvidenceList({
 function ComparisonInspector({
   model,
   metric,
+  onSaveFinding,
+  initialConclusion = "",
 }: {
   model: ComparisonModel;
   metric: ComparisonMetric;
+  onSaveFinding?: (finding: ComparisonFinding) => Promise<void>;
+  initialConclusion?: string;
 }) {
-  const [conclusion, setConclusion] = useState("");
+  const [conclusion, setConclusion] = useState(initialConclusion);
   const [notice, setNotice] = useState("");
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
-    setConclusion("");
+    setConclusion(initialConclusion);
     setNotice("");
-  }, [model]);
+  }, [model, initialConclusion]);
+  const saveFinding = async () => {
+    if (!onSaveFinding || saving) return;
+    setSaving(true);
+    try { await onSaveFinding(buildComparisonFinding(model, conclusion)); setNotice("Finding added to the open case. Save the case to retain it locally."); }
+    catch (error) { setNotice(error instanceof Error ? error.message : "The finding could not be added."); }
+    finally { setSaving(false); }
+  };
   const exportFinding = () => {
     try {
       const finding = buildComparisonFinding(model, conclusion);
@@ -776,6 +797,7 @@ function ComparisonInspector({
           onChange={(event) => setConclusion(event.target.value)}
         />
         <div><span>{conclusion.length.toLocaleString()} / {MAX_COMPARISON_CONCLUSION_LENGTH.toLocaleString()}</span><button className="primary-action" type="button" onClick={exportFinding}><DownloadSimple size={16} /> Export finding</button></div>
+        {onSaveFinding && <button className="secondary-action" type="button" disabled={saving} onClick={() => void saveFinding()}><FloppyDisk size={16} /> {saving ? "Adding finding" : "Add finding to case"}</button>}
         <p className="comparison-export-notice" role="status">{notice}</p>
       </section>
     </aside>
@@ -806,7 +828,7 @@ export function ComparisonWorkspace(props: ComparisonWorkspaceProps) {
       <ComparabilityStrip model={model} />
       <ComparisonTimeline model={model} cursorRelativeUs={cursorRelativeUs} onSeek={setCursorRelativeUs} />
       <MetricTable model={model} selectedMetricId={selectedMetric.id} onSelect={setSelectedMetricId} />
-      <ComparisonInspector model={model} metric={selectedMetric} />
+      <ComparisonInspector model={model} metric={selectedMetric} onSaveFinding={props.onSaveFinding} initialConclusion={props.initialConclusion} />
       <div className="visually-hidden" role="status" aria-live="polite">
         Aligned comparison position {exactOffset(cursorRelativeUs)}
       </div>

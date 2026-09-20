@@ -6,6 +6,7 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 ### Added
 
+- Added a local multi-bundle case workspace with exact-byte bundle deduplication, cited findings and questions, existing-engine comparisons, independently reproduced comparison findings, and portable `.nlcase` archives. Case imports and reopens reverify every nested bundle under aggregate archive limits; worker cancellation, atomic local persistence, corruption checks, and revision conflicts preserve the active investigation. Added controlled clean-profile handoff, storage-failure, archive-rejection, accessibility, and responsive regression coverage. ([#45](https://github.com/zrack/replaycase/pull/45))
 - Added task-based documentation navigation, a linked source and test map, and design and architecture indexes. Contributor guidance now separates generated Graphify output from source and requires explicit source identity and extraction scope when refreshing maps.
 
 ### Fixed

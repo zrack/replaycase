@@ -38,6 +38,7 @@ type ReceiverTab = "evidence" | "provenance" | "notes";
 type NotePersistence = "stored" | "memory-only";
 
 export interface ReceiverWorkspaceProps {
+  onOpenCases?: () => void;
   document: ReceiverDocument;
   fileName: string;
   onOpenBundle: () => void;
@@ -206,11 +207,12 @@ function ReceiverRail({
 }
 
 function ReceiverTopBar({
+  onOpenCases,
   document,
   onOpenBundle,
   onOpenReplay,
   onCompare,
-}: Pick<ReceiverWorkspaceProps, "document" | "onOpenBundle" | "onOpenReplay" | "onCompare">) {
+}: Pick<ReceiverWorkspaceProps, "document" | "onOpenBundle" | "onOpenReplay" | "onCompare" | "onOpenCases">) {
   const zone = timeZoneAbbreviation(
     document.sourceSession.startedAt,
     document.sourceSession.displayTimeZone,
@@ -235,6 +237,7 @@ function ReceiverTopBar({
         {formatDurationUs(document.incident.endUs - document.incident.startUs, true)}
       </div>
       <div className="header-actions">
+        {onOpenCases && <button className="secondary-action" type="button" onClick={onOpenCases}><Package size={15} /> Cases</button>}
         <button className="secondary-action" type="button" onClick={() => onCompare(document)}>
           <ArrowsLeftRight size={16} /> Compare
         </button>
@@ -699,6 +702,7 @@ export function ReceiverWorkspace(props: ReceiverWorkspaceProps) {
     <main className="app-shell receiver-shell" aria-label="Received incident evidence workspace">
       <ReceiverRail {...props} />
       <ReceiverTopBar
+        onOpenCases={props.onOpenCases}
         document={document}
         onOpenBundle={props.onOpenBundle}
         onOpenReplay={props.onOpenReplay}

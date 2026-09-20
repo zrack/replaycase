@@ -51,6 +51,8 @@ Continue with the [guided first run](USER_GUIDE.md#first-run-with-the-bundled-re
 
 ## Current capabilities
 
+The capabilities below describe the current source tree. **Multi-bundle cases are unreleased and are not included in the published v0.4.0 package.** Use the [development setup](CONTRIBUTING.md) to evaluate that workflow.
+
 - Capture unicast or multicast UDP datagrams through the managed authenticated local bridge, or assemble serial records directly through Web Serial using the selected decoder pack. Stopping a source downloads a versioned `.nlsession`, opens the validated finalized capture for replay, and attempts to retain it in the local session library.
 - Save up to 16 local capture profiles containing the exact validated decoder pack and UDP or serial settings. Profiles deliberately exclude bridge credentials, browser device permission, session names, and telemetry payloads.
 - Preflight a live UDP or serial source before evidence recording. The bounded probe reports traffic and byte rates, last-input age, valid and malformed frames, checksum failures, observed message families, endpoints, and decoder fit without retaining sampled payloads as session evidence.
@@ -69,7 +71,7 @@ Continue with the [guided first run](USER_GUIDE.md#first-run-with-the-bundled-re
 
 ## Operator use cases
 
-ReplayCase currently supports five end-to-end operator outcomes:
+ReplayCase currently supports six end-to-end operator outcomes; UC-006 is source-build only until the next package release:
 
 | ID | Use case | Primary output |
 | --- | --- | --- |
@@ -78,6 +80,7 @@ ReplayCase currently supports five end-to-end operator outcomes:
 | UC-003 | Audit capture-path integrity | Integrity assessment and transport evidence |
 | UC-004 | Compare captures and prove regressions | Checksummed `.nlcompare.json` finding |
 | UC-005 | Hand off a verifiable incident bundle | `.nlb` archive and verified receiver workspace |
+| UC-006 | Investigate and hand off a multi-bundle case | `.nlcase` archive with original bundles, cited findings, and reproduced comparisons |
 
 See the canonical [use-case log](USE_CASES.md) for actors, supported workflows, current constraints, and implementation evidence.
 
@@ -95,6 +98,14 @@ ReplayCase opens the bundled **Harbor relay downlink** replay automatically. An 
 For a controlled before-and-after investigation, select the baseline incident or open the received bundle, choose **Compare**, load the candidate session or bundle, and declare either range-start or shared-event alignment. ReplayCase compares only the aligned intersection, exposes unmatched tails and non-comparable evidence, and lets the operator export a separate finding that cites both exact inputs, ranges, decoder identities, metric evidence, limitations, and the authored conclusion.
 
 The [user guide](USER_GUIDE.md) provides the full procedure, UI labels, recovery steps, and authenticity boundaries.
+
+## Multi-bundle cases
+
+In the current source build, **Cases** opens a local investigation workspace. Add baseline, failed, and post-fix `.nlb` bundles; exact duplicates share one artifact. Author findings or open questions with exact range, raw-record, or diagnostic citations. Compare two included bundles through the existing explicit-alignment engine and add the resulting finding to the case. Save locally or export an `.nlcase` for another installation.
+
+Import and reopen reverify each original bundle, resolve every citation, and reproduce every saved comparison before displaying the case. Authored context never changes source evidence, missing artifacts remain unavailable, and verification does not establish authorship or source authenticity. Cases are limited to 16 bundles, 48 MiB of stored bundle bytes, 64 MiB of aggregate expanded bundle artifacts, and a 1 MiB canonical manifest. The outer archive is capped at 64 MiB. Saved cases occupy separate, unencrypted IndexedDB storage at the current browser origin.
+
+Follow the [case procedure](USER_GUIDE.md#investigate-a-multi-bundle-case) and [format contract](docs/architecture/case-workspace.md). The automated clean-profile handoff is software evidence, not an independent second-person field proof. Offline operation uses the local application server without external services; it is not a serverless browser cache mode. The existing CLI verifies `.nlb`, not `.nlcase`.
 
 ## Local data continuity
 
@@ -273,12 +284,13 @@ bundled fixture, imported files, and finalized captures.
 
 ## Privacy and data handling
 
-Serial capture, session-library persistence, replay parsing, marker and note persistence, evidence generation, received-bundle verification, and comparative replay happen locally in the browser. Long replay, comparison, and bundle operations use local Web Workers; they do not send session bytes to a service. Validated canonical session documents and their identifying metadata are stored in IndexedDB; markers, authored ranges, and notes use separate per-session local storage. Receiver findings use a separate local-storage record keyed by the exact bundle SHA-256 and can be cleared from the receiver **Notes** tab; they never modify the archive or become source evidence. Comparison inputs and authored conclusions remain in memory until the operator downloads a separate `.nlcompare.json`; the finding cites but does not contain either source. Removing a saved replay attempts to clear its two session stores, leaves any active replay open, and does not affect previously exported files or receiver findings. If the replay document is removed but workspace cleanup fails, ReplayCase keeps a visible warning that residual operator context may remain in browser storage. UDP payloads move only from the local socket bridge to the local page. In the installed release, the browser uses a same-origin relay and the managed process authenticates to the loopback-only bridge with an internal short-lived credential that is not returned in runtime metadata, URLs, cookies, readiness output, or logs. The UDP listener itself binds exactly the interface selected by the operator. ReplayCase has no account system, analytics service, telemetry upload, or cloud synchronization.
+Serial capture, session-library persistence, replay parsing, marker and note persistence, evidence generation, received-bundle verification, and comparative replay happen locally in the browser. Long replay, comparison, and bundle operations use local Web Workers; they do not send session bytes to a service. Validated canonical session documents and their identifying metadata are stored in IndexedDB; markers, authored ranges, and notes use separate per-session local storage. Receiver findings use a separate local-storage record keyed by the exact bundle SHA-256 and can be cleared from the receiver **Notes** tab; they never modify the archive or become source evidence. Outside a case, comparison inputs and authored conclusions remain in memory until the operator downloads a separate `.nlcompare.json`; that standalone finding cites but does not contain either source. In the current source build, a saved case contains its original `.nlb` artifacts and explicitly authored findings and comparisons in a separate IndexedDB database. Exported `.nlcase` archives carry those same artifacts and context, without changing the source bundles. Case removal does not remove independently saved sessions, receiver-local notes, or exported files. Removing a saved replay attempts to clear its two session stores, leaves any active replay open, and does not affect previously exported files or receiver findings. If the replay document is removed but workspace cleanup fails, ReplayCase keeps a visible warning that residual operator context may remain in browser storage. UDP payloads move only from the local socket bridge to the local page. In the installed release, the browser uses a same-origin relay and the managed process authenticates to the loopback-only bridge with an internal short-lived credential that is not returned in runtime metadata, URLs, cookies, readiness output, or logs. The UDP listener itself binds exactly the interface selected by the operator. ReplayCase has no account system, analytics service, telemetry upload, or cloud synchronization.
 
 Local does not automatically mean safe to share. A saved replay or evidence bundle can contain raw bytes, device identifiers, coordinates, signal observations, and operator notes. Review and sanitize captures before committing them or sending them to someone else. Browser IndexedDB and local storage are convenient persistence mechanisms, not encrypted secrets stores.
 
 ## Current limits
 
+- The current-source case workspace is not in the published v0.4.0 package. `.nlcase` archives are bounded, unsigned, and verified in the application, not the `.nlb` CLI command. They preserve individual timelines and cannot establish clock synchronization, causality, narrative truth, or source authenticity.
 - Live capture supports UDP and Web Serial; TCP and other transports are not implemented.
 - The package requires a compatible local Node.js runtime and browser. It bundles all ReplayCase application code and runtime dependencies, but it is not a native installer or embedded-browser distribution.
 - Capture profiles are local convenience state, not evidence or secrets storage. They are limited to 16 profiles and 2 MiB of canonical content, and cannot restore Web Serial permission.
