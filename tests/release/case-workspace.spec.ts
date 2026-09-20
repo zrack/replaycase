@@ -31,7 +31,9 @@ test("installed application verifies, saves, reopens and re-exports a portable c
       page.getByRole("heading", { level: 1, name: content.title }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Save case", exact: true }).click();
-    await expect(page.getByRole("status")).toHaveText("Case saved locally.");
+    await expect(
+      page.getByRole("status").filter({ hasText: /^Case saved locally\.$/ }),
+    ).toHaveText("Case saved locally.");
     await page.reload();
     await page.getByRole("button", { name: "Cases", exact: true }).click();
     await page
