@@ -275,8 +275,10 @@ The semantic validator rejects altered hashes and internally contradictory range
 | [docs/](docs/README.md) | Architecture, design evidence, field proofs, releases, and guide navigation |
 
 Use the [repository map](docs/repository-map.md) for clickable source entry
-points, execution paths, test routing, and Graphify refresh boundaries. Detailed
-contracts live in the [architecture index](docs/architecture/README.md).
+points, execution paths, test routing, and Graphify refresh boundaries. The
+[system diagrams](docs/architecture/system-overview.md) trace runtime boundaries,
+capture-to-evidence flow, case verification, and persistence. Detailed contracts
+live in the [architecture index](docs/architecture/README.md).
 
 Raw source records remain immutable. Frames, fields, metrics, diagnostics,
 incidents, and bundle artifacts are derived through the same pipeline for the
@@ -314,6 +316,7 @@ Local does not automatically mean safe to share. A saved replay or evidence bund
 | --- | --- |
 | [Documentation index](docs/README.md) | Task-based entry point to operator, contributor, design, proof, and release documentation |
 | [Repository map](docs/repository-map.md) | Folder boundaries, linked implementation entry points, execution paths, tests, and generated-map policy |
+| [System architecture diagrams](docs/architecture/system-overview.md) | Runtime boundaries, capture/replay, incident and case verification, and local storage ownership |
 | [USER_GUIDE.md](USER_GUIDE.md) | Step-by-step installation, capture, replay, incident, evidence handoff, upgrade, removal, and troubleshooting |
 | [USE_CASES.md](USE_CASES.md) | Stable catalog of supported operator outcomes, constraints, and implementation evidence |
 | [CHANGELOG.md](CHANGELOG.md) | Canonical record of notable completed changes and tagged releases |

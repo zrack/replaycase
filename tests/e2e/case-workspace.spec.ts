@@ -46,9 +46,9 @@ test("hands off a three-bundle case with exact citations and a reproduced compar
   await page
     .getByLabel("Choose case evidence bundles")
     .setInputFiles(files[0]!);
-  await expect(page.getByRole("status")).toContainText(
-    "0 distinct bundles added",
-  );
+  await expect(
+    page.getByRole("status").filter({ hasText: "0 distinct bundles added" }),
+  ).toContainText("0 distinct bundles added");
   await page.getByRole("button", { name: "New finding", exact: true }).click();
   await page.getByLabel("Entry type").selectOption("question");
   await page
@@ -104,7 +104,9 @@ test("hands off a three-bundle case with exact citations and a reproduced compar
   ).toBeVisible();
   await page.getByRole("button", { name: "Cases", exact: true }).click();
   await page.getByRole("button", { name: "Save case", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Case saved locally.");
+  await expect(
+    page.getByRole("status").filter({ hasText: /^Case saved locally\.$/ }),
+  ).toHaveText("Case saved locally.");
   const downloaded = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export case", exact: true }).click();
   const file = await downloaded;
@@ -171,9 +173,9 @@ test("hands off a three-bundle case with exact citations and a reproduced compar
     await recipient
       .getByRole("button", { name: "Save case", exact: true })
       .click();
-    await expect(recipient.getByRole("status")).toHaveText(
-      "Case saved locally.",
-    );
+    await expect(
+      recipient.getByRole("status").filter({ hasText: /^Case saved locally\.$/ }),
+    ).toHaveText("Case saved locally.");
     await recipient.reload();
     await recipient.getByRole("button", { name: "Cases", exact: true }).click();
     await recipient
@@ -288,7 +290,9 @@ test("keeps a case usable after quota failure and cancellation without persistin
   ).toBeVisible();
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   release();
-  await expect(page.getByRole("status")).toContainText("Operation canceled");
+  await expect(
+    page.getByRole("status").filter({ hasText: "Operation canceled" }),
+  ).toContainText("Operation canceled");
   await expect(
     page.getByRole("heading", { name: "Retained case", exact: true }),
   ).toBeVisible();

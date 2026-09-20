@@ -59,6 +59,9 @@ discovery response in the browser.
 
 ## Execution paths
 
+The [system diagrams](architecture/system-overview.md) show these routes across
+process, worker, evidence, and storage boundaries.
+
 1. **Capture:** serial or UDP adapter -> bounded recorder -> canonical session
    -> the same validated loading path used by imports and the bundled fixture.
 2. **Replay and investigation:** session worker -> domain validation and decoder
@@ -98,6 +101,11 @@ This linked map is the GitHub-readable source guide. A local Graphify build adds
 `graphify-out/graph.json`, `GRAPH_REPORT.md`, `graph.html`, and `GRAPH_TREE.html`
 for symbol and relationship exploration. Generated graphs are discovery aids;
 the source files and canonical documents remain authoritative.
+
+The maintained [architecture diagrams](architecture/system-overview.md) are
+checked-in Mermaid source, not generated Graphify output. Update those diagrams
+when an implementation boundary changes; do not replace them with a stale
+generated graph or commit local graph artifacts.
 
 Refresh Graphify from a clean checkout of the intended commit, not a directory
 containing untracked source copies or private evidence. Use the Graphify skill's

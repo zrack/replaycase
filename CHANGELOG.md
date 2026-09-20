@@ -11,6 +11,7 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 ### Fixed
 
+- Scoped case-save browser assertions to the exact completed-save notice, so overlapping progress and success announcements cannot cause a false strict-locator failure in source or unpacked-distribution handoff tests.
 - Synchronized the storage-cleanup browser regression with the save operation's focus handoff and verified the operator note before removal, so interrupted text entry cannot masquerade as a note-retention failure.
 
 ## [0.4.0] - 2026-09-10

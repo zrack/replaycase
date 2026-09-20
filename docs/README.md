@@ -19,6 +19,7 @@
 | Need | Start here |
 | --- | --- |
 | Find the right source folder, entry point, or test | [Repository map](repository-map.md) |
+| Trace processes, evidence flow, and storage boundaries | [System architecture diagrams](architecture/system-overview.md) |
 | Set up development and prepare a pull request | [Contributing](../CONTRIBUTING.md) |
 | Understand compatibility and transport contracts | [Architecture notes](architecture/README.md) |
 | Author or validate a decoder pack | [Decoder packs](../DECODER_PACKS.md) |
