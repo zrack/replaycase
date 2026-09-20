@@ -4,6 +4,10 @@
 
 This contract describes the current source build, not the published v0.4.0 package.
 
+The [case verification diagram](system-overview.md#case-verification) and
+[persistence sequence](system-overview.md#persistence-and-ownership) place this
+contract within the wider application.
+
 ## Evidence and authorship
 
 A case groups independently verified `.nlb` bundles. It does not concatenate sessions, synchronize clocks, change decoder identities, rewrite source bytes, or upgrade incomplete evidence to complete evidence. Bundle labels are taken from the imported filenames. Findings and open questions are authored case context, not observed telemetry. Their citations resolve against the exact included evidence; resolving a citation does not prove the author's assertion.

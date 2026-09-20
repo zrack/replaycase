@@ -171,6 +171,12 @@ linked implementation entry points and test routing. The
 [documentation index](docs/README.md) routes operator and contributor guides;
 [architecture notes](docs/architecture/README.md) cover cross-cutting contracts.
 
+Maintain the Mermaid [system diagrams](docs/architecture/system-overview.md)
+alongside changes to process, worker, verification, artifact, or storage
+boundaries. Verify their syntax and rendered layout, and check their source
+links. These checked-in diagrams are separate from local generated Graphify
+artifacts.
+
 The [design index](docs/design/README.md) distinguishes the approved source and
 current screenshots from older implementation captures. Preserve the source's
 restrained, square-cornered, instrument-grade hierarchy unless an approved
