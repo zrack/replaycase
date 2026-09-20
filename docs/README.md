@@ -7,6 +7,7 @@
 | Need | Start here |
 | --- | --- |
 | Install, capture, investigate, or receive an incident | [User guide](../USER_GUIDE.md) |
+| Organize and exchange several incident bundles | [Case procedure](../USER_GUIDE.md#investigate-a-multi-bundle-case), current source build |
 | Check supported workflows and their limits | [Use cases](../USE_CASES.md) |
 | Find the current package or an older release | [Release index](releases/README.md) |
 | Plan an independent real-source handoff | [Field-proof procedure](field-proofs/README.md) and [pilot plan](field-proofs/pilot-plan.md) |

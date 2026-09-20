@@ -21,6 +21,7 @@ the RC mark. Keep the source image and its path unchanged.
 | UDP preflight | [Observed traffic](replaycase-preflight.png) |
 | Evidence receiver | [Desktop](replaycase-receiver.png), [mobile](replaycase-receiver-mobile.png) |
 | Comparison | [Desktop](replaycase-comparison.png), [mobile](replaycase-comparison-mobile.png) |
+| Local case (unreleased source build) | [Desktop](replaycase-cases.png), [mobile](replaycase-cases-mobile.png) |
 
 These are the current screenshots referenced by the product documentation.
 They demonstrate the application, not independent physical field acceptance.

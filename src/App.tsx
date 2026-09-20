@@ -24,6 +24,7 @@ import {
   Database,
   DownloadSimple,
   FloppyDisk,
+  FolderOpen,
   FunnelSimple,
   Gear,
   NotePencil,
@@ -81,6 +82,7 @@ import {
 import { createOperationGate, resolveCommittedSave } from "./storage/session-library-workflow";
 import { clearSessionWorkspace, loadSessionWorkspace, saveSessionWorkspace } from "./storage/session-storage";
 import { ReceiverWorkspace } from "./receiver/ReceiverWorkspace";
+import { CaseWorkspace } from "./cases/CaseWorkspace";
 import {
   EvidenceBundleLoadError,
   loadEvidenceBundleFile,
@@ -682,6 +684,7 @@ function LeftRail({ session, replayOffsetUs, onOpenReplay, onOpenBundle, onOpenC
 }
 
 interface TopBarProps {
+  onOpenCases: () => void;
   session: ParsedSession;
   replayOffsetUs: number;
   replayStatus: string;
@@ -714,6 +717,7 @@ function TopBar(props: TopBarProps) {
         {formatSessionDate(document.startedAt, document.displayTimeZone)} <i>•</i> {formatClockOffset(document.startedAt, 0, document.displayTimeZone, false)} – {end} {timeZoneAbbreviation(document.startedAt, document.displayTimeZone, document.durationUs)} <i>•</i> {formatDurationUs(document.durationUs)}
       </div>
       <div className="header-actions">
+        <button className="secondary-action" type="button" onClick={props.onOpenCases}><FolderOpen size={15} /> Cases</button>
         <button className="secondary-action library-mobile" type="button" aria-haspopup="dialog" onClick={props.onOpenLibrary}><Database size={15} /> Saved ({props.savedSessionCount})</button>
         <button className="secondary-action capture-mobile" type="button" onClick={props.onOpenCapture}><Broadcast size={15} /> Capture</button>
         <button className="secondary-action open-replay-mobile" type="button" onClick={props.onOpenReplay}><UploadSimple size={15} /> Open replay</button>
@@ -1427,7 +1431,7 @@ function Toast({ message }: { message: string }) {
   return message ? <div className="toast" role="status"><Check size={15} weight="bold" /> {message}</div> : null;
 }
 
-function Workspace({ session, onOpenReplay, onOpenBundle, onOpenCapture, onCompare, library, workspacePersistenceCommand }: { session: ParsedSession; onOpenReplay: () => void; onOpenBundle: () => void; onOpenCapture: () => void; onCompare: (session: ParsedSession, incident: IncidentProjection) => void; library: SessionLibraryController; workspacePersistenceCommand: WorkspacePersistenceCommand | null }) {
+function Workspace({ session, onOpenReplay, onOpenBundle, onOpenCapture, onOpenCases, onCompare, library, workspacePersistenceCommand }: { session: ParsedSession; onOpenReplay: () => void; onOpenBundle: () => void; onOpenCapture: () => void; onOpenCases: () => void; onCompare: (session: ParsedSession, incident: IncidentProjection) => void; library: SessionLibraryController; workspacePersistenceCommand: WorkspacePersistenceCommand | null }) {
   const firstIncident = session.incidents.find((candidate) => candidate.id === "fade") ?? session.incidents[0] ?? null;
   const initialReplayOffsetUs = firstIncident ? incidentViewRange(session, firstIncident).startUs : 0;
   const replay = useReplay({ durationUs: session.document.durationUs, initialOffsetUs: initialReplayOffsetUs, initialRate: 1 });
@@ -1563,7 +1567,7 @@ function Workspace({ session, onOpenReplay, onOpenBundle, onOpenCapture, onCompa
   return (
     <main className="app-shell" aria-label="Telemetry review workspace">
       <LeftRail session={session} replayOffsetUs={replay.snapshot.offsetUs} onOpenReplay={onOpenReplay} onOpenBundle={onOpenBundle} onOpenCapture={onOpenCapture} library={library} />
-      <TopBar session={session} replayOffsetUs={replay.snapshot.offsetUs} replayStatus={replay.snapshot.status} replayRate={replay.snapshot.rate} onTogglePlayback={togglePlayback} onReset={replay.reset} onRateChange={replay.setRate} onAddMarker={() => setMarkerDialogOpen(true)} onCreateBundle={() => setBundleDialogOpen(true)} onOpenReplay={onOpenReplay} onOpenBundle={onOpenBundle} onOpenCapture={onOpenCapture} onOpenLibrary={() => setLibraryDialogOpen(true)} onCompare={() => selectedIncident && onCompare(session, selectedIncident)} savedSessionCount={library.entries.length} bundleDisabled={!selectedIncident || !bundleItems.some((item) => item.selected)} compareDisabled={!selectedIncident} />
+      <TopBar onOpenCases={onOpenCases} session={session} replayOffsetUs={replay.snapshot.offsetUs} replayStatus={replay.snapshot.status} replayRate={replay.snapshot.rate} onTogglePlayback={togglePlayback} onReset={replay.reset} onRateChange={replay.setRate} onAddMarker={() => setMarkerDialogOpen(true)} onCreateBundle={() => setBundleDialogOpen(true)} onOpenReplay={onOpenReplay} onOpenBundle={onOpenBundle} onOpenCapture={onOpenCapture} onOpenLibrary={() => setLibraryDialogOpen(true)} onCompare={() => selectedIncident && onCompare(session, selectedIncident)} savedSessionCount={library.entries.length} bundleDisabled={!selectedIncident || !bundleItems.some((item) => item.selected)} compareDisabled={!selectedIncident} />
       <SessionOverview session={session} incidents={incidents} incident={selectedIncident} incidentEditable={selectedAuthoredRange != null} markers={markers} replayOffsetUs={replay.snapshot.offsetUs} onSeek={replay.seek} onSelectIncident={(incident) => selectIncident(incident.id)} onCreateRange={openNewRange} onRangeChange={resizeSelectedRange} />
       {selectedIncident ? <MissionTimeline session={session} incident={selectedIncident} incidentEditable={selectedAuthoredRange != null} markers={markers} replayOffsetUs={replay.snapshot.offsetUs} onSeek={replay.seek} onRangeChange={resizeSelectedRange} /> : <section className="timeline-panel"><div className="empty-state"><BookmarkSimple size={24} /><h2>Select an incident</h2><p>The full replay remains available in the session overview.</p></div></section>}
       <IncidentPanel session={session} incidents={incidents} incident={selectedIncident} incidentEditable={selectedAuthoredRange != null} activeTab={activeTab} note={note} workspacePersistence={workspacePersistence} onTabChange={setActiveTab} onNoteChange={setNote} onSelectIncident={selectIncident} onEditRange={openRangeEditor} onClear={clearIncident} />
@@ -1698,6 +1702,20 @@ function EvidenceOpenDialog({
 }
 
 export function App({ operatorRuntime = MANUAL_OPERATOR_RUNTIME }: { operatorRuntime?: OperatorRuntime }) {
+  const [casesVisible, setCasesVisible] = useState(false);
+  const [casesOpened, setCasesOpened] = useState(false);
+  const caseTriggerRef = useRef<HTMLElement | null>(null);
+  const caseHostRef = useRef<HTMLDivElement>(null);
+  const openCases = () => {
+    caseTriggerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setCasesOpened(true);
+    setCasesVisible(true);
+    requestAnimationFrame(() => caseHostRef.current?.querySelector<HTMLElement>("h1")?.focus());
+  };
+  const closeCases = () => {
+    setCasesVisible(false);
+    requestAnimationFrame(() => caseTriggerRef.current?.focus());
+  };
   const [state, setState] = useState<LoadState>({ status: "loading", message: "Validating bundled telemetry…" });
   const [comparisonModel, setComparisonModel] = useState<ComparisonModel | null>(null);
   const [comparisonBaseline, setComparisonBaseline] = useState<ComparisonSource | null>(null);
@@ -2150,10 +2168,12 @@ export function App({ operatorRuntime = MANUAL_OPERATOR_RUNTIME }: { operatorRun
     <>
       <input ref={fileInputRef} className="visually-hidden" type="file" tabIndex={-1} aria-label="Choose a local ReplayCase replay" accept=".json,.nlsession,application/json" onChange={(event) => void handleFile(event)} />
       <input ref={evidenceInputRef} className="visually-hidden" type="file" tabIndex={-1} aria-label="Choose a ReplayCase evidence bundle" accept=".nlb,application/zip" onChange={(event) => void handleEvidenceFile(event)} />
+      <div hidden={casesVisible}>
       {comparisonModel != null ? (
         <ComparisonWorkspace
           key={comparisonWorkspaceKey(comparisonModel)}
           model={comparisonModel}
+          onOpenCases={openCases}
           onNewComparison={() => setComparisonBaseline(comparisonModel.baseline)}
           onReturn={returnFromComparison}
           onOpenReplay={openReplay}
@@ -2163,14 +2183,16 @@ export function App({ operatorRuntime = MANUAL_OPERATOR_RUNTIME }: { operatorRun
         <>
           {state.status === "loading" && <LoadingScreen message={state.message} progress={state.progress} />}
           {state.status === "error" && <ErrorScreen error={state.error} onRetry={() => void loadDefault()} onOpenReplay={openReplay} onOpenBundle={openEvidence} />}
-          {state.status === "ready" && <Workspace key={sessionWorkspaceKey(state.session)} session={state.session} onOpenReplay={openReplay} onOpenBundle={openEvidence} onOpenCapture={() => setCaptureDialogOpen(true)} onCompare={startSessionComparison} library={libraryController} workspacePersistenceCommand={workspacePersistenceCommand} />}
-          {state.status === "receiver" && <ReceiverWorkspace key={state.document.bundle.sha256} document={state.document} fileName={state.fileName} onOpenBundle={openEvidence} onOpenReplay={openReplay} onLoadBundledReplay={() => void loadDefault()} onCompare={startReceiverComparison} />}
+          {state.status === "ready" && <Workspace onOpenCases={openCases} key={sessionWorkspaceKey(state.session)} session={state.session} onOpenReplay={openReplay} onOpenBundle={openEvidence} onOpenCapture={() => setCaptureDialogOpen(true)} onCompare={startSessionComparison} library={libraryController} workspacePersistenceCommand={workspacePersistenceCommand} />}
+          {state.status === "receiver" && <ReceiverWorkspace onOpenCases={openCases} key={state.document.bundle.sha256} document={state.document} fileName={state.fileName} onOpenBundle={openEvidence} onOpenReplay={openReplay} onLoadBundledReplay={() => void loadDefault()} onCompare={startReceiverComparison} />}
         </>
       )}
       {captureDialogOpen && comparisonModel == null && <CaptureDialog operatorRuntime={operatorRuntime} displayTimeZone={state.status === "ready" ? state.session.document.displayTimeZone : undefined} onClose={() => setCaptureDialogOpen(false)} onComplete={completeCapture} />}
       {replayProcessingState.status !== "idle" && <ReplayProcessingDialog state={replayProcessingState} onCancel={cancelReplayProcessing} onRetry={(source) => source.kind === "file" ? void processReplayFile(source.file) : void openSavedSession(source.identity)} onClose={() => setReplayProcessingState({ status: "idle" })} />}
       {evidenceOpenState.status !== "idle" && <EvidenceOpenDialog state={evidenceOpenState} onClose={() => setEvidenceOpenState({ status: "idle" })} />}
       {comparisonBaseline != null && <ComparisonSetupDialog baseline={comparisonBaseline} onClose={() => setComparisonBaseline(null)} onStart={openComparison} />}
+      </div>
+      {casesOpened && <div ref={caseHostRef} hidden={!casesVisible}><CaseWorkspace onClose={closeCases} /></div>}
     </>
   );
 }

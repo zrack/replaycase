@@ -42,6 +42,14 @@ Treat `docs/design/narrowslink-mission-timeline-source.png` as the source of tru
 - Keep the core decoder, replay, incident, and bundle logic pure and covered by automated tests.
 - Preserve the cross-browser release gate from real loopback UDP capture through validated `.nlsession` reimport, replay, operator-authored evidence, independently verified `.nlb` archive, persistence, failure recovery, and removal. Keep physical Web Serial and manual assistive-technology claims explicitly separate from automated browser-engine evidence.
 
+## Case Workspace Constraints
+
+- Keep original `.nlb` bytes immutable inside cases; do not merge session clocks or infer synchronized sources.
+- Case findings and questions are authored context. Their citations must resolve to exact included bundle ranges, raw records, or diagnostics; a resolvable citation does not establish the truth of a narrative.
+- Treat `.nlcase` as untrusted input. Preflight aggregate nested expansion before decoding any bundle, preserve per-bundle verification claims, and reproduce saved comparisons through the existing comparison engine.
+- Case saves succeed only after transaction commit; reopens reverify archive bytes and metadata. Reject corrupt or conflicting revisions without silently repairing or replacing evidence. Keep the active in-memory case usable after storage failure or removal.
+- Keep case import, build, export, and verification in cancellable workers with ordered evidence chunks. Preserve the active case and download boundary on cancellation.
+
 ## Documentation Ownership
 
 - `CHANGELOG.md` is the sole chronological record of notable completed changes and releases. Add applicable work under `[Unreleased]`.

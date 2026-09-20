@@ -1,6 +1,6 @@
 # ReplayCase accessibility
 
-ReplayCase treats keyboard access, durable focus, non-color evidence cues, and responsive reflow as release requirements for the local capture-to-evidence and comparative-replay workflows. This document records the current support evidence and its limits; it is not a certification of complete WCAG conformance or every browser, operating system, device, and assistive-technology combination.
+ReplayCase treats keyboard access, durable focus, non-color evidence cues, and responsive reflow as release requirements for the local capture-to-evidence, comparative-replay, and case workflows. This document records the current support evidence and its limits; it is not a certification of complete WCAG conformance or every browser, operating system, device, and assistive-technology combination. The case workspace is currently available in source builds, not the published v0.4.0 package.
 
 ## Automated release matrix
 
@@ -15,6 +15,7 @@ The Playwright suite runs against Chromium, Firefox, and WebKit in `npm run chec
 | Simulated Web Serial capture-to-evidence loop | Pass | Pass | Pass | Injected browser API, preflight on one selected device, future-read handler transfer without reopen, fragmented reads, complete and partial NSL-01 assembly, reconciled v2 receipt, durable reopen, replay, exact authored range, `.nlb` generation, and independent archive verification |
 | Received evidence workspace | Pass | Pass | Pass | Exact bounded incident, separate verification claims, explicit unavailable groups, decoded and raw evidence, provenance, source annotations, separate receiver finding, rejected-archive recovery, reload, and unpacked-release replacement |
 | Comparative replay workspace | Pass | Pass | Pass | Explicit baseline and candidate setup, validated session and verified-bundle input, aligned range control, eligibility matrix, metric selection, bounded source trace, authored conclusion, finding export, and clean state for a new comparison |
+| Local case workspace | Pass | Pass | Pass | Named case-entry focus, labeled finding and citation controls, draft preservation across evidence inspection, automated axe A/AA scan, and no page-level horizontal overflow at `390 × 844`; verified handoff, persistence, quota recovery, and reachable cancellation |
 | axe rules tagged WCAG A/AA | Pass | Pass | Pass | Automated scans of the replay, receiver, and comparison workspaces plus live-capture, range, marker, bundle, comparison-setup, and long-running processing dialogs |
 | Keyboard and focus handoff | Pass | Pass | Pass | Dialog entry/return, incident tabs, range deletion, incident clear/select, capture ready-to-preflight-to-recording transitions, captured-session replacement, comparison setup, and authored finding controls |
 | Reflow and horizontal evidence access | Pass | Pass | Pass | Replay, receiver, and comparison workspaces at `960 × 900`, `640 × 900`, and `390 × 844`; no page-level horizontal overflow, wrapped command actions, and explicit keyboard panning for table or timeline scrollers |
@@ -37,6 +38,7 @@ Playwright's WebKit project provides browser-engine coverage. It does not by its
 - Overview incident targets expose selected state, severity, and exact clock range in their accessible names.
 - The received timeline exposes one full-lane range control instead of hundreds of overlapping tiny packet targets. Exact packet seeking remains available through the keyboard-accessible evidence table.
 - Receiver information uses tabs for evidence, provenance, and notes; receiver-owned text is labeled and remains separate from read-only source notes.
+- Opening Cases focuses its heading and returning to replay restores the originating control. Case evidence uses a named, focusable horizontal scroll region; processing exposes progress and cancellation without replacing the active case on failure.
 
 ## Manual certification boundary
 

@@ -362,6 +362,8 @@ Invalid or incompatible candidate input leaves the current replay, receiver, and
 
 ## Use the local session library
 
+The session library is separate from the case library described below.
+
 The Sessions rail contains validated canonical sessions stored in IndexedDB.
 
 - Select **Save current replay** to retain the active bundled replay when it is not already saved.
@@ -377,6 +379,27 @@ Removing a saved replay also attempts to clear its markers, note, and authored r
 New saves retain exact canonical bytes in version 3 IndexedDB records. ReplayCase continues to read its earlier version 1 text and version 2 Blob records, but every reopen must still pass identity, canonical-byte, metadata, schema, and decoder checks.
 
 A storage error does not mean a session was saved. Keep the downloaded `.nlsession` when the browser reports that IndexedDB, Web Crypto, quota, or the transaction prevented persistence.
+
+## Investigate a multi-bundle case
+
+**Availability:** current source build only. The published v0.4.0 package does not contain this workspace.
+
+1. Choose **Cases** from replay, receiver, or comparison. Enter a **New case title** and choose **Create case**. The new case is in memory until **Save case** succeeds.
+2. Choose **Add bundles** and select the baseline, failed, and post-fix `.nlb` files. ReplayCase verifies every archive before changing the case. Exact duplicates are not added again. Bundle labels come from filenames; their full identities and source evidence remain unchanged.
+3. Inspect a bundle using its folder control. The receiver shows only that bundle's included evidence and its separate verification claims. Choose **Cases** to return. Receiver-local notes are not automatically copied into the case.
+4. Choose **New finding**, select **Finding** or **Open question**, and write the authored context. Select a citation bundle and either an exact half-open incident range, an included raw-record ID, or an included diagnostic ID. Choose **Add citation** for each reference, then **Apply finding**. Findings require at least one valid citation. Click a saved citation to inspect its exact target.
+5. Select distinct **Baseline bundle** and **Candidate bundle** inputs, then **Compare bundles**. Declare range-start or shared-event alignment. Review eligibility and limitations before writing an operator conclusion. **Add finding to case** retains the comparison as case context; it does not save the entire case to disk. **Export finding** still exports the separate `.nlcompare.json`.
+6. Apply any title, summary, or finding draft before selecting **Save case** or **Export case**. Save waits for the IndexedDB transaction to commit. Export re-verifies the case and downloads an `.nlcase` containing the original bundle bytes and applied authored context.
+7. On another compatible installation, choose **Import case**. The receiver verifies every nested archive, resolves citations, and independently reproduces saved comparisons. It requires no original capture laptop, source system, or external service. **Save case** explicitly retains the received case in that browser profile.
+8. Reopen from **Saved cases**; every reopen verifies stored bytes and metadata again. Use a saved case's trash control to remove it after confirmation. Removal leaves an open in-memory copy usable and does not affect exported files or the session library.
+
+Use the same browser profile and application origin to reach saved cases. Browser storage is not an encrypted backup. Export before clearing site data, changing origins, or transferring machines. Case archives can include sensitive telemetry, coordinates, identifiers, filenames, and authored context; review all included bundles before sharing.
+
+An import failure or cancellation leaves the current case unchanged. Canceling export produces no download. Unavailable storage, quota exhaustion, blocked database opens, corruption, and conflicting saved revisions are errors, not successful saves. Export an unsaved case while resolving storage failures. A different imported revision of an existing case is not silently merged: retain any needed exports, then reopen the saved revision or explicitly remove it before saving the imported one. A cited bundle cannot be removed until its finding and comparison references are removed.
+
+The case envelope is 16 distinct bundles, 48 MiB total `.nlb` bytes, 64 MiB total nested expanded artifacts, and a 1 MiB manifest inside a 64 MiB outer archive. It supports 200 findings/questions, 1-16 citations each, 4,000 characters per finding or summary, and 16 comparisons subject to the manifest limit. Larger valid standalone bundles may require a narrower incident export for case use. Only `.nlb` inputs are accepted; cases do not import raw sessions or merge timelines. There is no signing, shared editing, standalone comparison-file import, or automatic clock correlation.
+
+Offline inspection still needs the application served locally. There is no hosted dependency and no service-worker/serverless mode. The current `replaycase verify` command accepts `.nlb`; use **Import case** to verify `.nlcase`. The [format and persistence contract](docs/architecture/case-workspace.md) gives the precise bounds and trust claims.
 
 <a id="upgrade-narrowslink"></a>
 
@@ -445,9 +468,11 @@ npm uninstall --global replaycase
 Uninstalling does not delete:
 
 - The browser-held session library
+- The separate browser-held case library when using a case-capable build
 - Markers, notes, or authored ranges
 - Downloaded `.nlsession` files
 - Exported `.nlb` bundles
+- Exported `.nlcase` archives
 
 To intentionally purge the browser-held library and workspace, preserve any required captures and then clear site data for `http://127.0.0.1:47890` in that browser profile. Package removal never deletes exported files.
 
@@ -455,6 +480,10 @@ To intentionally purge the browser-held library and workspace, preserve any requ
 
 | Symptom | What to do |
 | --- | --- |
+| **Cases** is missing | The published v0.4.0 package predates the case workspace. Use the current source build or a subsequent case-capable release; do not alter an older archive to force compatibility. |
+| Case import or reopen fails | Keep the original file. Check archive limits and the complete error; missing evidence, broken citations, incompatible versions, or corrupt bytes are not repaired automatically. The active case remains open. |
+| A different case revision is already saved | Export work you need to retain, then reopen the saved revision or explicitly remove it before saving the imported revision. ReplayCase does not merge conflicting investigations. |
+| Case storage fails | Keep the active case open and export it. Resolve the quota, blocked window, or storage permission, refresh saved cases, and retry. Do not treat an error as a successful save. |
 | `replaycase` is not found | Confirm the global npm binary directory is on `PATH`, then rerun `replaycase version --json`. Do not substitute an unverified package. |
 | The browser did not open | Keep `replaycase serve` running and open the printed loopback URL. |
 | Port `47890` is occupied | Stop the existing process when possible. An alternate `--app-port` works, but it selects a different browser-storage origin. |

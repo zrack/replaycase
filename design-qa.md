@@ -20,9 +20,11 @@ saved sessions, counters, markers, or notes to match the prototype.
 
 ## Current Screenshots
 
-These are unedited browser captures of the ReplayCase 0.4.0 production build,
-served locally in managed mode. The source-build runtime displays `build unknown`;
-these images establish UI appearance, not a published-package identity.
+These are unedited browser captures. The session, capture, receiver, and comparison
+images use the ReplayCase 0.4.0 production build served locally in managed mode.
+The case images use the unreleased source production build. Source runtimes may
+display `build unknown`; the images establish appearance, not published-package
+identity.
 
 | Surface | Evidence | State |
 | --- | --- | --- |
@@ -34,6 +36,7 @@ these images establish UI appearance, not a published-package identity.
 | UDP preflight | [Observed traffic](docs/design/replaycase-preflight.png) | 24 synthetic NSL-01 datagrams, 737 bytes, 24 valid frames, no malformed frames, one loopback endpoint |
 | Evidence receiver | [Desktop](docs/design/replaycase-receiver.png), [mobile](docs/design/replaycase-receiver-mobile.png) | Verified v4 archive from the fixture's exact link-fade incident; 179 raw/decoded records, 11 diagnostics; unknown legacy integrity and unsigned authenticity remain explicit |
 | Comparison | [Desktop](docs/design/replaycase-comparison.png), [mobile](docs/design/replaycase-comparison-mobile.png) | Received incident versus the same fixture range, explicit range-start alignment; no source-clock synchronization inferred |
+| Local case | [Desktop](docs/design/replaycase-cases.png), [mobile](docs/design/replaycase-cases-mobile.png) | Three controlled file-source bundles, one cited question, and one reproduced comparison; unknown capture integrity and unestablished authenticity remain visible. Not a field test. |
 
 ![ReplayCase session review](docs/assets/replaycase-dashboard.png)
 
@@ -62,6 +65,13 @@ field test. Operator-facing documentation uses the current captures above.
 - Compatibility tests pin the legacy fixture and decoder hashes and retain
   storage, comparison-finding, and receiver-note behavior. Branding does not
   rewrite or reinterpret captured evidence.
+- The case gate covers source-preserving handoff into a clean browser profile,
+  exact citations, comparison reproduction, persistence, draft preservation,
+  quota failure, cancellation, axe A/AA rules, and 390-pixel reflow across the
+  three engines. External HTTP origins are blocked while the local application
+  server remains available; this is not serverless browser-offline support.
+- The unpacked-installation case gate verifies import, durable save/reopen, and
+  byte-identical re-export outside the source checkout in all three engines.
 
 ## Boundaries
 

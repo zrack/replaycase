@@ -7,6 +7,7 @@ capture, replay, and receiver paths and the source files that implement them.
 
 | Contract | Scope |
 | --- | --- |
+| [Multi-bundle cases](case-workspace.md) | Bounded `.nlcase` archives, exact evidence citations, reproduced comparisons, worker processing, and revision-safe local persistence |
 | [Branding compatibility](branding-compatibility.md) | Current ReplayCase names versus deliberately stable evidence, decoder, storage, and CLI compatibility identities |
 | [UDP capture attribution](udp-capture-attribution.md) | Host socket-drop evidence, layered byte accounting, provenance schemas, and limits on capture-path claims |
 | [Decoder packs](../../DECODER_PACKS.md) | Pack identity, allowed runtimes, framing, schemas, fixtures, and contribution boundaries |
