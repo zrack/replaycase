@@ -94,11 +94,10 @@ Exit criteria: a new telemetry community can bring a protocol, fixtures, and exp
 
 ## Moonshot: Incident evidence exchange
 
-- Extend the local receiver from one bundle to a multi-bundle case file with immutable citations, separately owned findings, and an explicit chain of verification.
 - Add optional signed manifests, public-key identity, or transparency-log integration for teams that need stronger provenance than local checksums.
 - Explore redaction and minimization tools that preserve verification while stripping sensitive coordinates, identifiers, or operator notes.
-- Import and validate portable comparison findings inside the case file while requiring the exact cited source artifacts for reproduction.
-- Define interoperable machine-readable citations so issue trackers, test reports, vendors, and research records can point to the same verified evidence.
+- Add standalone comparison-finding import when both exact source artifacts are present, and test it against externally produced findings.
+- Define external citation links and integrations so issue trackers, test reports, vendors, and research records can resolve the same verified case evidence.
 
 Exit criteria: ReplayCase becomes a practical handoff format for telemetry incidents, not only a local review tool.
 

@@ -70,6 +70,22 @@ export class EvidenceZipError extends Error {
 
 const ALLOWED_PATHS = new Set<string>(EVIDENCE_ZIP_ALLOWED_PATHS);
 
+export interface ZipReadPolicy {
+  archiveBytes: number;
+  entries: number;
+  entryBytes: number;
+  totalUncompressedBytes: number;
+  allowsPath(path: string): boolean;
+}
+
+export const EVIDENCE_ZIP_POLICY: ZipReadPolicy = Object.freeze({
+  archiveBytes: EVIDENCE_ZIP_MAX_ARCHIVE_BYTES,
+  entries: EVIDENCE_ZIP_MAX_ENTRIES,
+  entryBytes: EVIDENCE_ZIP_MAX_ENTRY_BYTES,
+  totalUncompressedBytes: EVIDENCE_ZIP_MAX_TOTAL_UNCOMPRESSED_BYTES,
+  allowsPath: (path: string) => ALLOWED_PATHS.has(path),
+});
+
 const LOCAL_FILE_HEADER_SIGNATURE = 0x04034b50;
 const CENTRAL_DIRECTORY_HEADER_SIGNATURE = 0x02014b50;
 const END_OF_CENTRAL_DIRECTORY_SIGNATURE = 0x06054b50;
@@ -98,7 +114,7 @@ interface EndOfCentralDirectory {
 }
 
 interface CentralDirectoryEntry {
-  path: EvidenceZipPath;
+  path: string;
   versionNeeded: number;
   flags: number;
   compressionMethod: 0 | 8;
@@ -111,7 +127,7 @@ interface CentralDirectoryEntry {
 }
 
 interface LocalEntryRange {
-  path: EvidenceZipPath;
+  path: string;
   start: number;
   dataStart: number;
   end: number;
@@ -155,7 +171,7 @@ function u32(view: DataView, offset: number): number {
   return view.getUint32(offset, true);
 }
 
-function findEndOfCentralDirectory(view: DataView, archiveLength: number): EndOfCentralDirectory {
+function findEndOfCentralDirectory(view: DataView, archiveLength: number, policy: ZipReadPolicy): EndOfCentralDirectory {
   if (archiveLength < END_OF_CENTRAL_DIRECTORY_BYTES) {
     fail("eocd-not-found", "The archive does not contain a complete ZIP end-of-central-directory record.");
   }
@@ -202,10 +218,10 @@ function findEndOfCentralDirectory(view: DataView, archiveLength: number): EndOf
   if (diskNumber !== 0 || centralDirectoryDisk !== 0 || entriesOnDisk !== entryCount) {
     fail("multi-disk-unsupported", "Multi-disk ZIP evidence archives are not supported.");
   }
-  if (entryCount > EVIDENCE_ZIP_MAX_ENTRIES) {
+  if (entryCount > policy.entries) {
     fail(
       "entry-count-exceeded",
-      `The archive declares ${entryCount} entries; at most ${EVIDENCE_ZIP_MAX_ENTRIES} are allowed.`,
+      `The archive declares ${entryCount} entries; at most ${policy.entries} are allowed.`,
     );
   }
   if (centralDirectoryOffset > offset || centralDirectorySize > offset - centralDirectoryOffset) {
@@ -235,7 +251,7 @@ function validateExtraFields(
   }
 }
 
-function decodeEvidencePath(filenameBytes: Uint8Array): EvidenceZipPath {
+function decodeEvidencePath(filenameBytes: Uint8Array, policy: ZipReadPolicy): string {
   if (filenameBytes.byteLength === 0 || filenameBytes.byteLength > 255) {
     fail("filename-invalid", "ZIP entry names must contain between 1 and 255 ASCII bytes.");
   }
@@ -258,8 +274,8 @@ function decodeEvidencePath(filenameBytes: Uint8Array): EvidenceZipPath {
   ) {
     fail("unsafe-path", "The archive contains a non-canonical or traversing entry path.", path);
   }
-  if (!ALLOWED_PATHS.has(path)) fail("unknown-path", `The archive entry ${JSON.stringify(path)} is not part of the evidence format.`, path);
-  return path as EvidenceZipPath;
+  if (!policy.allowsPath(path)) fail("unknown-path", `The archive entry ${JSON.stringify(path)} is not part of the archive format.`, path);
+  return path;
 }
 
 function validateFlags(flags: number, compressionMethod: number, entryPath: string): void {
@@ -296,6 +312,7 @@ function parseCentralDirectory(
   archive: Uint8Array,
   view: DataView,
   end: EndOfCentralDirectory,
+  policy: ZipReadPolicy,
 ): CentralDirectoryEntry[] {
   const entries: CentralDirectoryEntry[] = [];
   const paths = new Set<string>();
@@ -355,7 +372,7 @@ function parseCentralDirectory(
 
     const filenameStart = cursor + CENTRAL_DIRECTORY_HEADER_BYTES;
     const filenameBytes = archive.subarray(filenameStart, filenameStart + filenameLength);
-    const path = decodeEvidencePath(filenameBytes);
+    const path = decodeEvidencePath(filenameBytes, policy);
     if (paths.has(path)) fail("duplicate-path", `The archive contains duplicate entry ${JSON.stringify(path)}.`, path);
     paths.add(path);
 
@@ -369,18 +386,18 @@ function parseCentralDirectory(
       fail("unsupported-compression", `ZIP entry ${JSON.stringify(path)} uses compression method ${compressionMethod}.`, path);
     }
     validateFlags(flags, compressionMethod, path);
-    if (compressedSize > EVIDENCE_ZIP_MAX_ENTRY_BYTES || uncompressedSize > EVIDENCE_ZIP_MAX_ENTRY_BYTES) {
+    if (compressedSize > policy.entryBytes || uncompressedSize > policy.entryBytes) {
       fail(
         "entry-too-large",
-        `ZIP entry ${JSON.stringify(path)} exceeds the ${EVIDENCE_ZIP_MAX_ENTRY_BYTES}-byte per-entry limit.`,
+        `ZIP entry ${JSON.stringify(path)} exceeds the ${policy.entryBytes}-byte per-entry limit.`,
         path,
       );
     }
     totalUncompressedBytes += uncompressedSize;
-    if (totalUncompressedBytes > EVIDENCE_ZIP_MAX_TOTAL_UNCOMPRESSED_BYTES) {
+    if (totalUncompressedBytes > policy.totalUncompressedBytes) {
       fail(
         "total-size-exceeded",
-        `The archive exceeds the ${EVIDENCE_ZIP_MAX_TOTAL_UNCOMPRESSED_BYTES}-byte uncompressed limit.`,
+        `The archive exceeds the ${policy.totalUncompressedBytes}-byte uncompressed limit.`,
       );
     }
 
@@ -625,25 +642,39 @@ function extractEntry(archive: Uint8Array, entry: CentralDirectoryEntry, range: 
 /**
  * Reads a ReplayCase evidence ZIP without touching the filesystem.
  *
- * The container is structurally validated before any entry is inflated. The
- * returned map owns stable copies of every entry's uncompressed bytes.
+ * Validate the complete container structure against a fixed format policy
+ * before inflating any entry.
  */
-export function readEvidenceZip(input: Uint8Array): Map<string, Uint8Array> {
+function preflightZip(input: Uint8Array, policy: ZipReadPolicy) {
   if (!(input instanceof Uint8Array)) fail("invalid-input", "Evidence ZIP input must be a Uint8Array.");
   if (input.byteLength === 0) fail("archive-empty", "The evidence archive is empty.");
-  if (input.byteLength > EVIDENCE_ZIP_MAX_ARCHIVE_BYTES) {
+  if (input.byteLength > policy.archiveBytes) {
     fail(
       "archive-too-large",
-      `The evidence archive exceeds the ${EVIDENCE_ZIP_MAX_ARCHIVE_BYTES}-byte compressed limit.`,
+      `The archive exceeds the ${policy.archiveBytes}-byte compressed limit.`,
     );
   }
 
   const archive = Uint8Array.from(input);
   const view = new DataView(archive.buffer, archive.byteOffset, archive.byteLength);
-  const end = findEndOfCentralDirectory(view, archive.byteLength);
-  const entries = parseCentralDirectory(archive, view, end);
+  const end = findEndOfCentralDirectory(view, archive.byteLength, policy);
+  const entries = parseCentralDirectory(archive, view, end, policy);
   const ranges = entries.map((entry) => parseLocalEntryRange(archive, view, entry, end.centralDirectoryOffset));
   validateLocalRanges(ranges, end.centralDirectoryOffset);
+  return { archive, entries, ranges };
+}
+
+/** Structural preflight only; callers must still verify CRCs and content. */
+export function inspectZip(input: Uint8Array, policy: ZipReadPolicy = EVIDENCE_ZIP_POLICY) {
+  const { entries } = preflightZip(input, policy);
+  return {
+    entries: entries.map(({ path, uncompressedSize }) => ({ path, uncompressedSize })),
+    totalUncompressedBytes: entries.reduce((total, entry) => total + entry.uncompressedSize, 0),
+  };
+}
+
+export function readBoundedZip(input: Uint8Array, policy: ZipReadPolicy): Map<string, Uint8Array> {
+  const { archive, entries, ranges } = preflightZip(input, policy);
 
   const rangesByPath = new Map(ranges.map((range) => [range.path, range]));
   const extracted = new Map<string, Uint8Array>();
@@ -653,4 +684,8 @@ export function readEvidenceZip(input: Uint8Array): Map<string, Uint8Array> {
     extracted.set(entry.path, extractEntry(archive, entry, range));
   }
   return extracted;
+}
+
+export function readEvidenceZip(input: Uint8Array): Map<string, Uint8Array> {
+  return readBoundedZip(input, EVIDENCE_ZIP_POLICY);
 }

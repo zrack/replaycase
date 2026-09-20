@@ -11,6 +11,7 @@
 | [scripts/](../scripts/) | Installed CLI, managed local server, UDP bridge, fixture generators, and developer checks |
 | [scripts/release/](../scripts/release/) | Deterministic packaging, release identity, SBOM, checksums, and unpacked acceptance orchestration |
 | [tests/e2e/](../tests/e2e/) | Source-build browser workflows and their test-only adapters |
+| [tests/fixtures/](../tests/fixtures/) | Controlled case fixtures shared by domain, storage, and browser regressions; not physical-capture proof |
 | [tests/release/](../tests/release/) | Unpacked-distribution acceptance tests, separate from source-build tests |
 | [public/](../public/) | Shipped static assets, runtime-discovery defaults, and the generated deterministic [demo fixture](../public/fixtures/harbor-relay-session.json) |
 | [docs/](README.md) | Documentation navigation, architecture contracts, design evidence, field proofs, and release notes |
@@ -45,6 +46,7 @@ guide paths at the root instead of moving them for visual tidiness.
 | Archive contract and generation | [evidence-contract.ts](../src/domain/evidence-contract.ts), [bundle.ts](../src/domain/bundle.ts) |
 | Received evidence and receiver findings | [receiver/](../src/receiver/), [production verifier](../verifier/evidence-verifier.ts), [ZIP intake](../verifier/evidence-zip.ts) |
 | Bounded comparison | [comparison domain](../src/domain/comparison.ts), [comparison workspace](../src/comparison/ComparisonWorkspace.tsx) |
+| Multi-bundle case workspace | [cases/](../src/cases/), [case domain](../src/domain/case.ts), [case verifier](../verifier/case-verifier.ts), [case library](../src/storage/case-library.ts), [format contract](architecture/case-workspace.md) |
 | Timeline sampling and presentation | [telemetry.ts](../src/lib/telemetry.ts), [time.ts](../src/lib/time.ts) |
 | Browser discovery of the managed runtime | [src/runtime/operator-runtime.ts](../src/runtime/operator-runtime.ts) |
 | Installed commands and local server | [replaycase.ts](../scripts/replaycase.ts), [scripts/operator-runtime.ts](../scripts/operator-runtime.ts), [CLI build](../vite.cli.config.ts) |
@@ -57,6 +59,9 @@ discovery response in the browser.
 
 ## Execution paths
 
+The [system diagrams](architecture/system-overview.md) show these routes across
+process, worker, evidence, and storage boundaries.
+
 1. **Capture:** serial or UDP adapter -> bounded recorder -> canonical session
    -> the same validated loading path used by imports and the bundled fixture.
 2. **Replay and investigation:** session worker -> domain validation and decoder
@@ -66,6 +71,9 @@ discovery response in the browser.
 4. **Installed application:** CLI `serve` -> managed static server and UDP bridge
    -> browser runtime discovery. Packaging and release tests verify this path
    outside the source checkout.
+5. **Case handoff:** verified bundles -> exact citations and comparison findings
+   -> case worker -> bounded `.nlcase` -> nested production verification and
+   reproduced comparisons -> case workspace and atomic local case library.
 
 Raw records are immutable. Browser UI, worker adapters, and test helpers must
 not create independent interpretations of the same evidence. Consult
@@ -93,6 +101,11 @@ This linked map is the GitHub-readable source guide. A local Graphify build adds
 `graphify-out/graph.json`, `GRAPH_REPORT.md`, `graph.html`, and `GRAPH_TREE.html`
 for symbol and relationship exploration. Generated graphs are discovery aids;
 the source files and canonical documents remain authoritative.
+
+The maintained [architecture diagrams](architecture/system-overview.md) are
+checked-in Mermaid source, not generated Graphify output. Update those diagrams
+when an implementation boundary changes; do not replace them with a stale
+generated graph or commit local graph artifacts.
 
 Refresh Graphify from a clean checkout of the intended commit, not a directory
 containing untracked source copies or private evidence. Use the Graphify skill's
