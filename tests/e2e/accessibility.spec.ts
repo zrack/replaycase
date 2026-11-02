@@ -5,6 +5,10 @@ import { resolve } from "node:path";
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const DEMO_SESSION_PATH = resolve("public/fixtures/harbor-relay-session.json");
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 async function expectNoAxeViolations(page: Page): Promise<void> {
   const results = await new AxeBuilder({ page }).withTags(wcagTags).analyze();
   expect(
@@ -53,6 +57,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("workspace and critical dialogs pass axe rules tagged WCAG A and AA", async ({ page }) => {
+  const diagnosticButtons = page.locator(".diagnostics-track button");
+  await expect(diagnosticButtons.first()).toBeVisible();
+  for (const button of await diagnosticButtons.all()) {
+    const visibleText = (await button.textContent() ?? "").replace(/\s+/g, " ").trim();
+    expect(visibleText).not.toBe("");
+    await expect(button).toHaveAccessibleName(new RegExp(`^${escapeRegExp(visibleText)}; `));
+  }
   await expectNoAxeViolations(page);
 
   await page.getByRole("button", { name: /^Live capture UDP or serial/ }).click();
