@@ -60,9 +60,9 @@ test("workspace and critical dialogs pass axe rules tagged WCAG A and AA", async
   const diagnosticButtons = page.locator(".diagnostics-track button");
   await expect(diagnosticButtons.first()).toBeVisible();
   for (const button of await diagnosticButtons.all()) {
-    const title = await button.locator(".timeline-diagnostic-copy").innerText();
-    const time = await button.locator("small").innerText();
-    await expect(button).toHaveAccessibleName(new RegExp(`^${escapeRegExp(`${title} ${time}`)}; `));
+    const visibleText = (await button.textContent() ?? "").replace(/\s+/g, " ").trim();
+    expect(visibleText).not.toBe("");
+    await expect(button).toHaveAccessibleName(new RegExp(`^${escapeRegExp(visibleText)}; `));
   }
   await expectNoAxeViolations(page);
 
