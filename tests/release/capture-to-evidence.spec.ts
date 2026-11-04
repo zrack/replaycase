@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 
 import { expect, test, type Page } from "@playwright/test";
@@ -59,6 +60,9 @@ const OPERATOR_NOTE = "Artifact release gate retained this exact operator-author
 const RECEIVER_NOTE = "Receiver reproduced the packaged release evidence after independent verification.";
 const COMPARISON_CONCLUSION = "The packaged release reproduced the received incident against the original replay using the exact authored-range start as a shared anchor.";
 const DATAGRAM_COUNT = 12;
+const EXPECTED_RELEASE_VERSION = (JSON.parse(
+  readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
+) as { version: string }).version;
 
 function formatOffsetUsInput(offsetUs: number): string {
   const hours = Math.floor(offsetUs / 3_600_000_000);
@@ -114,7 +118,7 @@ test("unpacked release records UDP and preserves verifiable evidence across repl
     const originalPort = Number(new URL(appUrl).port);
     const releaseIdentity = { ...installation.identity };
     expect(originalPort).toBeGreaterThan(0);
-    expect(releaseIdentity.version).toBe("0.4.0");
+    expect(releaseIdentity.version).toBe(EXPECTED_RELEASE_VERSION);
     expect(releaseIdentity.commit).toMatch(/^[0-9a-f]{40}$/);
     expect(server.ready).toMatchObject(releaseIdentity);
     expect(new URL(server.ready.bridgeUrl).hostname).toBe("127.0.0.1");

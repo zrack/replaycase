@@ -11,6 +11,7 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 ### Fixed
 
+- Mark prerelease tags as GitHub prereleases and identify untagged preview builds explicitly in the packaged operator instructions. Release acceptance now checks the package's configured version instead of a fixed prior release.
 - Included visible diagnostic titles, grouped counts, and timestamps in timeline buttons’ accessible names so voice-control users can identify the controls, while preserving severity, domain, and full diagnostic details. ([#54](https://github.com/zrack/replaycase/pull/54))
 - Scoped case-save browser assertions to the exact completed-save notice, so overlapping progress and success announcements cannot cause a false strict-locator failure in source or unpacked-distribution handoff tests.
 - Synchronized the storage-cleanup browser regression with the save operation's focus handoff and verified the operator note before removal, so interrupted text entry cannot masquerade as a note-retention failure.

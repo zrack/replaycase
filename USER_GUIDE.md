@@ -382,7 +382,7 @@ A storage error does not mean a session was saved. Keep the downloaded `.nlsessi
 
 ## Investigate a multi-bundle case
 
-**Availability:** current source build only. The published v0.4.0 package does not contain this workspace.
+**Availability:** current source build and unpublished local [v0.5.0-rc.1 candidate](docs/releases/v0.5.0-rc.1.md). The published v0.4.0 package does not contain this workspace. Follow the candidate notes for isolated evaluation; the installation instructions above remain for the published package.
 
 1. Choose **Cases** from replay, receiver, or comparison. Enter a **New case title** and choose **Create case**. The new case is in memory until **Save case** succeeds.
 2. Choose **Add bundles** and select the baseline, failed, and post-fix `.nlb` files. ReplayCase verifies every archive before changing the case. Exact duplicates are not added again. Bundle labels come from filenames; their full identities and source evidence remain unchanged.
@@ -480,7 +480,7 @@ To intentionally purge the browser-held library and workspace, preserve any requ
 
 | Symptom | What to do |
 | --- | --- |
-| **Cases** is missing | The published v0.4.0 package predates the case workspace. Use the current source build or a subsequent case-capable release; do not alter an older archive to force compatibility. |
+| **Cases** is missing | The published v0.4.0 package predates the case workspace. Use the current source build or unpublished local [v0.5.0-rc.1 candidate](docs/releases/v0.5.0-rc.1.md); do not alter an older archive to force compatibility. |
 | Case import or reopen fails | Keep the original file. Check archive limits and the complete error; missing evidence, broken citations, incompatible versions, or corrupt bytes are not repaired automatically. The active case remains open. |
 | A different case revision is already saved | Export work you need to retain, then reopen the saved revision or explicitly remove it before saving the imported revision. ReplayCase does not merge conflicting investigations. |
 | Case storage fails | Keep the active case open and export it. Resolve the quota, blocked window, or storage permission, refresh saved cases, and retry. Do not treat an error as a successful save. |

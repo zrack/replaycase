@@ -455,6 +455,9 @@ async function renderOperatorReadme(identity) {
   return template
     .replaceAll("{{VERSION}}", identity.version)
     .replaceAll("{{TAG}}", identity.tag)
+    .replaceAll("{{MODE}}", identity.mode)
+    .replaceAll("{{DIRTY}}", String(identity.dirty))
+    .replaceAll("{{TAG_VERIFIED}}", String(identity.tagVerified))
     .replaceAll("{{COMMIT}}", identity.commit);
 }
 
