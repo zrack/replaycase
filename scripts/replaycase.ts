@@ -29,7 +29,7 @@ declare const __REPLAYCASE_VERSION__: string;
 declare const __REPLAYCASE_COMMIT__: string;
 
 export const REPLAYCASE_RELEASE: ReleaseIdentity = Object.freeze({
-  version: typeof __REPLAYCASE_VERSION__ === "string" ? __REPLAYCASE_VERSION__ : "0.4.0",
+  version: typeof __REPLAYCASE_VERSION__ === "string" ? __REPLAYCASE_VERSION__ : "0.5.0-rc.1",
   commit: typeof __REPLAYCASE_COMMIT__ === "string" ? __REPLAYCASE_COMMIT__ : "unknown",
 });
 

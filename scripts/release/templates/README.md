@@ -1,7 +1,10 @@
 # ReplayCase {{VERSION}}
 
-This package is the self-contained ReplayCase local operator distribution for
-Git tag `{{TAG}}` at commit `{{COMMIT}}`.
+This package is the self-contained ReplayCase local operator distribution.
+Build mode: `{{MODE}}`; source commit: `{{COMMIT}}`; uncommitted source changes:
+`{{DIRTY}}`. Expected Git tag: `{{TAG}}`; tag verified at build: `{{TAG_VERIFIED}}`.
+Preview builds are local candidates, not published releases. Consult
+`release-manifest.json` for the complete build identity.
 
 ## Requirements
 
@@ -50,6 +53,21 @@ Inspect the installed build identity:
 replaycase version --json
 ```
 
+## Multi-bundle cases
+
+Choose **Cases** to create a local investigation, add original `.nlb` bundles,
+and author findings or questions with exact range, raw-record, or diagnostic
+citations. Compare included bundles with explicit alignment, then save locally
+or export an `.nlcase`. A receiving installation can choose **Import case** to
+reverify every included bundle, resolve citations, and reproduce comparisons.
+Original bundle bytes and individual session clocks remain unchanged.
+
+Cases are bounded to 16 bundles, 48 MiB of stored bundle bytes, 64 MiB of
+aggregate expanded bundle artifacts, and a 1 MiB canonical manifest inside a
+64 MiB outer archive. Browser storage is local, origin-scoped, and unencrypted.
+The CLI verifies `.nlb`, not `.nlcase`; case verification runs in the application.
+Citations resolve evidence but do not establish narrative truth or authenticity.
+
 ## Evidence compatibility
 
 This release writes version 4 `.nlb` bundles and verifies versions 3 and 4.
@@ -82,9 +100,9 @@ ReplayCase loopback origin when an explicit data purge is required.
 
 ## Integrity
 
-The GitHub Release publishes this package with `SHA256SUMS`, a normalized
-CycloneDX SBOM, and a machine-readable release manifest. Verify the downloaded
-asset against those files before installation when it crosses an untrusted
+Builds include `SHA256SUMS`, a normalized CycloneDX SBOM, and a machine-readable
+release manifest; published releases provide these as GitHub Release assets.
+Verify the downloaded asset against those files before installation when it crosses an untrusted
 channel. Those same-channel checks establish byte consistency, not publisher
 or build-environment authenticity; confirm the expected tag and commit through
 a separately trusted channel when authenticity matters.
