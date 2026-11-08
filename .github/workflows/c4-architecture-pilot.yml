@@ -1,0 +1,20 @@
+name: Architecture review pilot
+on:
+  push:
+    branches: [codex/c4-architecture-pilot-bbac6ee]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  review:
+    name: Review PR #${{ matrix.pr_number }}
+    strategy:
+      fail-fast: false
+      matrix:
+        pr_number: ['45', '34']
+    uses: zrack/c4-architect-mcp/.github/workflows/pr-architecture-review-report.yml@bbac6eea276202a284af02267eca5075c7293cda
+    with:
+      pr_number: ${{ matrix.pr_number }}
+      source_root: ./src/
