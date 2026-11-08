@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         pr_number: ['45', '34']
-    uses: zrack/c4-architect-mcp/.github/workflows/pr-architecture-review-report.yml@c2a0434e29a1b8df8ea7b453cc84e7fa553bcd02
+    uses: zrack/c4-architect-mcp/.github/workflows/pr-architecture-review-report.yml@a2060be6183fb5b4b7c69d20ddb650f2f11661ad
     with:
       pr_number: ${{ matrix.pr_number }}
       source_root: ./src/
