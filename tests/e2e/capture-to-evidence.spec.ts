@@ -553,6 +553,9 @@ test("records UDP, replays and investigates it, then exports independently verif
   expect(document.durationUs).toBeGreaterThan(replaySeekOffsetUs);
   await replayPosition.fill(String(replaySeekOffsetUs));
   await expect(replayPosition).toHaveValue(String(replaySeekOffsetUs));
+  const completionSeekOffsetUs = Math.floor((document.durationUs - 1) / 1_000_000) * 1_000_000;
+  await replayPosition.fill(String(completionSeekOffsetUs));
+  await expect(replayPosition).toHaveValue(String(completionSeekOffsetUs));
   await page.getByRole("button", { name: "Play replay" }).click();
   await expect(page.getByRole("button", { name: "Replay again" })).toBeVisible();
 

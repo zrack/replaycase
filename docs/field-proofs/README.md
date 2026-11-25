@@ -2,7 +2,7 @@
 
 An automated loopback capture proves the software path. It does not satisfy ReplayCase's north-star outcome. A field proof must use a real non-demo telemetry source and an independent recipient.
 
-Use [PILOT-001](pilot-plan.md) to assign the first source, recording operator, and independent recipient. Its empty worksheet is preparation only. The [last published-package readiness audit](2026-09-10-readiness.md) records NarrowsLink v0.3.0 and its automated gates; it does not establish a real-source handoff. Current installation and rename compatibility are defined by the [ReplayCase release guide](../releases/README.md), not by that dated audit.
+Use [PILOT-001](pilot-plan.md) to assign the first source, recording operator, and independent recipient. Copy the [pilot record template](pilot-record-template.md) into the permitted working location for the operator log, recipient assessment, and observed-issue triage. An empty template is preparation only. The [last published-package readiness audit](2026-09-10-readiness.md) records NarrowsLink v0.3.0 and its automated gates; it does not establish a real-source handoff. Current installation and rename compatibility are defined by the [ReplayCase release guide](../releases/README.md), not by that dated audit.
 
 ## Evidence and status
 
@@ -15,7 +15,7 @@ No passing independent field-proof record exists yet. Preserve dated readiness r
 ## Before capture
 
 1. Draw the observation topology from telemetry producer through radio, modem, base station, forwarding software, network, or serial adapter to the ReplayCase laptop.
-2. Record the source hardware and firmware, receiving hardware, adapter or bridge, laptop operating system, ReplayCase build identity, decoder-pack identity, and capture settings. Use ReplayCase v0.4.0 for new recording and receiving installations; NarrowsLink v0.3.0 remains bundle-compatible, but v0.2.0 cannot read version 4 bundles.
+2. Record the source hardware and firmware, receiving hardware, adapter or bridge, laptop operating system, ReplayCase build identity, decoder-pack identity, and capture settings. For the release-candidate pilot, use the tagged [ReplayCase v0.5.0-rc.1 package](../releases/v0.5.0-rc.1.md) on both installations after its publication and downloaded assets are verified. Record each full commit from `replaycase version --json`; a local dirty preview is not that tagged package. ReplayCase v0.4.0 and NarrowsLink v0.3.0 remain compatible with individual version 4 bundles, but do not contain the case workspace. Version 0.2.0 cannot read version 4 bundles.
 3. State what ReplayCase can observe at that point and what remains upstream, unavailable, estimated, or based on another device's counters.
 4. Run preflight, confirm traffic and decoder fit, then stop the probe and deliberately start the evidence capture.
 
@@ -37,3 +37,5 @@ No passing independent field-proof record exists yet. Preserve dated readiness r
 ## Passing record
 
 A proof passes only when the archive verifies on the second installation, the evidence and limitations reproduce, and the recipient can continue the investigation without the original source or laptop. Store the topology, procedure, session and bundle hashes, verification report, recipient result, and unresolved limitations together. A parser fixture, demo sender, same-browser reopen, or sender-operator self-review is not sufficient.
+
+Use the record template's issue section to distinguish a reproducible software defect from missing setup, absent source evidence, and an interpretation or documentation problem. Preserve the first attempt and its timings before changing the setup or application. Only claim a regression after reproducing it with identified inputs; proposed fixes and untested explanations remain explicitly unverified.

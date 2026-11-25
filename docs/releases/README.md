@@ -1,13 +1,15 @@
 # ReplayCase releases
 
-The current operator package is [ReplayCase v0.4.0](v0.4.0.md).
+The latest stable operator package is [ReplayCase v0.4.0](v0.4.0.md).
 Use the [user guide](../../USER_GUIDE.md#upgrade-from-narrowslink) when upgrading
 an existing NarrowsLink installation.
 
-An unpublished local preview is available as
-[ReplayCase v0.5.0-rc.1](v0.5.0-rc.1.md). Its candidate notes cover isolated
-evaluation, multi-bundle cases, compatibility, and the remaining verification
-boundaries; it does not replace the current published package.
+The release candidate for v0.5.0 is
+[ReplayCase v0.5.0-rc.1](v0.5.0-rc.1.md). Its prerelease notes cover tagged-asset
+verification, isolated evaluation, multi-bundle cases, compatibility, and the
+remaining manual verification boundaries. Use only assets attached to the
+matching GitHub prerelease; local preview builds do not establish publication.
+The candidate does not replace v0.4.0 as the latest stable release.
 
 Release notes are immutable descriptions of their published tags. Versions
 [v0.3.0](v0.3.0.md), [v0.2.0](v0.2.0.md), and [v0.1.0](v0.1.0.md) were published
