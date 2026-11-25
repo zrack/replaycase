@@ -8,6 +8,7 @@ import { basename } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { createUdpKernelDropCounter } from "./udp-kernel-drop-counter.mjs";
+import { createHttpServerDrain } from "./http-server-drain.mjs";
 
 const PROTOCOL_VERSION = 1;
 const CONTROL_HOST = "127.0.0.1";
@@ -848,6 +849,7 @@ export function createCaptureBridge(options) {
   server.on("clientError", (_error, socket) => {
     if (socket.writable) socket.end("HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n");
   });
+  const httpDrain = createHttpServerDrain(server);
 
   async function listen() {
     await new Promise((resolve, reject) => {
@@ -866,9 +868,7 @@ export function createCaptureBridge(options) {
   function close(options = {}) {
     if (closePromise) return closePromise;
     shuttingDown = true;
-    const serverClose = server.listening
-      ? new Promise((resolve) => server.close(resolve))
-      : Promise.resolve();
+    const serverClose = httpDrain.close();
     closePromise = (async () => {
       const active = state === "starting" || state === "capturing" || state === "stopping";
       await stopCapture(
@@ -884,7 +884,6 @@ export function createCaptureBridge(options) {
       ).catch(() => undefined);
       const terminalPayload = formatSse("status", statusDocument());
       for (const subscriber of [...subscribers]) closeSubscriber(subscriber, terminalPayload);
-      server.closeIdleConnections?.();
       await serverClose;
     })();
     return closePromise;

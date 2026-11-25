@@ -13,6 +13,7 @@ import { dirname, extname, isAbsolute, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url";
 
 import { createCaptureBridge, type CaptureBridgeStatus } from "./capture-bridge.mjs";
+import { createHttpServerDrain } from "./http-server-drain.mjs";
 
 const APP_HOST = "127.0.0.1";
 const DEFAULT_APP_PORT = 47_890;
@@ -492,11 +493,6 @@ async function listen(server: Server, port: number): Promise<number> {
   return address.port;
 }
 
-async function closeServer(server: Server): Promise<void> {
-  if (!server.listening) return;
-  await new Promise<void>((resolvePromise) => server.close(() => resolvePromise()));
-}
-
 export async function startOperatorRuntime(input: {
   options: ServeOptions;
   release: ReleaseIdentity;
@@ -512,7 +508,12 @@ export async function startOperatorRuntime(input: {
   );
 
   let handler: ReturnType<typeof createOperatorAssetHandler> | null = null;
+  let shuttingDown = false;
   const appServer = createServer((request, response) => {
+    if (shuttingDown) {
+      sendText(response, 503, "ReplayCase is shutting down.\n", { Connection: "close" });
+      return;
+    }
     void (handler
       ? handler(request, response)
       : Promise.resolve(sendText(response, 503, "ReplayCase is still starting.\n"))
@@ -527,6 +528,11 @@ export async function startOperatorRuntime(input: {
   appServer.on("clientError", (_error, socket) => {
     if (socket.writable) socket.end("HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n");
   });
+  const appDrain = createHttpServerDrain(appServer);
+  const closeAppServer = () => {
+    shuttingDown = true;
+    return appDrain.close();
+  };
 
   const appPort = await listen(appServer, input.options.appPort);
   appUrl = `http://${APP_HOST}:${appPort}`;
@@ -545,11 +551,11 @@ export async function startOperatorRuntime(input: {
     udpDefaults = { ...status.defaults };
   } catch (error) {
     await bridge?.close().catch(() => undefined);
-    await closeServer(appServer);
+    await closeAppServer();
     throw error;
   }
   if (!bridge || !bridgeUrl || !udpDefaults) {
-    await closeServer(appServer);
+    await closeAppServer();
     throw new Error("ReplayCase bridge readiness was incomplete.");
   }
   const activeBridge = bridge;
@@ -568,12 +574,11 @@ export async function startOperatorRuntime(input: {
   let closePromise: Promise<void> | null = null;
   const close = (): Promise<void> => {
     closePromise ??= (async () => {
-      const appServerClose = closeServer(appServer);
+      const appServerClose = closeAppServer();
       await activeBridge.close({
         code: "bridge-shutdown",
         message: "The ReplayCase operator runtime shut down before the operator completed the capture.",
       });
-      appServer.closeIdleConnections();
       await appServerClose;
     })();
     return closePromise;
