@@ -4,8 +4,11 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 ## [Unreleased]
 
+## [0.5.0-rc.1] - 2026-11-24
+
 ### Added
 
+- Added a PILOT-001 attempt worksheet covering operator logs, exact artifact identities, independent recipient assessment, and evidence-linked issue triage; a real source and independent recipient remain prerequisites.
 - Added a local multi-bundle case workspace with exact-byte bundle deduplication, cited findings and questions, existing-engine comparisons, independently reproduced comparison findings, and portable `.nlcase` archives. Case imports and reopens reverify every nested bundle under aggregate archive limits; worker cancellation, atomic local persistence, corruption checks, and revision conflicts preserve the active investigation. Added controlled clean-profile handoff, storage-failure, archive-rejection, accessibility, and responsive regression coverage. ([#45](https://github.com/zrack/replaycase/pull/45))
 - Added task-based documentation navigation, a linked source and test map, and design and architecture indexes. Contributor guidance now separates generated Graphify output from source and requires explicit source identity and extraction scope when refreshing maps.
 
@@ -114,7 +117,8 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 - Restricted the UDP bridge control plane to loopback access with server-enforced capture ownership and an internal short-lived bearer credential; the browser uses a same-origin application relay, so the credential is not exposed in runtime metadata, URLs, cookies, readiness output, or logs.
 
-[Unreleased]: https://github.com/zrack/replaycase/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/zrack/replaycase/compare/v0.5.0-rc.1...HEAD
+[0.5.0-rc.1]: https://github.com/zrack/replaycase/compare/v0.4.0...v0.5.0-rc.1
 [0.4.0]: https://github.com/zrack/replaycase/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/zrack/replaycase/releases/tag/v0.3.0
 [0.2.0]: https://github.com/zrack/replaycase/releases/tag/v0.2.0

@@ -51,7 +51,7 @@ Continue with the [guided first run](USER_GUIDE.md#first-run-with-the-bundled-re
 
 ## Current capabilities
 
-The capabilities below describe the current source tree and unpublished local [v0.5.0-rc.1 candidate](docs/releases/v0.5.0-rc.1.md). **Multi-bundle cases are not included in the published v0.4.0 package.** Evaluate them with the local candidate or the [development setup](CONTRIBUTING.md).
+The capabilities below describe the current source tree and [v0.5.0-rc.1 prerelease](docs/releases/v0.5.0-rc.1.md). **Multi-bundle cases are not included in the published v0.4.0 package.** Evaluate them with the prerelease or the [development setup](CONTRIBUTING.md).
 
 - Capture unicast or multicast UDP datagrams through the managed authenticated local bridge, or assemble serial records directly through Web Serial using the selected decoder pack. Stopping a source downloads a versioned `.nlsession`, opens the validated finalized capture for replay, and attempts to retain it in the local session library.
 - Save up to 16 local capture profiles containing the exact validated decoder pack and UDP or serial settings. Profiles deliberately exclude bridge credentials, browser device permission, session names, and telemetry payloads.
@@ -71,7 +71,7 @@ The capabilities below describe the current source tree and unpublished local [v
 
 ## Operator use cases
 
-ReplayCase currently supports six end-to-end operator outcomes; UC-006 is available in the source build and unpublished local v0.5.0-rc.1 candidate:
+ReplayCase currently supports six end-to-end operator outcomes; UC-006 is available in the source build and v0.5.0-rc.1 prerelease:
 
 | ID | Use case | Primary output |
 | --- | --- | --- |
@@ -101,7 +101,7 @@ The [user guide](USER_GUIDE.md) provides the full procedure, UI labels, recovery
 
 ## Multi-bundle cases
 
-In the current source build and unpublished local [v0.5.0-rc.1 candidate](docs/releases/v0.5.0-rc.1.md), **Cases** opens a local investigation workspace. Add baseline, failed, and post-fix `.nlb` bundles; exact duplicates share one artifact. Author findings or open questions with exact range, raw-record, or diagnostic citations. Compare two included bundles through the existing explicit-alignment engine and add the resulting finding to the case. Save locally or export an `.nlcase` for another installation.
+In the current source build and [v0.5.0-rc.1 prerelease](docs/releases/v0.5.0-rc.1.md), **Cases** opens a local investigation workspace. Add baseline, failed, and post-fix `.nlb` bundles; exact duplicates share one artifact. Author findings or open questions with exact range, raw-record, or diagnostic citations. Compare two included bundles through the existing explicit-alignment engine and add the resulting finding to the case. Save locally or export an `.nlcase` for another installation.
 
 Import and reopen reverify each original bundle, resolve every citation, and reproduce every saved comparison before displaying the case. Authored context never changes source evidence, missing artifacts remain unavailable, and verification does not establish authorship or source authenticity. Cases are limited to 16 bundles, 48 MiB of stored bundle bytes, 64 MiB of aggregate expanded bundle artifacts, and a 1 MiB canonical manifest. The outer archive is capped at 64 MiB. Saved cases occupy separate, unencrypted IndexedDB storage at the current browser origin.
 
@@ -292,7 +292,7 @@ Local does not automatically mean safe to share. A saved replay or evidence bund
 
 ## Current limits
 
-- The case workspace is available in the source build and unpublished local [v0.5.0-rc.1 candidate](docs/releases/v0.5.0-rc.1.md), not the published v0.4.0 package. `.nlcase` archives are bounded, unsigned, and verified in the application, not the `.nlb` CLI command. They preserve individual timelines and cannot establish clock synchronization, causality, narrative truth, or source authenticity.
+- The case workspace is available in the source build and [v0.5.0-rc.1 prerelease](docs/releases/v0.5.0-rc.1.md), not the published v0.4.0 package. `.nlcase` archives are bounded, unsigned, and verified in the application, not the `.nlb` CLI command. They preserve individual timelines and cannot establish clock synchronization, causality, narrative truth, or source authenticity.
 - Live capture supports UDP and Web Serial; TCP and other transports are not implemented.
 - The package requires a compatible local Node.js runtime and browser. It bundles all ReplayCase application code and runtime dependencies, but it is not a native installer or embedded-browser distribution.
 - Capture profiles are local convenience state, not evidence or secrets storage. They are limited to 16 profiles and 2 MiB of canonical content, and cannot restore Web Serial permission.
