@@ -4,7 +4,7 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 ## [Unreleased]
 
-## [0.5.0-rc.1] - 2026-11-24
+## [0.5.0-rc.2] - 2026-11-25
 
 ### Added
 
@@ -14,6 +14,7 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 ### Fixed
 
+- Closed preconnected, partial-header, and completed HTTP connections during managed shutdown without truncating active responses or terminal capture evidence, preserving the existing five-second shutdown limit. ([#60](https://github.com/zrack/replaycase/issues/60))
 - Mark prerelease tags as GitHub prereleases and identify untagged preview builds explicitly in the packaged operator instructions. Release acceptance now checks the package's configured version instead of a fixed prior release.
 - Included visible diagnostic titles, grouped counts, and timestamps in timeline buttons’ accessible names so voice-control users can identify the controls, while preserving severity, domain, and full diagnostic details. ([#54](https://github.com/zrack/replaycase/pull/54))
 - Scoped case-save browser assertions to the exact completed-save notice, so overlapping progress and success announcements cannot cause a false strict-locator failure in source or unpacked-distribution handoff tests.
@@ -22,6 +23,10 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 ### Security
 
 - Updated source-map-js to 1.2.2, Vite to 6.4.5, and Vitest/mocker to 4.1.12 for upstream source-map, development-server access, and mock-path hardening fixes, including the development-server file-deny bypass disclosed in [GHSA-8g5g-mxqh-grgj](https://github.com/advisories/GHSA-8g5g-mxqh-grgj). ([#54](https://github.com/zrack/replaycase/pull/54))
+
+## [0.5.0-rc.1] - 2026-11-24
+
+This candidate was tagged but not published. Its release gate rejected a flaky packaged-server shutdown; no operator assets were published. The tag is retained unchanged.
 
 ## [0.4.0] - 2026-09-10
 
@@ -117,8 +122,9 @@ All notable changes to ReplayCase (formerly NarrowsLink) are recorded here. This
 
 - Restricted the UDP bridge control plane to loopback access with server-enforced capture ownership and an internal short-lived bearer credential; the browser uses a same-origin application relay, so the credential is not exposed in runtime metadata, URLs, cookies, readiness output, or logs.
 
-[Unreleased]: https://github.com/zrack/replaycase/compare/v0.5.0-rc.1...HEAD
-[0.5.0-rc.1]: https://github.com/zrack/replaycase/compare/v0.4.0...v0.5.0-rc.1
+[Unreleased]: https://github.com/zrack/replaycase/compare/v0.5.0-rc.2...HEAD
+[0.5.0-rc.2]: https://github.com/zrack/replaycase/compare/v0.4.0...v0.5.0-rc.2
+[0.5.0-rc.1]: https://github.com/zrack/replaycase/actions/runs/45563107811
 [0.4.0]: https://github.com/zrack/replaycase/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/zrack/replaycase/releases/tag/v0.3.0
 [0.2.0]: https://github.com/zrack/replaycase/releases/tag/v0.2.0

@@ -11,7 +11,7 @@ Status: **not started; source and independent recipient unassigned**. This is th
 | Real telemetry source | Unselected; target checksummed NMEA 0183 GGA/RMC, with HDT when available |
 | Observation path | Select physical USB serial, base-station UDP output, or a documented forwarded/multicast copy |
 | Independent recipient and second machine | Unassigned; must not attend the recording test |
-| Recording and receiving package | Target tagged v0.5.0-rc.1 on both installations after publication and downloaded-asset verification; record each full commit from `replaycase version --json`. v0.4.0 remains compatible with individual `.nlb` bundles. |
+| Recording and receiving package | Target tagged v0.5.0-rc.2 on both installations after publication and downloaded-asset verification; record each full commit from `replaycase version --json`. v0.4.0 remains compatible with individual `.nlb` bundles. |
 | Decoder identity | Record exact reference or local pack hash, schema hash, runtime ID, and revision before capture |
 | Test date and sharing permission | Unset; do not publish device identifiers, coordinates, or private telemetry by default |
 

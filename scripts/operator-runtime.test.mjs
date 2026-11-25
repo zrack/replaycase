@@ -1,5 +1,6 @@
-import { EventEmitter } from "node:events";
+import { EventEmitter, once } from "node:events";
 import { request } from "node:http";
+import { createConnection } from "node:net";
 import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -305,5 +306,64 @@ describe("managed operator runtime", () => {
       type: "capture-stopped",
       code: "bridge-shutdown",
     });
+  });
+
+  it("drains app and bridge preconnects without losing active terminal evidence", async () => {
+    const heldConnections = [];
+    let streamedEvidencePromise;
+    let timer;
+    try {
+      runtime = await startOperatorRuntime({
+        options: options(),
+        release,
+        applicationRoot: await makeApplication(),
+      });
+      const events = await fetch(`${runtime.appUrl}/v1/events`);
+      expect(events.status).toBe(200);
+      streamedEvidencePromise = events.text();
+      const started = await fetch(`${runtime.appUrl}/v1/start`, {
+        method: "POST",
+        headers: { Origin: runtime.appUrl, "Content-Type": "application/json" },
+        body: JSON.stringify({ host: "127.0.0.1", port: 0, requestNonce: "runtime-drain-terminal-evidence" }),
+      });
+      expect(started.status).toBe(200);
+      await started.json();
+
+      for (const baseUrl of [runtime.appUrl, runtime.bridgeUrl]) {
+        const url = new URL(baseUrl);
+        for (const partialHeaders of [false, true]) {
+          const socket = createConnection({ host: url.hostname, port: Number(url.port) });
+          heldConnections.push(socket);
+          socket.on("error", () => undefined);
+          await once(socket, "connect");
+          if (partialHeaders) socket.write(`GET /v1/status HTTP/1.1\r\nHost: ${url.host}\r\n`);
+        }
+        // A completed request synchronizes acceptance of the held connections
+        // without a timing-dependent sleep or reading their unfinished headers.
+        const barrier = await rawRequest(baseUrl, "/v1/status");
+        expect(barrier.status).toBe(baseUrl === runtime.appUrl ? 200 : 401);
+      }
+
+      const closed = runtime.close();
+      expect(runtime.close()).toBe(closed);
+      await Promise.race([
+        closed,
+        new Promise((_resolve, reject) => {
+          timer = setTimeout(() => reject(new Error("Held HTTP connections blocked evidence shutdown.")), 2_000);
+        }),
+      ]);
+      const evidence = await streamedEvidencePromise;
+      expect(evidence).toContain('"state":"stopped"');
+      expect(evidence).toContain('"code":"bridge-shutdown"');
+      expect(runtime.bridgeStatus().captureJournal).toMatchObject({ state: "incomplete" });
+      expect(runtime.bridgeStatus().captureJournal?.entries.at(-1)).toMatchObject({
+        type: "capture-stopped", code: "bridge-shutdown",
+      });
+    } finally {
+      clearTimeout(timer);
+      for (const socket of heldConnections) socket.destroy();
+      await runtime?.close();
+      await streamedEvidencePromise?.catch(() => undefined);
+    }
   });
 });
