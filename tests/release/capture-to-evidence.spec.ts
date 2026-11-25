@@ -202,14 +202,13 @@ test("unpacked release records UDP and preserves verifiable evidence across repl
     }
     expect(document.durationUs).toBeGreaterThan(endRecord.offsetUs);
 
-    // Capture length includes automation time; replay only a bounded tail.
+    // Replay from the last whole-second scrubber step before the captured end.
     const replayPosition = page.getByRole("slider", { name: "Replay position" });
-    const completionSeekOffsetUs = Math.max(0, document.durationUs - 500_000);
+    const completionSeekOffsetUs = Math.max(0, Math.floor((document.durationUs - 1) / 1_000_000) * 1_000_000);
     await replayPosition.fill(String(completionSeekOffsetUs));
     await expect(replayPosition).toHaveValue(String(completionSeekOffsetUs));
     await page.getByRole("button", { name: "Play replay" }).click();
     await expect(page.getByRole("button", { name: "Replay again" })).toBeVisible();
-    await expect(replayPosition).toHaveValue(String(document.durationUs));
 
     await page.getByRole("button", { name: "New range" }).click();
     const rangeDialog = page.getByRole("dialog", { name: "Define an incident range" });

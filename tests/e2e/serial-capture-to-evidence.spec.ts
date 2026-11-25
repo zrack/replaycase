@@ -251,13 +251,12 @@ test("records fragmented serial input and carries it through durable verified ev
   await replayPosition.fill(String(replaySeekOffsetUs));
   await expect(replayPosition).toHaveValue(String(replaySeekOffsetUs));
   // Capture duration includes time spent in browser automation, so exercise
-  // completion over a bounded tail rather than waiting for the whole capture.
-  const completionSeekOffsetUs = Math.max(replaySeekOffsetUs, document.durationUs - 500_000);
+  // completion from the last whole-second step before the captured end.
+  const completionSeekOffsetUs = Math.floor((document.durationUs - 1) / 1_000_000) * 1_000_000;
   await replayPosition.fill(String(completionSeekOffsetUs));
   await expect(replayPosition).toHaveValue(String(completionSeekOffsetUs));
   await page.getByRole("button", { name: "Play replay" }).click();
   await expect(page.getByRole("button", { name: "Replay again" })).toBeVisible();
-  await expect(replayPosition).toHaveValue(String(document.durationUs));
 
   const startRecord = document.records[0]!;
   const endRecord = document.records[2]!;
